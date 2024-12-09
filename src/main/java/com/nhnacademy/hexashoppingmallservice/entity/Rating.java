@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Length;
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long ratingId;
     @Column(nullable = false)
     @Length(max = 20)

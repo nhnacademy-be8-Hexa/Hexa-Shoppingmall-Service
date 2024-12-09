@@ -22,4 +22,14 @@ public class RatingService {
     public List<Rating> getAllRatings() {
         return ratingRepository.findAll();
     }
+
+    @Transactional
+    public Rating getRating(Long id) {
+        return ratingRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void deleteRating(Long id) {
+        ratingRepository.deleteById(id);
+    }
 }

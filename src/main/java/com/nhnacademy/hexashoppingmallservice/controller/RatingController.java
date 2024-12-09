@@ -1,15 +1,14 @@
 package com.nhnacademy.hexashoppingmallservice.controller;
 
 import com.nhnacademy.hexashoppingmallservice.entity.Rating;
+import com.nhnacademy.hexashoppingmallservice.exception.RatingNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +23,15 @@ public class RatingController {
     @PostMapping("/api/ratings")
     public ResponseEntity<Rating> addRating(@RequestBody Rating rating) {
         return ResponseEntity.status(201).body(ratingService.createRating(rating));
+    }
+
+    @DeleteMapping("/api/ratings/{ratingId}")
+    public ResponseEntity<Rating> deleteRating(@PathVariable Long ratingId) {
+        Rating rating = ratingService.getRating(ratingId);
+        if (Objects.isNull(rating)) {
+            throw new RatingNotFoundException(Long.toString(ratingId));
+        }
+        ratingService.deleteRating(ratingId);
+        return ResponseEntity.noContent().build();
     }
 }

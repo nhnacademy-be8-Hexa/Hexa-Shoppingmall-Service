@@ -22,4 +22,9 @@ public class MemberStatusService {
     public List<MemberStatus> getAllMemberStatus() {
         return memberStatusRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public MemberStatus getMemberStatus(Long id) {
+        return memberStatusRepository.findById(id).orElse(null);
+    }
 }
