@@ -37,7 +37,7 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
             source: "target/*.jar"
-            target: "~/target/"
+            target: "~/api/target/"
             rm: false
 
 
