@@ -5,12 +5,10 @@ import com.nhnacademy.hexashoppingmallservice.service.MemberStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +22,11 @@ public class MemberStatusController  {
     @PostMapping("/api/memberStatus")
     public ResponseEntity<MemberStatus> createMemberStatus(@RequestBody MemberStatus memberStatus) {
         return ResponseEntity.status(201).body(memberStatusService.createMemberStatus(memberStatus));
+    }
+
+    @DeleteMapping("/api/memberStatus/{memberStatusId}")
+    public ResponseEntity<MemberStatus> deleteMemberStatus(@PathVariable Long memberStatusId) {
+        MemberStatus memberStatus = memberStatusService.getMemberStatus(memberStatusId);
+        return ResponseEntity.noContent().build();
     }
 }
