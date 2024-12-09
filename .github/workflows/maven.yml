@@ -49,4 +49,4 @@ jobs:
             username: ${{ secrets.SSH_ID }}
             key: ${{ secrets.SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
-            script: "./startup.sh"
+            script: "./serviceStartup.sh"
