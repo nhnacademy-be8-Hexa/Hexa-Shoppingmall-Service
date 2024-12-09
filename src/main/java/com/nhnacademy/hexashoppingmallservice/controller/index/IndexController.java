@@ -1,4 +1,4 @@
-package com.nhnacademy.hello.index;
+package com.nhnacademy.hexashoppingmallservice.controller.index;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
