@@ -1,0 +1,12 @@
+### 회원 등급 저장
+POST localhost:8080/api/ratings
+Content-Type: application/json
+
+{
+    "ratingName": "Gold",
+    "ratingPercent": "20"
+}
+
+### 회원 등급 리스트 조회
+GET localhost:8080/api/ratings
+
