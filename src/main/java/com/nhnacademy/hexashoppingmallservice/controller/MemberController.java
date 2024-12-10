@@ -41,4 +41,9 @@ public class MemberController {
     public ResponseEntity<Member> createMember(@RequestBody @Valid MemberRequestDTO memberRequestDto) {
         return ResponseEntity.status(201).body(memberService.createMember(memberRequestDto));
     }
+
+    @PutMapping("/api/members/{memberId}")
+    public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberRequestDTO memberRequestDto) {
+        return ResponseEntity.ok(memberService.updateMember(memberId, memberRequestDto));
+    }
 }
