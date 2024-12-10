@@ -47,3 +47,11 @@ Content-Type: application/json
 ### 회원 목록 조회
 GET localhost:8081/api/members?page=0
 
+### 회원 정보 업데이트(비밀번호 변경)
+PUT localhost:8081/api/members/john_doe_124
+Content-Type: application/json
+
+{
+  "memberPassword": "securePassword4321"
+}
+
