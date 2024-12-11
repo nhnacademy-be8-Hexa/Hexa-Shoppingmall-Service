@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>hexa-shoppingmall-service</name>
     <description>hexa-shoppingmall-service</description>
+    <packaging>jar</packaging>
     <url/>
     <licenses>
         <license/>
@@ -91,10 +92,14 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
