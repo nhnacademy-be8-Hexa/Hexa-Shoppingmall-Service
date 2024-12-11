@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,6 +40,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -47,8 +49,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = MemberController.class)
@@ -178,6 +180,65 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.memberId").value("test1"))
                 .andExpect(jsonPath("$.memberName").value("John Doe"))
                 .andDo(document("create-member", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()), // 요청과 응답 모두 beautify
+                        requestFields(
+                                fieldWithPath("memberId").description("회원 ID"),
+                                fieldWithPath("memberPassword").description("회원 비밀번호"),
+                                fieldWithPath("memberName").description("회원 이름"),
+                                fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberBirthAt").description("회원 생년월일"),
+                                fieldWithPath("memberCreatedAt").description("회원 가입일"),
+                                fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
+                                fieldWithPath("memberRole").description("회원 권한"),
+                                fieldWithPath("ratingId").description("회원 등급 ID"),
+                                fieldWithPath("statusId").description("회원 상태 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("memberId").description("회원 ID"),
+                                fieldWithPath("memberPassword").description("회원 비밀번호"),
+                                fieldWithPath("memberName").description("회원 이름"),
+                                fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberBirthAt").description("회원 생년월일"),
+                                fieldWithPath("memberCreatedAt").description("회원 가입일"),
+                                fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
+                                fieldWithPath("memberRole").description("회원 권한"),
+                                fieldWithPath("rating.ratingId").description("회원 등급 ID"),
+                                fieldWithPath("rating.ratingName").description("회원 등급 이름"),
+                                fieldWithPath("rating.ratingPercent").description("회원 등급 퍼센트"),
+                                fieldWithPath("memberStatus.statusId").description("회원 상태 ID"),
+                                fieldWithPath("memberStatus.statusName").description("회원 상태 이름")
+                        )
+                ));
+    }
+
+    @Test
+    void getMember_shouldThrowMemberNotFoundException() throws Exception {
+        Mockito.when(memberService.findMemberById("exception"))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/members/{memberId}", "exception"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    void updateMember() throws Exception {
+        Rating rating = ratingService.getRating(1L);
+        MemberStatus status = memberStatusService.getMemberStatus(1L);
+        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678",
+                LocalDate.of(1990, 1, 1), LocalDate.of(2024, 1, 1), LocalDateTime.now(), "ADMIN", "1", "1");
+        Member member = new Member("test1", "password", "John Doe", "01012345678", LocalDate.of(1990, 1, 1),
+                LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
+
+        given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(member);
+
+        mockMvc.perform(put("/api/members/{memberId}", "test1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberId").value("test1"))
+                .andExpect(jsonPath("$.memberName").value("John Doe"))
+                .andExpect(jsonPath("$.memberNumber").value("01012345678"))
+                .andDo(document("update-member", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
