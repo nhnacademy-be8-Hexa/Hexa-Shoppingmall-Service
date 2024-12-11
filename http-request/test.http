@@ -1,5 +1,5 @@
 ### 회원 등급 저장
-POST localhost:8080/api/ratings
+POST localhost:8081/api/ratings
 Content-Type: application/json
 
 {
@@ -8,5 +8,50 @@ Content-Type: application/json
 }
 
 ### 회원 등급 리스트 조회
-GET localhost:8080/api/ratings
+GET localhost:8081/api/ratings
+
+### 회원 등급 삭제
+DELETE localhost:8081/api/ratings/1
+
+### 회원 상태 저장
+POST localhost:8081/api/memberStatus
+Content-Type: application/json
+
+{
+  "statusName": "활성"
+}
+
+### 회원 상태 목록 조회
+GET localhost:8081/api/memberStatus
+
+### 회원 상태 삭제
+DELETE localhost:8081/api/memberStatus/1
+
+### 회원 등록
+POST localhost:8081/api/members
+Content-Type: application/json
+
+{
+  "memberId": "john_doe_124",
+  "memberPassword": "securePassword123",
+  "memberName": "John Doe",
+  "memberNumber": "01012345678",
+  "memberBirthAt": "1990-05-15",
+  "memberCreatedAt": "2023-12-09",
+  "memberLastLoginAt": "2023-12-08T15:30:00",
+  "memberRole": "ADMIN",
+  "ratingId": "1",
+  "statusId": "1"
+}
+
+### 회원 목록 조회
+GET localhost:8081/api/members?page=0
+
+### 회원 정보 업데이트(비밀번호 변경)
+PUT localhost:8081/api/members/john_doe_124
+Content-Type: application/json
+
+{
+  "memberPassword": "securePassword4321"
+}
 

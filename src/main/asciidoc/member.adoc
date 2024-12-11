@@ -1,0 +1,55 @@
+= Member API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 회원 목록 조회
+
+=== 요청
+
+include::{snippets}/get-members/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-members/query-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-members/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-members/response-body.adoc[]
+
+== 회원 단일 조회
+
+=== 요청
+
+include::{snippets}/get-member/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-member/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-member/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-member/response-body.adoc[]
+
+== 회원 등록
+
+=== 요청
+
+include::{snippets}/create-member/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-member/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-member/response-body.adoc[]
