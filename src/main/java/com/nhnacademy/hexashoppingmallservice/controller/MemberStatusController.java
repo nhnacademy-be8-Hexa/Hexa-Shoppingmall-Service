@@ -2,6 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.controller;
 
 import com.nhnacademy.hexashoppingmallservice.entity.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.exception.MemberStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.service.MemberStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class MemberStatusController  {
         MemberStatus memberStatus = memberStatusService.getMemberStatus(memberStatusId);
         if (Objects.isNull(memberStatus)) {
             throw new MemberStatusNotFoundException(Long.toString(memberStatusId));
+        }
+        try {
+            memberStatusService.deleteMemberStatus(memberStatusId);
+        }
+        catch (RuntimeException e) {
+            throw new SqlQueryExecuteFailException(e.getMessage());
         }
         return ResponseEntity.noContent().build();
     }

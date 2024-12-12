@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -104,7 +104,8 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andDo(document("get-members", preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("page").description("페이지 번호 (기본값: 0)")
+                                parameterWithName("page").description("페이지 번호 (기본값: 0)"),
+                                parameterWithName("search").description("멤버 아이디 검색어(선택)").optional()
                         ),
                         responseFields(
                                 fieldWithPath("[].memberId").description("회원 ID"),
@@ -122,6 +123,28 @@ class MemberControllerTest {
                                 fieldWithPath("[].memberStatus.statusName").description("회원 상태 이름")
                         )
                 ));
+    }
+
+    @Test
+    void getMembers_findById() throws Exception {
+        Rating rating = ratingService.getRating(1L);
+        MemberStatus status = memberStatusService.getMemberStatus(1L);
+
+        Member member1 = createMockMember("test1", "John Doe", "01012345678", LocalDate.of(1990, 1, 1), rating, status);
+        Member member2 = createMockMember("test2", "Jane Doe", "01098765432", LocalDate.of(1992, 2, 2), rating, status);
+
+        Page<Member> pageForTest1 = new PageImpl<>(List.of(member1));
+        Page<Member> pageForOther = new PageImpl<>(List.of(member1, member2));
+
+        given(memberService.findMembersById(any(Pageable.class), eq("test1"))).willReturn(pageForTest1);
+        given(memberService.findMembersById(any(Pageable.class), not(eq("test1")))).willReturn(pageForOther);
+
+        mockMvc.perform(get("/api/members")
+                        .param("page", "0")
+                        .param("search", "test1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
