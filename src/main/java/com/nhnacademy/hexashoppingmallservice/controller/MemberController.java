@@ -25,7 +25,7 @@ public class MemberController {
 
     @GetMapping("/api/members")
     public List<Member> getMembers(
-            @RequestParam(defaultValue = "0") int page) {
+            @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(page, SIZE);
         return memberService.findMembers(pageable).getContent();
     }
