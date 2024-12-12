@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -70,44 +71,38 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberNotFoundException(String.format("%s", memberId))
         );
-        if (memberRequestDto.getMemberPassword() != null) {
-            member.setMemberPassword(memberRequestDto.getMemberPassword());
-        }
-        if (memberRequestDto.getMemberName() != null) {
-            member.setMemberName(memberRequestDto.getMemberName());
-        }
-        if (memberRequestDto.getMemberNumber() != null) {
-            member.setMemberNumber(memberRequestDto.getMemberNumber());
-        }
-        if (memberRequestDto.getMemberBirthAt() != null) {
-            member.setMemberBirthAt(memberRequestDto.getMemberBirthAt());
-        }
-        if (memberRequestDto.getMemberCreatedAt() != null) {
-            member.setMemberCreatedAt(memberRequestDto.getMemberCreatedAt());
-        }
-        if (memberRequestDto.getMemberLastLoginAt() != null) {
-            member.setMemberLastLoginAt(memberRequestDto.getMemberLastLoginAt());
-        }
-        if (memberRequestDto.getMemberRole() != null) {
-            member.setMemberRole(Role.valueOf(memberRequestDto.getMemberRole()));
-        }
+
+        updateIfNotNull(memberRequestDto.getMemberPassword(), member::setMemberPassword);
+        updateIfNotNull(memberRequestDto.getMemberName(), member::setMemberName);
+        updateIfNotNull(memberRequestDto.getMemberNumber(), member::setMemberNumber);
+        updateIfNotNull(memberRequestDto.getMemberBirthAt(), member::setMemberBirthAt);
+        updateIfNotNull(memberRequestDto.getMemberCreatedAt(), member::setMemberCreatedAt);
+        updateIfNotNull(memberRequestDto.getMemberLastLoginAt(), member::setMemberLastLoginAt);
+        updateIfNotNull(memberRequestDto.getMemberRole(), role -> member.setMemberRole(Role.valueOf(role)));
+
         if (memberRequestDto.getRatingId() != null) {
-            Rating rating = ratingRepository.findById(Long.parseLong(memberRequestDto.getRatingId())).orElseThrow(
-                    () -> new RatingNotFoundException(String.format("%s", memberRequestDto.getRatingId()))
-            );
+            Rating rating = ratingRepository.findById(Long.parseLong(memberRequestDto.getRatingId()))
+                    .orElseThrow(() -> new RatingNotFoundException(String.format("%s", memberRequestDto.getRatingId())));
             member.setRating(rating);
         }
+
         if (memberRequestDto.getStatusId() != null) {
-            MemberStatus memberStatus = memberStatusRepository.findById(Long.parseLong(memberRequestDto.getStatusId())).orElseThrow(
-                    () -> new MemberStatusNotFoundException(String.format("%s", memberRequestDto.getStatusId()))
-            );
+            MemberStatus memberStatus = memberStatusRepository.findById(Long.parseLong(memberRequestDto.getStatusId()))
+                    .orElseThrow(() -> new MemberStatusNotFoundException(String.format("%s", memberRequestDto.getStatusId())));
             member.setMemberStatus(memberStatus);
         }
+
         return member;
+    }
+
+    private <T> void updateIfNotNull(T value, Consumer<T> updater) {
+        if (value != null) {
+            updater.accept(value);
+        }
     }
 
     @Transactional
     public Page<Member> findMembersById(Pageable pageable, String memberId) {
-        return memberRepository.findAllByMemberId(pageable, memberId);
+        return memberRepository.findByMemberIdContaining(memberId, pageable);
     }
 }
