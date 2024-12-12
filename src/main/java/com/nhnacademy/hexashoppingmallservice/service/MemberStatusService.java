@@ -27,4 +27,9 @@ public class MemberStatusService {
     public MemberStatus getMemberStatus(Long id) {
         return memberStatusRepository.findById(id).orElse(null);
     }
+
+    @Transactional
+    public void deleteMemberStatus(Long id) {
+        memberStatusRepository.deleteById(id);
+    }
 }
