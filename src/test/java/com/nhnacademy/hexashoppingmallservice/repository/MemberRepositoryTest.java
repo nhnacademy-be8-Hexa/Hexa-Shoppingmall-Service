@@ -50,7 +50,4 @@ class MemberRepositoryTest {
         assertNotNull(member1);
         assertEquals(member, member1);
     }
-
-    @Test
-
 }

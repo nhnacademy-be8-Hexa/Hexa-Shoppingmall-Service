@@ -108,6 +108,6 @@ public class MemberService {
 
     @Transactional
     public Page<Member> findMembersById(Pageable pageable, String memberId) {
-        return memberRepository.findAll(pageable);
+        return memberRepository.findAllByMemberId(pageable, memberId);
     }
 }

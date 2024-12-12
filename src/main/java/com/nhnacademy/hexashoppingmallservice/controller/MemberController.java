@@ -27,6 +27,9 @@ public class MemberController {
     public List<Member> getMembers(
             @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(page, SIZE);
+        if(search != null && !search.isEmpty()) {
+
+        }
         return memberService.findMembers(pageable).getContent();
     }
 
