@@ -1,18 +1,15 @@
-package com.nhnacademy.hexashoppingmallservice.controller;
+package com.nhnacademy.hexashoppingmallservice.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nhnacademy.hexashoppingmallservice.dto.MemberRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.Member;
-import com.nhnacademy.hexashoppingmallservice.entity.MemberStatus;
-import com.nhnacademy.hexashoppingmallservice.entity.Rating;
-import com.nhnacademy.hexashoppingmallservice.entity.Role;
-import com.nhnacademy.hexashoppingmallservice.service.MemberService;
-import com.nhnacademy.hexashoppingmallservice.service.MemberStatusService;
-import com.nhnacademy.hexashoppingmallservice.service.RatingService;
-import jakarta.persistence.ManyToOne;
-import org.junit.jupiter.api.BeforeAll;
+import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
+import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Role;
+import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
+import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
+import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +27,6 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
@@ -38,12 +34,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -254,7 +249,7 @@ class MemberControllerTest {
 
         given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(member);
 
-        mockMvc.perform(put("/api/members/{memberId}", "test1")
+        mockMvc.perform(patch("/api/members/{memberId}", "test1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())

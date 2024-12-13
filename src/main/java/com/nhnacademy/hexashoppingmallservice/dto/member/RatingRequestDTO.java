@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.dto;
+package com.nhnacademy.hexashoppingmallservice.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

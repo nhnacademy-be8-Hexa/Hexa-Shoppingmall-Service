@@ -1,12 +1,15 @@
-package com.nhnacademy.hexashoppingmallservice.service;
+package com.nhnacademy.hexashoppingmallservice.service.member;
 
-import com.nhnacademy.hexashoppingmallservice.entity.MemberStatus;
-import com.nhnacademy.hexashoppingmallservice.repository.MemberStatusRepository;
+import com.nhnacademy.hexashoppingmallservice.dto.member.MemberStatusRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
+import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +34,15 @@ public class MemberStatusService {
     @Transactional
     public void deleteMemberStatus(Long id) {
         memberStatusRepository.deleteById(id);
+    }
+
+    @Transactional
+    public MemberStatus updateMemberStatus(Long id, MemberStatusRequestDTO memberStatusRequestDTO) {
+        MemberStatus memberStatus = memberStatusRepository.findById(id).orElse(null);
+        if (Objects.isNull(memberStatus)) {
+            throw new MemberStatusNotFoundException(Long.toString(id));
+        }
+        memberStatus.setStatusName(memberStatusRequestDTO.getStatusName());
+        return memberStatus;
     }
 }

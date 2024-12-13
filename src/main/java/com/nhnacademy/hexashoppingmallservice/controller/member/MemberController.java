@@ -1,15 +1,11 @@
-package com.nhnacademy.hexashoppingmallservice.controller;
+package com.nhnacademy.hexashoppingmallservice.controller.member;
 
-import com.nhnacademy.hexashoppingmallservice.dto.MemberRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.Member;
-import com.nhnacademy.hexashoppingmallservice.exception.MemberNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.repository.MemberRepository;
-import com.nhnacademy.hexashoppingmallservice.service.MemberService;
+import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
+import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +43,7 @@ public class MemberController {
         return ResponseEntity.status(201).body(memberService.createMember(memberRequestDto));
     }
 
-    @PutMapping("/api/members/{memberId}")
+    @PatchMapping("/api/members/{memberId}")
     public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberRequestDTO memberRequestDto) {
         return ResponseEntity.ok(memberService.updateMember(memberId, memberRequestDto));
     }
