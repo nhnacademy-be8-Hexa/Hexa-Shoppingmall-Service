@@ -1,9 +1,10 @@
-package com.nhnacademy.hexashoppingmallservice.controller;
+package com.nhnacademy.hexashoppingmallservice.controller.member;
 
-import com.nhnacademy.hexashoppingmallservice.entity.Rating;
-import com.nhnacademy.hexashoppingmallservice.exception.RatingNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.dto.member.RatingRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
+import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
-import com.nhnacademy.hexashoppingmallservice.service.RatingService;
+import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +40,10 @@ public class RatingController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/ratings/{ratingId}")
+    public ResponseEntity<Rating> updateRating(@PathVariable Long ratingId, @RequestBody RatingRequestDTO ratingRequestDTO) {
+        return ResponseEntity.ok(ratingService.updateRating(ratingId, ratingRequestDTO));
     }
 }
