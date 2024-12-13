@@ -10,6 +10,22 @@ Content-Type: application/json
 ### 회원 등급 리스트 조회
 GET localhost:8081/api/ratings
 
+### 회원 등급 정보 업데이트(등급 이름 변경)
+PATCH localhost:8081/api/ratings/1
+Content-Type: application/json
+
+{
+  "ratingName": "Silver"
+}
+
+### 회원 등급 정보 업데이트(등급 퍼센트 변경)
+PATCH localhost:8081/api/ratings/1
+Content-Type: application/json
+
+{
+  "ratingPercent": "30"
+}
+
 ### 회원 등급 삭제
 DELETE localhost:8081/api/ratings/1
 
@@ -24,8 +40,16 @@ Content-Type: application/json
 ### 회원 상태 목록 조회
 GET localhost:8081/api/memberStatus
 
+### 회원 상태 정보 업데이트
+PATCH localhost:8081/api/memberStatus/1
+Content-Type: application/json
+
+{
+  "statusName": "비활성"
+}
+
 ### 회원 상태 삭제
-DELETE localhost:8081/api/memberStatus/1
+DELETE localhost:8081/api/memberStatus/2
 
 ### 회원 등록
 POST localhost:8081/api/members

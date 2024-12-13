@@ -1,0 +1,69 @@
+= MemberStatus API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 멤버 상태 목록 조회
+
+=== 요청
+
+include::{snippets}/get-member-status/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-member-status/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-member-status/response-body.adoc[]
+
+== 멤버 상태 등록
+
+=== 요청
+
+include::{snippets}/create-member-status/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-member-status/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-member-status/response-body.adoc[]
+
+== 멤버 상태 삭제
+
+=== 요청
+
+include::{snippets}/delete-member-status/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/delete-member-status/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/delete-member-status/response-body.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-member-status/http-response.adoc[]
+
+== 멤버 상태 업데이트
+
+=== 요청
+
+include::{snippets}/update-member-status/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/update-member-status/response-fields.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/update-member-status/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-member-status/response-body.adoc[]

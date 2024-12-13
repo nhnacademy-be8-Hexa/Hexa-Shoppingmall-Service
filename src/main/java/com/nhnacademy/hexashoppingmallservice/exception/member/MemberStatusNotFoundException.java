@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.exception;
+package com.nhnacademy.hexashoppingmallservice.exception.member;
 
 public class MemberStatusNotFoundException extends RuntimeException {
     public MemberStatusNotFoundException(String message) {

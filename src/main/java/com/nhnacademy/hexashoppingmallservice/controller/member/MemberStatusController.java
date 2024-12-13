@@ -1,11 +1,11 @@
-package com.nhnacademy.hexashoppingmallservice.controller;
+package com.nhnacademy.hexashoppingmallservice.controller.member;
 
-import com.nhnacademy.hexashoppingmallservice.entity.MemberStatus;
-import com.nhnacademy.hexashoppingmallservice.exception.MemberStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.dto.member.MemberStatusRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
+import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
-import com.nhnacademy.hexashoppingmallservice.service.MemberStatusService;
+import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,5 +39,10 @@ public class MemberStatusController  {
             throw new SqlQueryExecuteFailException(e.getMessage());
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/memberStatus/{memberStatusId}")
+    public ResponseEntity<MemberStatus> updateMemberStatus(@PathVariable Long memberStatusId, @RequestBody MemberStatusRequestDTO memberStatusRequestDTO) {
+        return ResponseEntity.ok(memberStatusService.updateMemberStatus(memberStatusId, memberStatusRequestDTO));
     }
 }

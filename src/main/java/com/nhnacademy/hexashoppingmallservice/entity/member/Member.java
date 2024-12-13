@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.entity;
+package com.nhnacademy.hexashoppingmallservice.entity.member;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Setter
 @Data
@@ -38,6 +38,6 @@ public class Member {
     @JoinColumn(name = "rating_id")
     private Rating rating;
     @ManyToOne
-    @JoinColumn(name = "member_status_id")
+    @JoinColumn(name = "status_id")
     private MemberStatus memberStatus;
 }

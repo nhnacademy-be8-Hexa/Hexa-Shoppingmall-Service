@@ -1,6 +1,6 @@
-package com.nhnacademy.hexashoppingmallservice.repository;
+package com.nhnacademy.hexashoppingmallservice.repository.member;
 
-import com.nhnacademy.hexashoppingmallservice.entity.MemberStatus;
+import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
