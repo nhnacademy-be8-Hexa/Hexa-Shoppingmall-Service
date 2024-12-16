@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Formatter;
 import java.util.List;
 
 @Service
@@ -23,11 +24,16 @@ public class CartService {
     @Transactional
     public Cart createCart(CartRequestDTO cartRequestDto) {
         Member member = memberRepository.findById(Long.parseLong(cartRequestDto.getMemberId())).orElseThrow(
-                ()-> new MemberNotFoundException(String.format("%s", cartRequestDto.getMemberId()))
-        );
+                ()-> {
+                    String errorMessage = new Formatter().format("Member ID: %s not found.", cartRequestDto.getMemberId()).toString();
+                    return new MemberNotFoundException(errorMessage);
+                });
 
         Book book = bookRepository.findById(Long.parseLong(cartRequestDto.getBookId())).orElseThrow(
-                ()-> new BookNotFoundException(String.format("%s",cartRequestDto.getBookId()))
+                ()-> {
+                    String errorMessage = new Formatter().format("Book ID: %s not found.", cartRequestDto.getBookId()).toString();
+                    return new BookNotFoundException(errorMessage);
+                }
         );
 
         if(cartRepository.findById(cartRequestDto.getBookId()).isPresent()) {

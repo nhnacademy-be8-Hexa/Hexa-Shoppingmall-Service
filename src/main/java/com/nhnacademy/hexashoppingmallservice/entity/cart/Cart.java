@@ -27,6 +27,23 @@ public class Cart {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
+    @Builder
+    private Cart(Integer cartAmount, Member member, Book book) {
+        this.cartAmount = cartAmount;
+        this.member = member;
+        this.book = book;
+    }
+
+    public static Cart of(Integer cartAmount, Member member, Book book) {
+        return builder()
+                .cartAmount(cartAmount)
+                .member(member)
+                .book(book)
+                .build();
+    }
+
+
+
 
 
 }
