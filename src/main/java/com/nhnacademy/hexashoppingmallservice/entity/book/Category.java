@@ -22,4 +22,16 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parentCategory;
 
+    @Builder
+    private Category (String categoryName, Category parentCategory){
+        this.categoryName = categoryName;
+        this.parentCategory = parentCategory;
+    }
+
+    public static Category of(String categoryName, Category parentCategory){
+        return Category.builder()
+                .categoryName(categoryName)
+                .parentCategory(parentCategory)
+                .build();
+    }
 }
