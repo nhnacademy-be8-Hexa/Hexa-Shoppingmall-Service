@@ -9,8 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Data
 public class Category {
 
     @Id
@@ -24,6 +22,4 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory")
-    private List<Category> subCategories;
 }
