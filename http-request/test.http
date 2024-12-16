@@ -60,12 +60,13 @@ Content-Type: application/json
   "memberPassword": "securePassword123",
   "memberName": "John Doe",
   "memberNumber": "01012345678",
+  "memberEmail": "test@test.com",
   "memberBirthAt": "1990-05-15",
   "memberCreatedAt": "2023-12-09",
   "memberLastLoginAt": "2023-12-08T15:30:00",
   "memberRole": "ADMIN",
-  "ratingId": "1",
-  "statusId": "1"
+  "ratingId": "3",
+  "statusId": "3"
 }
 
 ### 회원 목록 조회

@@ -46,6 +46,7 @@ public class MemberService {
                 memberRequestDto.getMemberPassword(),
                 memberRequestDto.getMemberName(),
                 memberRequestDto.getMemberNumber(),
+                memberRequestDto.getMemberEmail(),
                 memberRequestDto.getMemberBirthAt(),
                 memberRequestDto.getMemberCreatedAt(),
                 memberRequestDto.getMemberLastLoginAt(),

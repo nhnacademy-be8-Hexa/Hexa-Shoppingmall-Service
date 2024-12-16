@@ -107,6 +107,7 @@ class MemberControllerTest {
                                 fieldWithPath("[].memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("[].memberName").description("회원 이름"),
                                 fieldWithPath("[].memberNumber").description("회원 전화번호"),
+                                fieldWithPath("[].memberEmail").description("회원 이메일"),
                                 fieldWithPath("[].memberBirthAt").description("회원 생년월일"),
                                 fieldWithPath("[].memberCreatedAt").description("회원 생성일"),
                                 fieldWithPath("[].memberLastLoginAt").description("회원 마지막 로그인 시간"),
@@ -167,6 +168,7 @@ class MemberControllerTest {
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
                                 fieldWithPath("memberCreatedAt").description("회원 생성일"),
                                 fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 시간"),
@@ -184,9 +186,9 @@ class MemberControllerTest {
     void createMember() throws Exception {
         Rating rating = ratingService.getRating(1L);
         MemberStatus status = memberStatusService.getMemberStatus(1L);
-        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678",
+        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678", "test@test.com",
                 LocalDate.of(1990, 1, 1), LocalDate.of(2024, 1, 1), LocalDateTime.now(), "ADMIN", "1", "1");
-        Member member = new Member("test1", "password", "John Doe", "01012345678", LocalDate.of(1990, 1, 1),
+        Member member = new Member("test1", "password", "John Doe", "01012345678","test@test.com" ,LocalDate.of(1990, 1, 1),
                 LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
 
         given(memberService.createMember(any(MemberRequestDTO.class))).willReturn(member);
@@ -203,6 +205,7 @@ class MemberControllerTest {
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
                                 fieldWithPath("memberCreatedAt").description("회원 가입일"),
                                 fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
@@ -215,6 +218,7 @@ class MemberControllerTest {
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
                                 fieldWithPath("memberCreatedAt").description("회원 가입일"),
                                 fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
@@ -242,9 +246,9 @@ class MemberControllerTest {
     void updateMember() throws Exception {
         Rating rating = ratingService.getRating(1L);
         MemberStatus status = memberStatusService.getMemberStatus(1L);
-        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678",
+        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678", "test@test.com",
                 LocalDate.of(1990, 1, 1), LocalDate.of(2024, 1, 1), LocalDateTime.now(), "ADMIN", "1", "1");
-        Member member = new Member("test1", "password", "John Doe", "01012345678", LocalDate.of(1990, 1, 1),
+        Member member = new Member("test1", "password", "John Doe", "01012345678", "test@test.com",LocalDate.of(1990, 1, 1),
                 LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
 
         given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(member);
@@ -262,6 +266,7 @@ class MemberControllerTest {
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
                                 fieldWithPath("memberCreatedAt").description("회원 가입일"),
                                 fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
@@ -274,6 +279,7 @@ class MemberControllerTest {
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
+                                fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
                                 fieldWithPath("memberCreatedAt").description("회원 가입일"),
                                 fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
@@ -291,7 +297,7 @@ class MemberControllerTest {
      * Mock Member 객체 생성 메서드
      */
     private Member createMockMember(String id, String name, String number, LocalDate birthDate, Rating rating, MemberStatus status) {
-        return new Member(id, "password", name, number, birthDate,
+        return new Member(id, "password", name, number, "test@test.com",birthDate,
                 LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
     }
 }
