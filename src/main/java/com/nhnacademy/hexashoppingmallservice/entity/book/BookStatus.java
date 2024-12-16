@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @NoArgsConstructor
 @Getter
-@Setter
 public class BookStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
