@@ -18,6 +18,7 @@ public class Publisher {
     private Long publisherId;
 
     @Column(nullable = false, length = 20)
+    @Setter
     private String publisherName;
 
     @Builder
