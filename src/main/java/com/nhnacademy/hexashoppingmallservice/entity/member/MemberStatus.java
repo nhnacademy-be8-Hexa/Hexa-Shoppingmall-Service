@@ -8,6 +8,8 @@ import org.hibernate.validator.constraints.Length;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Getter
 @Setter
 public class MemberStatus {
@@ -21,5 +23,11 @@ public class MemberStatus {
 
     public MemberStatus(String statusName) {
         this.statusName = statusName;
+    }
+
+    public static MemberStatus of(String statusName) {
+        return MemberStatus.builder()
+                .statusName(statusName)
+                .build();
     }
 }

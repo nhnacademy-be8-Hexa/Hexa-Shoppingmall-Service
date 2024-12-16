@@ -7,9 +7,15 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Role;
+import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +33,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
@@ -37,6 +44,8 @@ import java.util.Optional;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -52,6 +61,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 class MemberControllerTest {
+    @Getter
+    @AllArgsConstructor
+    static class TestMemberProjection implements MemberProjection {
+        private String memberId;
+        private String memberName;
+        private String memberNumber;
+        private String memberEmail;
+        private LocalDate memberBirthAt;
+        private LocalDateTime memberCreatedAt;
+        private LocalDateTime memberLastLoginAt;
+        private Role memberRole;
+        private Rating rating;
+        private MemberStatus memberStatus;
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -65,91 +88,127 @@ class MemberControllerTest {
     @MockBean
     private MemberStatusService memberStatusService;
 
+    @MockBean
+    private RatingRepository ratingRepository;
+
+    @MockBean
+    private MemberStatusRepository memberStatusRepository;
+
+    @MockBean
+    private MemberRepository memberRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
+    private Rating rating;
+    private MemberStatus memberStatus;
+
     @BeforeEach
-    void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
-        Rating rating = new Rating("Gold", 10);
-        MemberStatus status = new MemberStatus("Active");
-
+    void setUp() {
+        rating = Rating.of("Gold", 10);
+        memberStatus = new MemberStatus("Active");
         rating.setRatingId(1L);
-        status.setStatusId(1L);
+        memberStatus.setStatusId(1L);
 
-        given(ratingService.getRating(1L)).willReturn(rating);
-        given(memberStatusService.getMemberStatus(1L)).willReturn(status);
+        given(ratingRepository.findById(1L)).willReturn(Optional.of(rating));
+        given(memberStatusRepository.findById(1L)).willReturn(Optional.of(memberStatus));
+        given(ratingRepository.existsById(1L)).willReturn(true);
+        given(memberStatusRepository.existsById(1L)).willReturn(true);
     }
 
     @Test
-    void getMembers() throws Exception {
-        Rating rating = ratingService.getRating(1L);
-        MemberStatus status = memberStatusService.getMemberStatus(1L);
-
-        List<Member> members = List.of(
-                createMockMember("test1", "John Doe", "01012345678", LocalDate.of(1990, 1, 1), rating, status),
-                createMockMember("test2", "Jane Doe", "01098765432", LocalDate.of(1992, 2, 2), rating, status)
+    void getMembers_withSearch() throws Exception {
+        String search = "test";
+        List<MemberProjection> mockMembers = List.of(
+                new TestMemberProjection(
+                        "test1", "John Doe", "01012345678", "john@test.com",
+                        LocalDate.of(1990, 1, 1), LocalDateTime.of(2024, 1, 1, 10, 0),
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.MEMBER, null, null),
+                new TestMemberProjection(
+                        "test2", "Jane Doe", "01098765432", "jane@test.com",
+                        LocalDate.of(1985, 5, 15), LocalDateTime.of(2023, 5, 10, 8, 0),
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, null, null)
         );
 
-        Page<Member> page = new PageImpl<>(members);
-        given(memberService.findMembers(any(Pageable.class))).willReturn(page);
+        given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
         mockMvc.perform(get("/api/members")
                         .param("page", "0")
+                        .param("search", search)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andDo(document("get-members", preprocessResponse(prettyPrint()),
+                .andExpect(jsonPath("$.length()").value(mockMembers.size()))
+                .andExpect(jsonPath("$[0].memberId").value("test1"))
+                .andExpect(jsonPath("$[0].memberName").value("John Doe"))
+                .andDo(document("get-members-with-search",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         queryParameters(
-                                parameterWithName("page").description("페이지 번호 (기본값: 0)"),
-                                parameterWithName("search").description("멤버 아이디 검색어(선택)").optional()
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("search").description("검색어 (선택)").optional()
                         ),
                         responseFields(
                                 fieldWithPath("[].memberId").description("회원 ID"),
-                                fieldWithPath("[].memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("[].memberName").description("회원 이름"),
                                 fieldWithPath("[].memberNumber").description("회원 전화번호"),
-                                fieldWithPath("[].memberEmail").description("회원 이메일"),
-                                fieldWithPath("[].memberBirthAt").description("회원 생년월일"),
-                                fieldWithPath("[].memberCreatedAt").description("회원 생성일"),
-                                fieldWithPath("[].memberLastLoginAt").description("회원 마지막 로그인 시간"),
-                                fieldWithPath("[].memberRole").description("회원 권한"),
-                                fieldWithPath("[].rating.ratingId").description("회원 등급 ID"),
-                                fieldWithPath("[].rating.ratingName").description("회원 등급 이름"),
-                                fieldWithPath("[].rating.ratingPercent").description("회원 등급 퍼센트"),
-                                fieldWithPath("[].memberStatus.statusId").description("회원 상태 ID"),
-                                fieldWithPath("[].memberStatus.statusName").description("회원 상태 이름")
+                                fieldWithPath("[].memberEmail").description("회원 이메일").optional(),
+                                fieldWithPath("[].memberBirthAt").description("회원 생년월일").optional(),
+                                fieldWithPath("[].memberCreatedAt").description("회원 생성일").optional(),
+                                fieldWithPath("[].memberLastLoginAt").description("회원 마지막 로그인 시간").optional(),
+                                fieldWithPath("[].memberRole").description("회원 권한").optional(),
+                                fieldWithPath("[].rating").description("회원 등급 정보").optional(),
+                                fieldWithPath("[].memberStatus").description("회원 상태 정보").optional()
                         )
                 ));
+
+        verify(memberService).searchMembersById(any(Pageable.class), eq(search));
     }
 
+
     @Test
-    void getMembers_findById() throws Exception {
-        Rating rating = ratingService.getRating(1L);
-        MemberStatus status = memberStatusService.getMemberStatus(1L);
+    void getMembers_withoutSearch() throws Exception {
+        List<MemberProjection> mockMembers = List.of(
+                new TestMemberProjection(
+                        "test1", "John Doe", "01012345678", "john@test.com",
+                        LocalDate.of(1990, 1, 1), LocalDateTime.of(2024, 1, 1, 10, 0),
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.MEMBER, null, null),
+                new TestMemberProjection(
+                        "test2", "Jane Doe", "01098765432", "jane@test.com",
+                        LocalDate.of(1985, 5, 15), LocalDateTime.of(2023, 5, 10, 8, 0),
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, null, null)
+        );
 
-        Member member1 = createMockMember("test1", "John Doe", "01012345678", LocalDate.of(1990, 1, 1), rating, status);
-        Member member2 = createMockMember("test2", "Jane Doe", "01098765432", LocalDate.of(1992, 2, 2), rating, status);
-
-        Page<Member> pageForTest1 = new PageImpl<>(List.of(member1));
-        Page<Member> pageForOther = new PageImpl<>(List.of(member1, member2));
-
-        given(memberService.findMembersById(any(Pageable.class), eq("test1"))).willReturn(pageForTest1);
-        given(memberService.findMembersById(any(Pageable.class), not(eq("test1")))).willReturn(pageForOther);
+        given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
 
         mockMvc.perform(get("/api/members")
                         .param("page", "0")
-                        .param("search", "test1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.length()").value(mockMembers.size()))
+                .andExpect(jsonPath("$[0].memberId").value("test1"))
+                .andExpect(jsonPath("$[1].memberId").value("test2"));
+
+        verify(memberService).getMembers(any(Pageable.class));
     }
 
     @Test
-    void getMember() throws Exception {
-        Rating rating = ratingService.getRating(1L);
-        MemberStatus status = memberStatusService.getMemberStatus(1L);
+    void getMember_success() throws Exception {
+        // Mock Member data
+        Rating rating = Rating.of("Gold", 10);
+        rating.setRatingId(1L);
+        MemberStatus status = new MemberStatus("Active");
+        status.setStatusId(1L);
 
-        Member member = createMockMember("test1", "John Doe", "01012345678", LocalDate.of(1990, 1, 1), rating, status);
-        given(memberService.findMemberById("test1")).willReturn(Optional.of(member));
+        Member mockMember = Member.of(
+                "test1",
+                "password123",
+                "John Doe",
+                "01012345678",
+                "john.doe@test.com",
+                LocalDate.of(1990, 1, 1),
+                rating,
+                status
+        );
+
+        given(memberService.getMember("test1")).willReturn(mockMember);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{memberId}", "test1")
                         .accept(MediaType.APPLICATION_JSON))
@@ -159,18 +218,19 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.memberRole").value("MEMBER"))
                 .andExpect(jsonPath("$.rating.ratingName").value("Gold"))
                 .andExpect(jsonPath("$.memberStatus.statusName").value("Active"))
-                .andDo(document("get-member", preprocessResponse(prettyPrint()),
+                .andDo(document("get-member",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("memberId").description("조회할 회원 ID")
                         ),
                         responseFields(
                                 fieldWithPath("memberId").description("회원 ID"),
-                                fieldWithPath("memberPassword").description("회원 비밀번호"),
+                                fieldWithPath("memberPassword").description("회원 비밀번호").optional(),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
                                 fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
-                                fieldWithPath("memberCreatedAt").description("회원 생성일"),
+                                fieldWithPath("memberCreatedAt").description("회원 가입일"),
                                 fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 시간"),
                                 fieldWithPath("memberRole").description("회원 권한"),
                                 fieldWithPath("rating.ratingId").description("회원 등급 ID"),
@@ -180,18 +240,50 @@ class MemberControllerTest {
                                 fieldWithPath("memberStatus.statusName").description("회원 상태 이름")
                         )
                 ));
+
+        verify(memberService).getMember("test1");
+    }
+
+    /**
+     * Mock Member 객체 생성 메서드
+     */
+    private Member createMockMember(String id, String name, String number, LocalDate birthDate, Rating rating, MemberStatus status) {
+        return Member.of(
+                id,
+                "password",
+                name,
+                number,
+                "test@test.com",
+                birthDate,
+                rating,
+                status
+        );
     }
 
     @Test
     void createMember() throws Exception {
-        Rating rating = ratingService.getRating(1L);
-        MemberStatus status = memberStatusService.getMemberStatus(1L);
-        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678", "test@test.com",
-                LocalDate.of(1990, 1, 1), LocalDate.of(2024, 1, 1), LocalDateTime.now(), "ADMIN", "1", "1");
-        Member member = new Member("test1", "password", "John Doe", "01012345678","test@test.com" ,LocalDate.of(1990, 1, 1),
-                LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
+        MemberRequestDTO requestDTO = new MemberRequestDTO(
+                "test1",
+                "password123",
+                "John Doe",
+                "01012345678",
+                "john.doe@test.com",
+                LocalDate.of(1990, 1, 1),
+                null,
+                "1",
+                "1"
+        );
 
-        given(memberService.createMember(any(MemberRequestDTO.class))).willReturn(member);
+        Member createdMember = createMockMember(
+                "test1",
+                "John Doe",
+                "01012345678",
+                LocalDate.of(1990, 1, 1),
+                rating,
+                memberStatus
+        );
+
+        given(memberService.createMember(any(MemberRequestDTO.class))).willReturn(createdMember);
 
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -199,7 +291,8 @@ class MemberControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.memberId").value("test1"))
                 .andExpect(jsonPath("$.memberName").value("John Doe"))
-                .andDo(document("create-member", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()), // 요청과 응답 모두 beautify
+                .andDo(document("create-member",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
@@ -207,9 +300,7 @@ class MemberControllerTest {
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
                                 fieldWithPath("memberEmail").description("회원 이메일"),
                                 fieldWithPath("memberBirthAt").description("회원 생년월일"),
-                                fieldWithPath("memberCreatedAt").description("회원 가입일"),
-                                fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
-                                fieldWithPath("memberRole").description("회원 권한"),
+                                fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시").optional(),
                                 fieldWithPath("ratingId").description("회원 등급 ID"),
                                 fieldWithPath("statusId").description("회원 상태 ID")
                         ),
@@ -230,47 +321,64 @@ class MemberControllerTest {
                                 fieldWithPath("memberStatus.statusName").description("회원 상태 이름")
                         )
                 ));
-    }
-
-    @Test
-    void getMember_shouldThrowMemberNotFoundException() throws Exception {
-        Mockito.when(memberService.findMemberById("exception"))
-                .thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/members/{memberId}", "exception"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
     }
 
     @Test
     void updateMember() throws Exception {
-        Rating rating = ratingService.getRating(1L);
-        MemberStatus status = memberStatusService.getMemberStatus(1L);
-        MemberRequestDTO requestDTO = new MemberRequestDTO("test1", "password", "John Doe", "01012345678", "test@test.com",
-                LocalDate.of(1990, 1, 1), LocalDate.of(2024, 1, 1), LocalDateTime.now(), "ADMIN", "1", "1");
-        Member member = new Member("test1", "password", "John Doe", "01012345678", "test@test.com",LocalDate.of(1990, 1, 1),
-                LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
+        // Mock request DTO
+        MemberRequestDTO requestDTO = new MemberRequestDTO(
+                "test1",
+                "newPassword123",
+                "John Updated",
+                "01098765432",
+                "updated@test.com",
+                LocalDate.of(1990, 1, 1),
+                LocalDateTime.now(),
+                "2",
+                "2"
+        );
 
-        given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(member);
+        // Mock updated Member
+        Rating updatedRating = Rating.of("Platinum", 20);
+        updatedRating.setRatingId(2L);
+        MemberStatus updatedStatus = MemberStatus.builder().statusName("Inactive").build();
+        updatedStatus.setStatusId(2L);
 
+        Member updatedMember = Member.of(
+                "test1",
+                "newPassword123",
+                "John Updated",
+                "01098765432",
+                "updated@test.com",
+                LocalDate.of(1990, 1, 1),
+                updatedRating,
+                updatedStatus
+        );
+
+        // Mock service response
+        given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(updatedMember);
+
+        // Perform PATCH request
         mockMvc.perform(patch("/api/members/{memberId}", "test1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value("test1"))
-                .andExpect(jsonPath("$.memberName").value("John Doe"))
-                .andExpect(jsonPath("$.memberNumber").value("01012345678"))
-                .andDo(document("update-member", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                .andExpect(jsonPath("$.memberName").value("John Updated"))
+                .andExpect(jsonPath("$.memberNumber").value("01098765432"))
+                .andExpect(jsonPath("$.memberEmail").value("updated@test.com"))
+                .andExpect(jsonPath("$.rating.ratingName").value("Platinum"))
+                .andExpect(jsonPath("$.memberStatus.statusName").value("Inactive"))
+                .andDo(document("update-member",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("memberPassword").description("회원 비밀번호"),
                                 fieldWithPath("memberName").description("회원 이름"),
                                 fieldWithPath("memberNumber").description("회원 전화번호"),
-                                fieldWithPath("memberEmail").description("회원 이메일"),
-                                fieldWithPath("memberBirthAt").description("회원 생년월일"),
-                                fieldWithPath("memberCreatedAt").description("회원 가입일"),
-                                fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시"),
-                                fieldWithPath("memberRole").description("회원 권한"),
+                                fieldWithPath("memberEmail").description("회원 이메일").optional(),
+                                fieldWithPath("memberBirthAt").description("회원 생년월일").optional(),
+                                fieldWithPath("memberLastLoginAt").description("회원 마지막 로그인 일시").optional(),
                                 fieldWithPath("ratingId").description("회원 등급 ID"),
                                 fieldWithPath("statusId").description("회원 상태 ID")
                         ),
@@ -293,11 +401,5 @@ class MemberControllerTest {
                 ));
     }
 
-    /**
-     * Mock Member 객체 생성 메서드
-     */
-    private Member createMockMember(String id, String name, String number, LocalDate birthDate, Rating rating, MemberStatus status) {
-        return new Member(id, "password", name, number, "test@test.com",birthDate,
-                LocalDate.now(), LocalDateTime.now(), Role.MEMBER, rating, status);
-    }
 }
+

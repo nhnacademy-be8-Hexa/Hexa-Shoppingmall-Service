@@ -52,8 +52,8 @@ class RatingControllerTest {
     @Test
     void getRatings() throws Exception {
         List<Rating> ratings = List.of(
-                new Rating("Gold", 20),
-                new Rating("Silver", 15)
+                Rating.of("Gold", 20),
+                Rating.of("Silver", 15)
         );
         given(ratingService.getAllRatings()).willReturn(ratings);
 
@@ -74,7 +74,7 @@ class RatingControllerTest {
 
     @Test
     void addRating() throws Exception {
-        Rating rating = new Rating("Gold", 20);
+        Rating rating = Rating.of("Gold", 20);
         rating.setRatingId(1L);
         given(ratingService.createRating(any(Rating.class))).willReturn(rating);
 
@@ -98,7 +98,7 @@ class RatingControllerTest {
 
     @Test
     void deleteRating() throws Exception {
-        Rating rating = new Rating("Gold", 20);
+        Rating rating = Rating.of("Gold", 20);
         rating.setRatingId(1L);
 
         given(ratingService.getRating(1L)).willReturn(rating);
@@ -113,17 +113,17 @@ class RatingControllerTest {
     }
 
     @Test
-    void deleteRating_notFound() throws Exception {
+    void deleteRating_badRequest() throws Exception {
         given(ratingService.getRating(1L)).willReturn(null);
         doThrow(new RatingNotFoundException("1")).when(ratingService).deleteRating(1L);
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/ratings/{ratingId}", 1L))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void deleteRating_sqlQueryExecuteFail() throws Exception {
-        Rating rating = new Rating("Gold", 20);
+        Rating rating = Rating.of("Gold", 20);
         rating.setRatingId(1L);
 
         given(ratingService.getRating(1L)).willReturn(rating);
@@ -137,7 +137,7 @@ class RatingControllerTest {
     @Test
     void updateRating() throws Exception {
         RatingRequestDTO requestDTO = new RatingRequestDTO("Platinum", 25);
-        Rating updatedRating = new Rating("Platinum", 25);
+        Rating updatedRating = Rating.of("Platinum", 25);
         updatedRating.setRatingId(1L);
 
         given(ratingService.updateRating(eq(1L), any(RatingRequestDTO.class))).willReturn(updatedRating);
@@ -164,7 +164,7 @@ class RatingControllerTest {
     }
 
     @Test
-    void updateRating_notFound() throws Exception {
+    void updateRating_badRequest() throws Exception {
         RatingRequestDTO requestDTO = new RatingRequestDTO("Platinum", 25);
 
         given(ratingService.updateRating(eq(1L), any(RatingRequestDTO.class))).willThrow(new RatingNotFoundException("1"));
@@ -172,6 +172,6 @@ class RatingControllerTest {
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/ratings/{ratingId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }

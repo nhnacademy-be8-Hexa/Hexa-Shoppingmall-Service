@@ -3,6 +3,7 @@ package com.nhnacademy.hexashoppingmallservice.controller.member;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,22 +21,18 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/api/members")
-    public List<Member> getMembers(
+    public List<MemberProjection> getMembers(
             @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(page, SIZE);
         if(search != null && !search.isEmpty()) {
-//            return memberService.findMembersById(pageable, search).getContent();
-            List<Member> members = memberService.findMembersById(pageable, search).getContent();
-            return members;
+            return memberService.searchMembersById(pageable, search);
         }
-        return memberService.findMembers(pageable).getContent();
+        return memberService.getMembers(pageable);
     }
 
     @GetMapping("/api/members/{memberId}")
     public Member getMember(@PathVariable String memberId) {
-        return memberService.findMemberById(memberId).orElseThrow(
-                () -> new MemberNotFoundException(memberId)
-        );
+        return memberService.getMember(memberId);
     }
 
     @PostMapping("/api/members")
