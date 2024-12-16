@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 @Entity
@@ -18,10 +19,12 @@ public class WrappingPaper {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wrappingPaperId;
 
+    @Setter
     @NotBlank
     @Length(max = 20)
     private String wrappingPaperName;
 
+    @Setter
     private Integer wrappingPaperPrice;
 
     @Builder
