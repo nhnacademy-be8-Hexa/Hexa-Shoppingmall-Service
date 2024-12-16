@@ -27,7 +27,7 @@ class RatingServiceTest {
 
     @Test
     void createRating_success() {
-        Rating rating = new Rating("Gold", 20);
+        Rating rating = Rating.of("Gold",20);
         when(ratingRepository.save(rating)).thenReturn(rating);
 
         Rating result = ratingService.createRating(rating);
@@ -41,8 +41,8 @@ class RatingServiceTest {
     @Test
     void getAllRatings_success() {
         List<Rating> ratings = List.of(
-                new Rating("Gold", 20),
-                new Rating("Silver", 15)
+                Rating.of("Gold", 20),
+                Rating.of("Silver", 15)
         );
         when(ratingRepository.findAll()).thenReturn(ratings);
 
@@ -55,7 +55,7 @@ class RatingServiceTest {
 
     @Test
     void getRating_success() {
-        Rating rating = new Rating("Gold", 20);
+        Rating rating = Rating.of("Gold", 20);
         rating.setRatingId(1L);
         when(ratingRepository.findById(1L)).thenReturn(Optional.of(rating));
 
@@ -103,7 +103,7 @@ class RatingServiceTest {
     @Test
     void updateRating_partialUpdate() {
         Long id = 1L;
-        Rating rating = new Rating("Gold", 20);
+        Rating rating = Rating.of("Gold", 20);
         rating.setRatingId(id);
         RatingRequestDTO requestDTO = new RatingRequestDTO(null, 30);
 

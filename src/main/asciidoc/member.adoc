@@ -8,19 +8,19 @@
 
 === 요청
 
-include::{snippets}/get-members/http-request.adoc[]
+include::{snippets}/get-members-with-search/http-request.adoc[]
 
 === 요청 파라미터
 
-include::{snippets}/get-members/query-parameters.adoc[]
+include::{snippets}/get-members-with-search/query-parameters.adoc[]
 
 === 응답 필드
 
-include::{snippets}/get-members/response-fields.adoc[]
+include::{snippets}/get-members-with-search/response-fields.adoc[]
 
 === 예제 응답
 
-include::{snippets}/get-members/response-body.adoc[]
+include::{snippets}/get-members-with-search/response-body.adoc[]
 
 == 회원 단일 조회
 
