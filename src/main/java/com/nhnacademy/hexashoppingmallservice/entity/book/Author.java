@@ -9,17 +9,24 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Data
 public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorId;
 
+    @Setter
     @Column(nullable = false, length = 20)
     private String authorName;
 
-    @OneToMany(mappedBy = "author" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookAuthor> bookAuthors;
+    @Builder
+    private Author(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public static Author of(String authorName){
+        return builder()
+                .authorName(authorName)
+                .build();
+    }
 }

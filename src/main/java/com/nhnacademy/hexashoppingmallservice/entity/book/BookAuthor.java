@@ -7,8 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Data
 public class BookAuthor {
 
     @Id
@@ -22,4 +20,17 @@ public class BookAuthor {
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
+
+    @Builder
+    private BookAuthor(Book book, Author author) {
+        this.book = book;
+        this.author = author;
+    }
+
+    public static BookAuthor of(Book book, Author author) {
+        return BookAuthor.builder()
+                .book(book)
+                .author(author)
+                .build();
+    }
 }

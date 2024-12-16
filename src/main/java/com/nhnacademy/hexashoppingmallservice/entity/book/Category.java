@@ -9,8 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Data
 public class Category {
 
     @Id
@@ -18,12 +16,23 @@ public class Category {
     private Long categoryId;
 
     @Column(nullable = false,length = 20)
+    @Setter
     private String categoryName;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory")
-    private List<Category> subCategories;
+    @Builder
+    private Category (String categoryName, Category parentCategory){
+        this.categoryName = categoryName;
+        this.parentCategory = parentCategory;
+    }
+
+    public static Category of(String categoryName, Category parentCategory){
+        return Category.builder()
+                .categoryName(categoryName)
+                .parentCategory(parentCategory)
+                .build();
+    }
 }
