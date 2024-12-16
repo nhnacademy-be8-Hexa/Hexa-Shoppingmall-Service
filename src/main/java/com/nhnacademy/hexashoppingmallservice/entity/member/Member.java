@@ -8,39 +8,59 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
-@Data
+@Builder
 public class Member {
     @Id
     @Length(max = 20)
     private String memberId;
     @Column(nullable = false)
     @Length(max = 60)
+    @Setter
     private String memberPassword;
     @Column(nullable = false)
     @Length(max = 20)
     private String memberName;
     @Column(nullable = false, name = "member_phonenumber")
     @Length(max = 11)
+    @Setter
     private String memberNumber;
     @Column
     @Length(max = 320)
     private String memberEmail;
     @Column
+    @Setter
     private LocalDate memberBirthAt;
     @Column(nullable = false)
-    private LocalDate memberCreatedAt;
+    private LocalDateTime memberCreatedAt;
     @Column
+    @Setter
     private LocalDateTime memberLastLoginAt;
     @Enumerated(EnumType.STRING)
     private Role memberRole;
     @ManyToOne
     @JoinColumn(name = "rating_id")
+    @Setter
     private Rating rating;
     @ManyToOne
     @JoinColumn(name = "status_id")
+    @Setter
     private MemberStatus memberStatus;
+
+    public static Member of(String memberId, String memberPassword, String memberName, String memberNumber, String memberEmail, LocalDate memberBirthAt, Rating rating, MemberStatus memberStatus) {
+        return Member.builder()
+                .memberId(memberId)
+                .memberPassword(memberPassword)
+                .memberName(memberName)
+                .memberNumber(memberNumber)
+                .memberEmail(memberEmail)
+                .memberBirthAt(memberBirthAt)
+                .memberCreatedAt(LocalDateTime.now())
+                .memberRole(Role.MEMBER)
+                .rating(rating)
+                .memberStatus(memberStatus)
+                .build();
+    }
 }

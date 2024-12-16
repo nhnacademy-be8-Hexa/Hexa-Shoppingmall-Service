@@ -4,20 +4,20 @@ import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
-import com.nhnacademy.hexashoppingmallservice.entity.member.Role;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -30,41 +30,46 @@ public class MemberService {
 
     @Transactional
     public Member createMember(MemberRequestDTO memberRequestDto) {
-        Rating rating = ratingRepository.findById(Long.parseLong(memberRequestDto.getRatingId())).orElseThrow(
-                () -> new RatingNotFoundException(String.format("%s", memberRequestDto.getRatingId()))
-        );
-        MemberStatus memberStatus = memberStatusRepository.findById(Long.parseLong(memberRequestDto.getStatusId())).orElseThrow(
-                () -> new MemberStatusNotFoundException(String.format("%s", memberRequestDto.getStatusId()))
-        );
+        if (!ratingRepository.existsById(Long.parseLong(memberRequestDto.getRatingId()))) {
+            throw new RatingNotFoundException("Rating ID %s is not found".formatted(memberRequestDto.getRatingId()));
+        }
 
-        if (memberRepository.findById(memberRequestDto.getMemberId()).isPresent()) {
+        Rating rating = ratingRepository.findById(Long.parseLong(memberRequestDto.getRatingId())).orElseThrow();
+
+        if (!memberStatusRepository.existsById(Long.parseLong(memberRequestDto.getStatusId()))) {
+            throw new MemberStatusNotFoundException("Status ID %s is not found".formatted(memberRequestDto.getStatusId()));
+        }
+
+        MemberStatus memberStatus = memberStatusRepository.findById(Long.parseLong(memberRequestDto.getStatusId())).orElseThrow();
+
+        if (memberRepository.existsById(memberRequestDto.getMemberId())) {
             throw new MemberAlreadyExistException(String.format("%s", memberRequestDto.getMemberId()));
         }
 
-        Member member = new Member(
+        Member member = Member.of(
                 memberRequestDto.getMemberId(),
                 memberRequestDto.getMemberPassword(),
                 memberRequestDto.getMemberName(),
                 memberRequestDto.getMemberNumber(),
                 memberRequestDto.getMemberEmail(),
                 memberRequestDto.getMemberBirthAt(),
-                memberRequestDto.getMemberCreatedAt(),
-                memberRequestDto.getMemberLastLoginAt(),
-                Role.valueOf(memberRequestDto.getMemberRole()),
                 rating,
                 memberStatus
+
         );
         return memberRepository.save(member);
     }
 
     @Transactional
-    public Page<Member> findMembers(Pageable pageable) {
-        return memberRepository.findAll(pageable);
+    public List<MemberProjection> getMembers(Pageable pageable) {
+        return memberRepository.findAllBy(pageable).getContent();
     }
 
     @Transactional
-    public Optional<Member> findMemberById(String memberId) {
-        return memberRepository.findById(memberId);
+    public Member getMember(String memberId) {
+        return memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberNotFoundException("Member ID %s not found".formatted(memberId))
+        );
     }
 
     @Transactional
@@ -74,12 +79,9 @@ public class MemberService {
         );
 
         updateIfNotNull(memberRequestDto.getMemberPassword(), member::setMemberPassword);
-        updateIfNotNull(memberRequestDto.getMemberName(), member::setMemberName);
         updateIfNotNull(memberRequestDto.getMemberNumber(), member::setMemberNumber);
         updateIfNotNull(memberRequestDto.getMemberBirthAt(), member::setMemberBirthAt);
-        updateIfNotNull(memberRequestDto.getMemberCreatedAt(), member::setMemberCreatedAt);
         updateIfNotNull(memberRequestDto.getMemberLastLoginAt(), member::setMemberLastLoginAt);
-        updateIfNotNull(memberRequestDto.getMemberRole(), role -> member.setMemberRole(Role.valueOf(role)));
 
         if (memberRequestDto.getRatingId() != null) {
             Rating rating = ratingRepository.findById(Long.parseLong(memberRequestDto.getRatingId()))
@@ -103,7 +105,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Page<Member> findMembersById(Pageable pageable, String memberId) {
-        return memberRepository.findByMemberIdContaining(memberId, pageable);
+    public List<MemberProjection> searchMembersById(Pageable pageable, String memberId) {
+        return memberRepository.findByMemberIdContaining(memberId, pageable).getContent();
     }
 }
