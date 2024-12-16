@@ -20,4 +20,19 @@ public class BookCategory {
     @ManyToOne
     @JoinColumn(name = "bookd_id",nullable = false)
     private Book book;
+
+
+    @Builder
+    private BookCategory(Category category, Book book){
+        this.category = category;
+        this.book = book;
+    }
+
+    public static BookCategory of(Category category,Book book){
+        return BookCategory.builder()
+                .category(category)
+                .book(book)
+                .build();
+    }
+
 }
