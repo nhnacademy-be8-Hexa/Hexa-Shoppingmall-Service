@@ -3,6 +3,7 @@ package com.nhnacademy.hexashoppingmallservice.entity.book;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,14 @@ public class Publisher {
     @Column(nullable = false, length = 20)
     private String publisherName;
 
-    public Publisher(String publisherName) {
+    @Builder
+    private Publisher(String publisherName) {
         this.publisherName = publisherName;
+    }
+
+    public static Publisher of(String publisherName) {
+        return Publisher.builder()
+                .publisherName(publisherName)
+                .build();
     }
 }
