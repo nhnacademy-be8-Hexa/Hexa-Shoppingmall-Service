@@ -37,7 +37,7 @@ class MemberRepositoryTest {
         rating = new Rating("실버", 10);
         entityManager.persist(rating);
 
-        member = new Member("test1", "password1234", "John Doe", "01012345678", LocalDate.of(1990, 5, 3), LocalDate.of(2024, 10, 10), LocalDateTime.now(), Role.MEMBER, rating, memberStatus);
+        member = new Member("test1", "password1234", "John Doe", "01012345678", "test@test.com",LocalDate.of(1990, 5, 3), LocalDate.of(2024, 10, 10), LocalDateTime.now(), Role.MEMBER, rating, memberStatus);
         entityManager.persist(member);
 
         entityManager.flush();

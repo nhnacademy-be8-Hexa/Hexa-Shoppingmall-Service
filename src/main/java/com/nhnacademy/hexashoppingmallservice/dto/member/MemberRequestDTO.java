@@ -15,6 +15,7 @@ public class MemberRequestDTO {
     private String memberPassword;
     private String memberName;
     private String memberNumber;
+    private String memberEmail;
     private LocalDate memberBirthAt;
     private LocalDate memberCreatedAt;
     private LocalDateTime memberLastLoginAt;

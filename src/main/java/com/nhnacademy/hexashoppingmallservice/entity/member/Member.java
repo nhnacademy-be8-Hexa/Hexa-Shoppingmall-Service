@@ -27,6 +27,9 @@ public class Member {
     @Length(max = 11)
     private String memberNumber;
     @Column
+    @Length(max = 320)
+    private String memberEmail;
+    @Column
     private LocalDate memberBirthAt;
     @Column(nullable = false)
     private LocalDate memberCreatedAt;
