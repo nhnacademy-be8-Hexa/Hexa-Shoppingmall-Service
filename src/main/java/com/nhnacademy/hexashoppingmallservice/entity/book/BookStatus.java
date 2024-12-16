@@ -3,6 +3,7 @@ package com.nhnacademy.hexashoppingmallservice.entity.book;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,15 @@ public class BookStatus {
     @Column(nullable = false, length = 20)
     private String bookStatus;
 
-    public BookStatus(String bookStatus) {
+    @Builder
+    private BookStatus(String bookStatus) {
         this.bookStatus = bookStatus;
     }
+
+    public static BookStatus of(String bookStatus) {
+        return BookStatus.builder()
+                .bookStatus(bookStatus)
+                .build();
+    }
+
 }
