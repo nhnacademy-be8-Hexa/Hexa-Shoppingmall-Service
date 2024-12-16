@@ -14,6 +14,7 @@ public class Tag {
     private Long tagId;
 
     @Column(nullable = false, unique = true, length = 30)
+    @Setter
     private String tagName;
 
     @Builder
