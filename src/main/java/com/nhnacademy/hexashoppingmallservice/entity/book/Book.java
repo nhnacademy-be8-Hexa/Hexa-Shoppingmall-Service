@@ -9,8 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Data
 public class Book {
 
     @Id
@@ -56,12 +54,4 @@ public class Book {
     @JoinColumn(name = "book_status_id")
     private BookStatus bookStatus;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<BookCategory> bookCategories;
-
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookTag> bookTags;
-
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookAuthor> bookAuthors;
 }
