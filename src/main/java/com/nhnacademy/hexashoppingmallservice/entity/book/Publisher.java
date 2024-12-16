@@ -10,7 +10,6 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @Getter
-@Setter
 public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
