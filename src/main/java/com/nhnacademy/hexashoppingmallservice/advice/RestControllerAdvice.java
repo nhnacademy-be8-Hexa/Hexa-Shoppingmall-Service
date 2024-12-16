@@ -24,7 +24,7 @@ public class RestControllerAdvice {
             RatingNotFoundException.class
     })
     public ResponseEntity<Void> handleMemberNotFoundException(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @ExceptionHandler({

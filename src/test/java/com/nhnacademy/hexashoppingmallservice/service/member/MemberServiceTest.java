@@ -8,6 +8,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.member.MemberAlreadyExis
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
@@ -17,7 +18,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,24 +50,25 @@ class MemberServiceTest {
         MemberRequestDTO requestDTO = new MemberRequestDTO(
                 "123",
                 "password",
-                "John",
+                "John Doe",
                 "1234567890",
                 "test@test.com",
                 LocalDate.of(1990, 1, 1),
-                LocalDate.of(2023, 12, 1),
-                LocalDateTime.now(),
-                "MEMBER",
+                null,
                 "1",
                 "1"
         );
-        Rating rating = new Rating("Gold", 10);
+
+        Rating rating = Rating.of("Gold", 10);
         rating.setRatingId(1L);
-        MemberStatus memberStatus = new MemberStatus("Active");
+        MemberStatus memberStatus = MemberStatus.builder().statusName("Active").build();
         memberStatus.setStatusId(1L);
 
+        when(ratingRepository.existsById(1L)).thenReturn(true);
         when(ratingRepository.findById(1L)).thenReturn(Optional.of(rating));
+        when(memberStatusRepository.existsById(1L)).thenReturn(true);
         when(memberStatusRepository.findById(1L)).thenReturn(Optional.of(memberStatus));
-        when(memberRepository.findById("123")).thenReturn(Optional.empty());
+        when(memberRepository.existsById("123")).thenReturn(false);
         when(memberRepository.save(ArgumentMatchers.<Member>any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -77,8 +78,11 @@ class MemberServiceTest {
         assertEquals("123", member.getMemberId());
         assertEquals(rating, member.getRating());
         assertEquals(memberStatus, member.getMemberStatus());
+        verify(ratingRepository).existsById(1L);
         verify(ratingRepository).findById(1L);
+        verify(memberStatusRepository).existsById(1L);
         verify(memberStatusRepository).findById(1L);
+        verify(memberRepository).existsById("123");
         verify(memberRepository).save(ArgumentMatchers.<Member>any());
     }
 
@@ -87,21 +91,19 @@ class MemberServiceTest {
         MemberRequestDTO requestDTO = new MemberRequestDTO(
                 "123",
                 "password",
-                "John",
+                "John Doe",
                 "1234567890",
                 "test@test.com",
                 LocalDate.of(1990, 1, 1),
-                LocalDate.of(2023, 12, 1),
-                LocalDateTime.now(),
-                "MEMBER",
+                null,
                 "99",
                 "1"
         );
 
-        when(ratingRepository.findById(99L)).thenReturn(Optional.empty());
+        when(ratingRepository.existsById(99L)).thenReturn(false);
 
         assertThrows(RatingNotFoundException.class, () -> memberService.createMember(requestDTO));
-        verify(ratingRepository).findById(99L);
+        verify(ratingRepository).existsById(99L);
         verifyNoInteractions(memberStatusRepository);
         verifyNoInteractions(memberRepository);
     }
@@ -111,96 +113,67 @@ class MemberServiceTest {
         MemberRequestDTO requestDTO = new MemberRequestDTO(
                 "123",
                 "password",
-                "John",
+                "John Doe",
                 "1234567890",
                 "test@test.com",
                 LocalDate.of(1990, 1, 1),
-                LocalDate.of(2023, 12, 1),
-                LocalDateTime.now(),
-                "MEMBER",
+                null,
                 "1",
                 "99"
         );
 
-        Rating rating = new Rating("Gold", 10);
-        rating.setRatingId(1L);
-
-        when(ratingRepository.findById(1L)).thenReturn(Optional.of(rating));
-        when(memberStatusRepository.findById(99L)).thenReturn(Optional.empty());
+        when(ratingRepository.existsById(1L)).thenReturn(true);
+        when(ratingRepository.findById(1L)).thenReturn(Optional.of(Rating.of("Gold", 10)));
+        when(memberStatusRepository.existsById(99L)).thenReturn(false);
 
         assertThrows(MemberStatusNotFoundException.class, () -> memberService.createMember(requestDTO));
-        verify(ratingRepository).findById(1L);
-        verify(memberStatusRepository).findById(99L);
+        verify(ratingRepository).existsById(1L);
+        verify(memberStatusRepository).existsById(99L);
         verifyNoInteractions(memberRepository);
-    }
-
-    @Test
-    void createMember_memberAlreadyExists() {
-        MemberRequestDTO requestDTO = new MemberRequestDTO(
-                "123",
-                "password",
-                "John",
-                "1234567890",
-                "test@test.com",
-                LocalDate.of(1990, 1, 1),
-                LocalDate.of(2023, 12, 1),
-                LocalDateTime.now(),
-                "MEMBER",
-                "1",
-                "1"
-        );
-
-        Rating rating = new Rating("Gold", 10);
-        rating.setRatingId(1L);
-
-        MemberStatus memberStatus = new MemberStatus("Active");
-        memberStatus.setStatusId(1L);
-
-        when(ratingRepository.findById(1L)).thenReturn(Optional.of(rating));
-        when(memberStatusRepository.findById(1L)).thenReturn(Optional.of(memberStatus));
-        when(memberRepository.findById("123")).thenReturn(Optional.of(new Member()));
-
-        assertThrows(MemberAlreadyExistException.class, () -> memberService.createMember(requestDTO));
-
-        verify(ratingRepository).findById(1L);
-        verify(memberStatusRepository).findById(1L);
-        verify(memberRepository).findById("123");
     }
 
     @Test
     void updateMember_success() {
         String memberId = "123";
         MemberRequestDTO requestDTO = new MemberRequestDTO(
-                "123",
+                null,
                 "newPassword",
-                "John Updated",
+                null,
                 "0987654321",
-                "test@test.com",
+                null,
                 LocalDate.of(1990, 1, 1),
-                LocalDate.of(2023, 12, 1),
                 LocalDateTime.now(),
-                "ADMIN",
                 "2",
                 "2"
         );
-        Member member = new Member();
-        member.setMemberId(memberId);
-        Rating newRating = new Rating("Platinum", 20);
+
+        Member member = Member.of(
+                memberId,
+                "password",
+                "John Doe",
+                "1234567890",
+                "test@test.com",
+                LocalDate.of(1990, 1, 1),
+                Rating.of("Gold", 10),
+                MemberStatus.builder().statusName("Active").build()
+        );
+
+        Rating newRating = Rating.of("Platinum", 20);
         newRating.setRatingId(2L);
-        MemberStatus newStatus = new MemberStatus("Inactive");
+        MemberStatus newStatus = MemberStatus.builder().statusName("Inactive").build();
         newStatus.setStatusId(2L);
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(ratingRepository.findById(2L)).thenReturn(Optional.of(newRating));
         when(memberStatusRepository.findById(2L)).thenReturn(Optional.of(newStatus));
 
-        Member result = memberService.updateMember(memberId, requestDTO);
+        Member updatedMember = memberService.updateMember(memberId, requestDTO);
 
-        assertEquals("newPassword", result.getMemberPassword());
-        assertEquals("John Updated", result.getMemberName());
-        assertEquals("0987654321", result.getMemberNumber());
-        assertEquals(newRating, result.getRating());
-        assertEquals(newStatus, result.getMemberStatus());
+        assertNotNull(updatedMember);
+        assertEquals("newPassword", updatedMember.getMemberPassword());
+        assertEquals("0987654321", updatedMember.getMemberNumber());
+        assertEquals(newRating, updatedMember.getRating());
+        assertEquals(newStatus, updatedMember.getMemberStatus());
         verify(memberRepository).findById(memberId);
         verify(ratingRepository).findById(2L);
         verify(memberStatusRepository).findById(2L);
@@ -218,47 +191,21 @@ class MemberServiceTest {
     }
 
     @Test
-    void findMembers_success() {
+    void searchMembersById_success() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Member> members = new PageImpl<>(List.of(new Member()));
+        String searchQuery = "123";
 
-        when(memberRepository.findAll(pageable)).thenReturn(members);
+        MemberProjection projection = mock(MemberProjection.class);
+        when(memberRepository.findByMemberIdContaining(searchQuery, pageable))
+                .thenReturn(new PageImpl<>(List.of(projection)));
 
-        Page<Member> result = memberService.findMembers(pageable);
+        List<MemberProjection> result = memberService.searchMembersById(pageable, searchQuery);
 
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        verify(memberRepository).findAll(pageable);
-    }
-
-    @Test
-    void findMemberById_success() {
-        String memberId = "123";
-        Member member = new Member();
-        member.setMemberId(memberId);
-
-        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-
-        Optional<Member> result = memberService.findMemberById(memberId);
-
-        assertTrue(result.isPresent());
-        assertEquals(memberId, result.get().getMemberId());
-        verify(memberRepository).findById(memberId);
-    }
-
-    @Test
-    void findMembersById_success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        String memberId = "123";
-        Page<Member> members = new PageImpl<>(List.of(new Member()));
-
-        when(memberRepository.findByMemberIdContaining(memberId, pageable)).thenReturn(members);
-
-        Page<Member> result = memberService.findMembersById(pageable, memberId);
-
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        verify(memberRepository).findByMemberIdContaining(memberId, pageable);
+        assertEquals(1, result.size());
+        verify(memberRepository).findByMemberIdContaining(searchQuery, pageable);
     }
 }
+
+
 

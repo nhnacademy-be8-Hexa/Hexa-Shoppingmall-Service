@@ -114,7 +114,7 @@ class MemberStatusControllerTest {
         doThrow(new MemberStatusNotFoundException("1")).when(memberStatusService).deleteMemberStatus(1L);
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/memberStatus/{memberStatusId}", 1L))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
