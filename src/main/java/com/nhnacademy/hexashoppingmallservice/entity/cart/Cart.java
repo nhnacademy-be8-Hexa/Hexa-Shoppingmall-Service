@@ -13,30 +13,20 @@ import java.awt.print.Book;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int cartId;
+    private Integer cartId;
 
     @Setter
     @Column(nullable = false)
-    private int cartAmount;
+    private Integer cartAmount;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-
-//    @Builder
-//    private Cart(int cartId, int cartAmount) {
-//        this.cartId = cartId;
-//        this.cartAmount = cartAmount;
-//    }
-//
-//    public static Cart of(int cartId, int cartAmount, Member member, Book book) {
-//
-//    }
 
 
 }
