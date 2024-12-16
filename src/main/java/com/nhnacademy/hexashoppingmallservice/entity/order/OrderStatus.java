@@ -23,6 +23,11 @@ public class OrderStatus {
     @NotBlank
     @Length(max = 20)
     private String orderStatus;
+    // 대기
+    // 배송중
+    // 완료
+    // 반품
+    // 주문 취소
 
     @Builder
     private OrderStatus(String orderStatus) {
