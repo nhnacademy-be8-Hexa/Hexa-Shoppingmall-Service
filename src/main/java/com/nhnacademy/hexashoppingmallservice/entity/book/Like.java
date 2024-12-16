@@ -1,6 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
-import com.nhnacademy.hexashoppingmallservice.entity.Member;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
