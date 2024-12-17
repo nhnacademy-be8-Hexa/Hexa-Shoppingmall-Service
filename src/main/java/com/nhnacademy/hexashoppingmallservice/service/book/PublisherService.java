@@ -41,8 +41,7 @@ public class PublisherService {
         if(Objects.isNull(publisher)){
             throw new RuntimeException("publisher cannot found: "+publisherId);
         }
-        publisher.setPublisherName(publisherRequestDTO.getPublisherName());
-        return publisher;
+        return Publisher.of(publisherRequestDTO.getPublisherName());
     }
 
 
