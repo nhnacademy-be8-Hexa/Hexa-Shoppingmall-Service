@@ -6,8 +6,6 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.Reader;
 import java.util.List;
 import java.util.Objects;
 
