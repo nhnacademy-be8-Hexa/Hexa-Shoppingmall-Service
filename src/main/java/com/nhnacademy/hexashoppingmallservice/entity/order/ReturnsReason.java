@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-public class returnsReason {
+public class ReturnsReason {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long returnsReasonId;

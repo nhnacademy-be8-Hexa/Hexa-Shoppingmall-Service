@@ -2,6 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.entity.order;
 
 import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,9 +21,13 @@ public class OrderBook {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "book_id")
+    private Book book;
+
     @Column(nullable = false)
     private Integer orderBookAmount;
 
     @Column(columnDefinition = "bigint")
-    private Long coupon_id;
+    private Long couponId;
 }

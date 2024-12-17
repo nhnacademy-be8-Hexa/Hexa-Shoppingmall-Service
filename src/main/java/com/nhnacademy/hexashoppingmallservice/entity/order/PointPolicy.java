@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 public class PointPolicy {
     @Id
     @Length(max = 20)
-    private String pointPolicyId;
+    private String pointPolicyName;
 
     @Column(nullable = false)
     private Integer pointDelta;

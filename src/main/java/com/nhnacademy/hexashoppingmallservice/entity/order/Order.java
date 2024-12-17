@@ -29,6 +29,14 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "wrapping_paper_id")
+    private WrappingPaper wrappingPaper;
+
+    @ManyToOne
+    @JoinColumn(name = "order_status_id")
+    private OrderStatus orderStatus;
+
     @Column(nullable = false)
     @Length(max = 5)
     private String zoneCode;
