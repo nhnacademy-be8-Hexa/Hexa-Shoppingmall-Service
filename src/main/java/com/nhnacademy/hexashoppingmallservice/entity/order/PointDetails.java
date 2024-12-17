@@ -1,7 +1,5 @@
 package com.nhnacademy.hexashoppingmallservice.entity.order;
 
-
-import com.google.common.primitives.UnsignedInteger;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,30 +12,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
-public class Order {
+public class PointDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Long pointDetailsId;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = true)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(nullable = false)
-    private Integer orderPrice;
-
-    @Column(nullable = false)
-    private LocalDateTime orderedAt;
-
-    @Column(nullable = false)
-    @Length(max = 5)
-    private String zoneCode;
+    private Integer pointDetailsIncrement;
 
     @Column(nullable = false)
     @Length(max = 200)
-    private String address;
+    private String pointDetailsComment;
 
-    @Column
-    @Length(max = 100)
-    private String addressDetail;
+    @Column(nullable = false)
+    private LocalDateTime pointDetailsDatetime;
 }
