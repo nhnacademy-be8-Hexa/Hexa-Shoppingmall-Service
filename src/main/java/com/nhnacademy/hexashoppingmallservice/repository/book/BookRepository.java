@@ -11,6 +11,15 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book,Long> {
 
+    // 도서 목록 - 출판사
+    @Query("""
+        SELECT b
+        FROM Book b
+        JOIN b.publisher p
+        WHERE LOWER(p.publisherName) LIKE LOWER(CONCAT('%', :publisherName, '%'))
+    """)
+    Page<Book> findBooksByPublisherName(@Param("publisherName") String publisherName, Pageable pageable);
+
     // 도서 목록 - 도서명
     Page<Book> findByBookTitleLike(@Param("bookTitle")String bookTitle,Pageable pageable);
 
