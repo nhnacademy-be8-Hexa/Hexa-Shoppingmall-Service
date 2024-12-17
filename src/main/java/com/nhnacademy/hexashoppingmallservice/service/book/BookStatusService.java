@@ -17,8 +17,8 @@ public class BookStatusService {
     private final BookStatusRepository bookStatusRepository;
 
     @Transactional
-    public BookStatus createBookStatus(String bookStatus) {
-        return bookStatusRepository.save(BookStatus.of(bookStatus));
+    public BookStatus createBookStatus(BookStatus bookStatus) {
+        return bookStatusRepository.save(bookStatus);
     }
 
     @Transactional(readOnly = true)
