@@ -70,4 +70,7 @@ public interface BookRepository extends JpaRepository<Book,Long> {
 
     // 도서 목록 - 최신순(출간일 기준)
     Page<Book> findBooksByBookPubDate(Pageable pageable);
+
+    // ISBN 중복확인
+    boolean existsByBookIsbn(@Param("bookIsbn") Long bookIsbn);
 }
