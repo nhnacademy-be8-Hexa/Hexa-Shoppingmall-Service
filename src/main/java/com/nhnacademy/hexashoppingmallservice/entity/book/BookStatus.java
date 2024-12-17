@@ -20,7 +20,6 @@ public class BookStatus {
     @NotBlank
     @Size(max = 20)
     @Column(nullable = false, length = 20)
-    @Setter
     private String bookStatus;
 
     @Builder
