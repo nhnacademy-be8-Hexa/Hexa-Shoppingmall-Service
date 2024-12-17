@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class BookStatus {
     @NotBlank
     @Size(max = 20)
     @Column(nullable = false, length = 20)
+    @Setter
     private String bookStatus;
 
     @Builder
