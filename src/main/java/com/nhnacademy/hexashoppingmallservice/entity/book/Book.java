@@ -75,13 +75,17 @@ public class Book {
     @JoinColumn(name = "book_status_id", nullable = false)
     private BookStatus bookStatus;
 
+    // 필수 필드만 포함한 Builder 추가
     @Builder
-    private Book(String bookTitle, String bookDescription, Long bookIsbn, int bookOriginPrice, int bookPrice) {
+    private Book(String bookTitle, String bookDescription, LocalDate bookPubDate, Long bookIsbn, int bookOriginPrice, int bookPrice, Publisher publisher, BookStatus bookStatus) {
         this.bookTitle = bookTitle;
         this.bookDescription = bookDescription;
+        this.bookPubDate = bookPubDate;
         this.bookIsbn = bookIsbn;
         this.bookOriginPrice = bookOriginPrice;
         this.bookPrice = bookPrice;
+        this.publisher = publisher;
+        this.bookStatus = bookStatus;
 
         // 초기값 설정
         this.bookWrappable = false;
@@ -90,13 +94,17 @@ public class Book {
         this.bookSellCount = 0L;
     }
 
-    public static Book of(String bookTitle, String bookDescription, Long bookIsbn, int bookOriginPrice, int bookPrice) {
+    // 간편한 객체 생성을 위한 of() 메서드 추가
+    public static Book of(String bookTitle, String bookDescription, LocalDate bookPubDate, Long bookIsbn, int bookOriginPrice, int bookPrice, Publisher publisher, BookStatus bookStatus) {
         return Book.builder()
                 .bookTitle(bookTitle)
                 .bookDescription(bookDescription)
+                .bookPubDate(bookPubDate)
                 .bookIsbn(bookIsbn)
                 .bookOriginPrice(bookOriginPrice)
                 .bookPrice(bookPrice)
+                .publisher(publisher)
+                .bookStatus(bookStatus)
                 .build();
     }
 }
