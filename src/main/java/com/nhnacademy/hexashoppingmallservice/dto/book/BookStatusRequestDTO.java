@@ -1,11 +1,18 @@
 package com.nhnacademy.hexashoppingmallservice.dto.book;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookStatusRequestDTO {
-    @NotNull
+    @NotBlank(message = "bookStatus cannot be blank")
+    @Size(max = 20)
     private String bookStatus;
 
 }
