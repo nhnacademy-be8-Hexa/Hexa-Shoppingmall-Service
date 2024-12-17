@@ -42,8 +42,6 @@ public class BookStatusService {
         if(Objects.isNull(bookStatus)){
             throw new RuntimeException("id cannot found: "+bookStatusId);
         }
-
-        bookStatus.setBookStatus(bookStatusRequestDTO.getBookStatus());
-        return bookStatus;
+        return BookStatus.of(bookStatusRequestDTO.getBookStatus());
     }
 }
