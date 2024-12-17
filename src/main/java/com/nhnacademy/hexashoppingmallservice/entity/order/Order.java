@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.entity.order;
 
+
 import com.google.common.primitives.UnsignedInteger;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import jakarta.persistence.*;
