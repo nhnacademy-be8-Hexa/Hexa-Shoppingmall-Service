@@ -42,6 +42,8 @@ public class BookStatusService {
         if(Objects.isNull(bookStatus)){
             throw new RuntimeException("id cannot found: "+bookStatusId);
         }
-        return BookStatus.of(bookStatusRequestDTO.getBookStatus());
+
+        bookStatus = BookStatus.of(bookStatusRequestDTO.getBookStatus());
+        return bookStatusRepository.save(bookStatus);
     }
 }
