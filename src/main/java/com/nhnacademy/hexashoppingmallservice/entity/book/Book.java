@@ -26,13 +26,13 @@ public class Book {
 
     @NotBlank
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     @Setter
     private String bookDescription;
 
     @NotNull
     @PastOrPresent
-    @Column(nullable = false)
+    @Column(nullable = false, name = "book_pubdate")
     private LocalDate bookPubDate;
 
     @NotNull

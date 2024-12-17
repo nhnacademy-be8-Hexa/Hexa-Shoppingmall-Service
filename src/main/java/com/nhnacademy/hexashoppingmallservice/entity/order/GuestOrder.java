@@ -1,9 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.entity.order;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 public class GuestOrder {
     @Id
     @OneToOne
+    @JoinColumn(name = "order_id")
     private Order orderId;
 
     @NotBlank
