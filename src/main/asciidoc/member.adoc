@@ -8,19 +8,19 @@
 
 === 요청
 
-include::{snippets}/get-members/http-request.adoc[]
+include::{snippets}/get-members-with-search/http-request.adoc[]
 
 === 요청 파라미터
 
-include::{snippets}/get-members/query-parameters.adoc[]
+include::{snippets}/get-members-with-search/query-parameters.adoc[]
 
 === 응답 필드
 
-include::{snippets}/get-members/response-fields.adoc[]
+include::{snippets}/get-members-with-search/response-fields.adoc[]
 
 === 예제 응답
 
-include::{snippets}/get-members/response-body.adoc[]
+include::{snippets}/get-members-with-search/response-body.adoc[]
 
 == 회원 단일 조회
 
@@ -53,3 +53,19 @@ include::{snippets}/create-member/response-fields.adoc[]
 === 예제 응답
 
 include::{snippets}/create-member/response-body.adoc[]
+
+== 회원 정보 업데이트
+
+=== 요청
+
+업데이트 대상 필드만 지정해도 무관
+
+include::{snippets}/update-member/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/update-member/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-member/response-body.adoc[]

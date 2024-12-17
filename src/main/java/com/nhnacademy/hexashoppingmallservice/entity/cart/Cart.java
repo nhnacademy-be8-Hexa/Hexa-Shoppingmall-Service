@@ -1,10 +1,11 @@
 package com.nhnacademy.hexashoppingmallservice.entity.cart;
 
-import com.nhnacademy.hexashoppingmallservice.entity.Member;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.awt.print.Book;
 
 @Entity
 @AllArgsConstructor
@@ -15,14 +16,17 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartId;
 
+    @NotNull
     @Setter
     @Column(nullable = false)
     private Integer cartAmount;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;

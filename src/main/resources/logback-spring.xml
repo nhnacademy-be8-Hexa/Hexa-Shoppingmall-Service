@@ -1,0 +1,59 @@
+<configuration>
+    <!-- 로그백 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- LogNCrashHttpAppender 선언 -->
+    <appender name="SYNC_NHN_LOG_CRASH_APPENDER" class="com.nhnacademy.hexashoppingmallservice.log.LogCrashAppender">
+        <url>https://api-logncrash.cloud.toast.com/v2/log</url>
+        <!-- ERROR 이상만 전송 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!-- LogNCrashHttpAppender를 포함한 AsyncAppender 선언 -->
+    <appender name="LNCS-APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- Logback의 AsyncAppender 옵션 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <includeCallerData value="false"/>
+        <queueSize value="2048"/>
+        <neverBlock value="true"/>
+        <maxFlushTime value="60000"/>
+        <appender-ref ref="SYNC_NHN_LOG_CRASH_APPENDER"/>
+    </appender>
+
+    <logger name="user-logger" additivity="false">
+        <appender-ref ref="LNCS-APPENDER"/>
+    </logger>
+
+    <!-- 클라우드에는 에러레벨만 보냄 -->
+    <logger name="com.nhnacademy.hexashoppingmallservice" level="ERROR">
+        <!-- 클라우드로 ERROR 로그 전송 -->
+        <appender-ref ref="SYNC_NHN_LOG_CRASH_APPENDER" />
+        <appender-ref ref="FILE" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</configuration>
