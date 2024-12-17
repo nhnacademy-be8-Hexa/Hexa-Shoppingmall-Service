@@ -68,5 +68,6 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     """)
     Page<Book> findBooksByTagName(@Param("tagName") String tagName, Pageable pageable);
 
-    // 카테고리 내 도서명 검색
+    // 도서 목록 - 최신순(출간일 기준)
+    Page<Book> findBooksByBookPubDate(Pageable pageable);
 }
