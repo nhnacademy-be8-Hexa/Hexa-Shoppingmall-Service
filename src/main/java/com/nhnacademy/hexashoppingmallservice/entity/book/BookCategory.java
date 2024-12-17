@@ -1,10 +1,12 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class BookCategory {
@@ -15,24 +17,24 @@ public class BookCategory {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @NotNull
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "bookd_id",nullable = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    @NotNull
     private Book book;
 
-
     @Builder
-    private BookCategory(Category category, Book book){
+    private BookCategory(Category category, Book book) {
         this.category = category;
         this.book = book;
     }
 
-    public static BookCategory of(Category category,Book book){
+    public static BookCategory of(Category category, Book book){
         return BookCategory.builder()
                 .category(category)
                 .book(book)
                 .build();
     }
-
 }

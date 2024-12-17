@@ -1,10 +1,13 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class Tag {
@@ -13,8 +16,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
 
+    @NotBlank
+    @Size(max = 30)
     @Column(nullable = false, unique = true, length = 30)
-    @Setter
     private String tagName;
 
     @Builder
@@ -22,7 +26,7 @@ public class Tag {
         this.tagName = tagName;
     }
 
-    public static Tag of(String tagName) {
+    public static Tag of(String tagName){
         return Tag.builder()
                 .tagName(tagName)
                 .build();

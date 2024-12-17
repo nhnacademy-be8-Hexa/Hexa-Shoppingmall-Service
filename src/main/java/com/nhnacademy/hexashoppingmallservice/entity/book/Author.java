@@ -1,12 +1,13 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class Author {
@@ -15,7 +16,8 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long authorId;
 
-    @Setter
+    @NotBlank
+    @Size(max = 20)
     @Column(nullable = false, length = 20)
     private String authorName;
 
@@ -24,8 +26,8 @@ public class Author {
         this.authorName = authorName;
     }
 
-    public static Author of(String authorName){
-        return builder()
+    public static Author of(String authorName) {
+        return Author.builder()
                 .authorName(authorName)
                 .build();
     }

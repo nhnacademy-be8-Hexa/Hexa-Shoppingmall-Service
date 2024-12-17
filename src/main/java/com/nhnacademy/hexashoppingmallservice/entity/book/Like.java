@@ -2,10 +2,12 @@ package com.nhnacademy.hexashoppingmallservice.entity.book;
 
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class Like {
@@ -16,10 +18,12 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
+    @NotNull
     private Book book;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
     private Member member;
 
     @Builder
@@ -28,10 +32,11 @@ public class Like {
         this.member = member;
     }
 
-    public static Like of(Book book, Member member) {
+    public static Like of(Book book, Member member){
         return Like.builder()
                 .book(book)
                 .member(member)
                 .build();
     }
+
 }

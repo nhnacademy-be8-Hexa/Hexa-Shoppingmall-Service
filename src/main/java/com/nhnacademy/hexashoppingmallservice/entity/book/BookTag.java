@@ -1,10 +1,12 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class BookTag {
@@ -13,12 +15,14 @@ public class BookTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookTagId;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id", nullable = false, foreignKey = @ForeignKey(name = "book_tag_ibfk_1"))
     private Book book;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "tag_id", nullable = false)
+    @JoinColumn(name = "tag_id", nullable = false, foreignKey = @ForeignKey(name = "book_tag_ibfk_2"))
     private Tag tag;
 
     @Builder

@@ -1,12 +1,12 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import jakarta.validation.constraints.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class Category {
@@ -15,8 +15,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @Column(nullable = false,length = 20)
-    @Setter
+    @NotBlank
+    @Size(max = 20)
+    @Column(nullable = false, length = 20)
     private String categoryName;
 
     @ManyToOne
@@ -24,7 +25,7 @@ public class Category {
     private Category parentCategory;
 
     @Builder
-    private Category (String categoryName, Category parentCategory){
+    private Category(String categoryName, Category parentCategory) {
         this.categoryName = categoryName;
         this.parentCategory = parentCategory;
     }
