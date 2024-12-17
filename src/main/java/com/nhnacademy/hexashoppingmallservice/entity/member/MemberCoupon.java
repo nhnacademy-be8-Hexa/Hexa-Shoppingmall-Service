@@ -16,6 +16,8 @@ public class MemberCoupon {
     private Long memberCouponId;
 
     @Column(nullable = false)
+    @Setter
+    @NotNull
     private Long couponId;
 
     @NotNull
