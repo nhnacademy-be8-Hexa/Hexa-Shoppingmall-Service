@@ -23,11 +23,11 @@ public class Member {
     @Column(nullable = false)
     @Length(max = 20)
     private String memberName;
-    @Column(nullable = false, name = "member_phonenumber")
+    @Column(nullable = false, name = "member_phonenumber", unique = true)
     @Length(max = 11)
     @Setter
     private String memberNumber;
-    @Column
+    @Column(unique = true)
     @Length(max = 320)
     private String memberEmail;
     @Column
@@ -41,11 +41,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role memberRole;
     @ManyToOne
-    @JoinColumn(name = "rating_id")
+    @JoinColumn(name = "rating_id", nullable = false)
     @Setter
     private Rating rating;
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id", nullable = false)
     @Setter
     private MemberStatus memberStatus;
 
