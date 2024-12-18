@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.entity.member;
 
+import com.nhnacademy.hexashoppingmallservice.entity.review.Review;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
