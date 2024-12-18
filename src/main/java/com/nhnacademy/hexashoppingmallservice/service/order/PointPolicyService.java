@@ -1,9 +1,9 @@
-package com.nhnacademy.hexashoppingmallservice.service.point;
+package com.nhnacademy.hexashoppingmallservice.service.order;
 
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointPolicy;
 import com.nhnacademy.hexashoppingmallservice.exception.point.PointPolicyAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.point.PointPolicyNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.repository.point.PointPolicyRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.order.PointPolicyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
