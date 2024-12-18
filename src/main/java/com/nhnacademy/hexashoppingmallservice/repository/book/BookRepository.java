@@ -19,10 +19,10 @@ public interface BookRepository extends JpaRepository<Book,Long> {
         JOIN b.publisher p
         WHERE LOWER(p.publisherName) LIKE LOWER(CONCAT('%', :publisherName, '%'))
     """)
-    Page<BookProjection> findBooksByPublisherName(@Param("publisherName") String publisherName, Pageable pageable);
+    Page<Book> findBooksByPublisherName(@Param("publisherName") String publisherName, Pageable pageable);
 
     // 도서 목록 - 도서명
-    Page<BookProjection> findByBookTitleLike(@Param("bookTitle")String bookTitle,Pageable pageable);
+    Page<Book> findByBookTitleLike(@Param("bookTitle")String bookTitle,Pageable pageable);
 
     // 도서 목록 - 저자 이름
     @Query("""
