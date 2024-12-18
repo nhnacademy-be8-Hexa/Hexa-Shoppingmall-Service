@@ -1,12 +1,19 @@
 package com.nhnacademy.hexashoppingmallservice.service.cart;
 
-import com.nhnacademy.hexashoppingmallservice.dto.Cart.CartRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.Member;
+import com.nhnacademy.hexashoppingmallservice.dto.cart.CartRequestDTO;
+
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.cart.Cart;
-import com.nhnacademy.hexashoppingmallservice.exception.CartException.CartAlreadyExistException;
-import com.nhnacademy.hexashoppingmallservice.exception.MemberNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.repository.Cart.CartRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.MemberRepository;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
+import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartAlreadyExistException;
+
+import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
+
+
+import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.cart.CartRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,25 +30,24 @@ public class CartService {
 
     @Transactional
     public Cart createCart(CartRequestDTO cartRequestDto) {
-        Member member = memberRepository.findById(Long.parseLong(cartRequestDto.getMemberId())).orElseThrow(
+        Member member = memberRepository.findById(String.valueOf(cartRequestDto.getMemberId())).orElseThrow(
                 ()-> {
                     String errorMessage = new Formatter().format("Member ID: %s not found.", cartRequestDto.getMemberId()).toString();
                     return new MemberNotFoundException(errorMessage);
                 });
 
-        Book book = bookRepository.findById(Long.parseLong(cartRequestDto.getBookId())).orElseThrow(
+        Book book = bookRepository.findById(cartRequestDto.getBookId()).orElseThrow(
                 ()-> {
                     String errorMessage = new Formatter().format("Book ID: %s not found.", cartRequestDto.getBookId()).toString();
-                    return new BookNotFoundException(errorMessage);
+                    return new RuntimeException(errorMessage);
                 }
         );
 
-        if(cartRepository.findById(cartRequestDto.getBookId()).isPresent()) {
-            throw new CartAlreadyExistException(String.format("%s",cartRequestDto.getCartId()));
-        }
+//        if(cartRepository.findById(cartRequestDto.getBookId()).isPresent()) {
+//            throw new CartAlreadyExistException(String.format("%s",cartRequestDto.getCartId()));
+//        }
 
-        Cart cart = new Cart(
-                cartRequestDto.getCartId(),
+        Cart cart = Cart.of(
                 cartRequestDto.getCartAmount(),
                 member,
                 book
@@ -52,9 +58,50 @@ public class CartService {
     }
 
     @Transactional
-    public List<Cart> findAllCarts() {
+    public List<Cart> getCarts() {
         return cartRepository.findAll();
     }
+
+    @Transactional
+    public Cart getCart(Long cartId) {
+        return cartRepository.findById(cartId).orElseThrow(
+                () -> new CartNotFoundException("Cart ID: %s not found".formatted(cartId))
+        );
+    }
+
+    @Transactional
+    public void deleteCart(Long cartId) {
+        cartRepository.deleteById(cartId);
+    }
+
+    @Transactional
+    public void clearCartByMember(Long memberId) {
+        Member member = memberRepository.findById(String.valueOf(memberId))
+                .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
+
+        List<Cart> carts = cartRepository.findAllByMember(member);
+        if (carts.isEmpty()) {
+            throw new CartNotFoundException("No cart items found for Member ID: " + memberId);
+        }
+
+        cartRepository.deleteAll(carts);
+    }
+
+    @Transactional
+    public Cart updateCartItemQuantity(Long cartId, CartRequestDTO cartRequestDto) {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(
+                () -> new CartNotFoundException("Cart ID: %s not found".formatted(cartId))
+        );
+
+        cart.setCartAmount(cartRequestDto.getCartAmount());
+
+        cartRepository.save(cart);
+
+        return cart;
+
+
+    }
+
 
 
 

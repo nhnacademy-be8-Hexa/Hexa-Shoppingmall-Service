@@ -1,0 +1,33 @@
+### 장바구니 생성
+POST localhost:8081/api/carts
+Content-Type: application/json
+
+{
+
+  "memberId": "john_doe_124",
+  "bookId": 101,
+  "cartAmount": 2
+
+}
+
+### 모든 장바구니 항목 조회
+GET http://localhost:8081/carts
+Accept: application/json
+
+### 특정 장바구니 조회
+GET http://localhost:8081/carts/1
+Accept: application/json
+
+### 특정 장바구니 항목 삭제
+DELETE http://localhost:8081/carts/1
+
+### 특정 회원의 장바구니 전체 삭제
+DELETE http://localhost:8081/carts/member/1
+
+### 장바구니 항목 수량 업데이트
+PATCH http://localhost:8081/carts/1/quantity
+Content-Type: application/json
+
+{
+  "cartAmount": 5
+}
