@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,11 +21,13 @@ public class Cart {
     @Column(nullable = false)
     private Integer cartAmount;
 
+    @Setter
     @NotNull
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Setter
     @NotNull
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
