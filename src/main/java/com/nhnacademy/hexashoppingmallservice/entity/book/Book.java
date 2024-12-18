@@ -38,7 +38,6 @@ public class Book {
     @NotNull
     @Digits(integer = 13, fraction = 0)
     @Column(nullable = false, unique = true)
-    @Setter
     private Long bookIsbn;
 
     @Positive
@@ -57,22 +56,27 @@ public class Book {
 
     @PositiveOrZero
     @Column(nullable = false)
+    @Setter
     private int bookView = 0;
 
     @PositiveOrZero
     @Column(nullable = false)
+    @Setter
     private int bookAmount = 0;
 
     @PositiveOrZero
     @Column(nullable = false)
+    @Setter
     private Long bookSellCount = 0L;
 
     @ManyToOne
     @JoinColumn(name = "publisher_id", nullable = false)
+    @Setter
     private Publisher publisher;
 
     @ManyToOne
     @JoinColumn(name = "book_status_id", nullable = false)
+    @Setter
     private BookStatus bookStatus;
 
     @Builder
