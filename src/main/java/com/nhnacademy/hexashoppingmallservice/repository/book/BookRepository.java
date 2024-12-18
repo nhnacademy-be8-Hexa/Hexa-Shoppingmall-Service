@@ -1,7 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.repository.book;
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
-import com.nhnacademy.hexashoppingmallservice.projection.book.BookProjection;
 import feign.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
