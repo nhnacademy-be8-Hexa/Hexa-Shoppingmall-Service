@@ -36,10 +36,10 @@ public class PointPolicyService {
     }
 
     @Transactional
-    public void deletePointPolicy(PointPolicy pointPolicy) {
-        if (!pointPolicyRepository.existsById(pointPolicy.getPointPolicyName())) {
-            throw new PointPolicyAlreadyExistException("Point policy %s is not found".formatted(pointPolicy.getPointPolicyName()));
+    public void deletePointPolicy(String pointPolicyName) {
+        if (!pointPolicyRepository.existsById(pointPolicyName)) {
+            throw new PointPolicyAlreadyExistException("Point policy %s is not found".formatted(pointPolicyName));
         }
-        pointPolicyRepository.deleteById(pointPolicy.getPointPolicyName());
+        pointPolicyRepository.deleteById(pointPolicyName);
     }
 }
