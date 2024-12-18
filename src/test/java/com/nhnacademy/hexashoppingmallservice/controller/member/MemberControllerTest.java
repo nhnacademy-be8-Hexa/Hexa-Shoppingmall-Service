@@ -131,7 +131,7 @@ class MemberControllerTest {
 
         given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/members")
+        mockMvc.perform(get("/api/admin/members")
                         .param("page", "0")
                         .param("search", search)
                         .accept(MediaType.APPLICATION_JSON))
@@ -178,7 +178,7 @@ class MemberControllerTest {
 
         given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/members")
+        mockMvc.perform(get("/api/admin/members")
                         .param("page", "0")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -210,7 +210,7 @@ class MemberControllerTest {
 
         given(memberService.getMember("test1")).willReturn(mockMember);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{memberId}", "test1")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/auth/members/{memberId}", "test1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value("test1"))
@@ -359,7 +359,7 @@ class MemberControllerTest {
         given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(updatedMember);
 
         // Perform PATCH request
-        mockMvc.perform(patch("/api/members/{memberId}", "test1")
+        mockMvc.perform(patch("/api/auth/members/{memberId}", "test1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
