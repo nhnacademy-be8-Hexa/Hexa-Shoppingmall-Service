@@ -5,6 +5,10 @@ import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookIsbnAlreadyExistException;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.book.PublisherNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
@@ -27,20 +31,20 @@ public class BookService {
     @Transactional
     public Book createBook(BookRequestDTO bookRequestDTO) {
         if (!publisherRepository.existsById(Long.parseLong(bookRequestDTO.getPublisherId()))) {
-            throw new RuntimeException("publisher id is not found " + bookRequestDTO.getPublisherId());
+            throw new PublisherNotFoundException("publisher id - %s is not found".formatted(bookRequestDTO.getPublisherId()));
         }
 
         Publisher publisher = publisherRepository.findById(Long.parseLong(bookRequestDTO.getPublisherId())).orElseThrow();
 
         if (!bookStatusRepository.existsById(Long.parseLong(bookRequestDTO.getBookStatusId()))) {
-            throw new RuntimeException("status id is not found " + bookRequestDTO.getBookStatusId());
+            throw new BookStatusNotFoundException("status id - %s is not found".formatted(bookRequestDTO.getBookStatusId()));
         }
 
         BookStatus bookStatus = bookStatusRepository.findById(Long.parseLong(bookRequestDTO.getBookStatusId())).orElseThrow();
 
         // isbn 중복 체크
         if (bookRepository.existsByBookIsbn(bookRequestDTO.getBookIsbn())) {
-            throw new RuntimeException("isbn already exist " + bookRequestDTO.getBookIsbn());
+            throw new BookIsbnAlreadyExistException("isbn - %d already exist ".formatted(bookRequestDTO.getBookIsbn()));
         }
 
         Book book = Book.of(
@@ -112,7 +116,7 @@ public class BookService {
     @Transactional
     public Book updateBook(Long bookId, BookUpdateRequestDTO bookRequestDTO) {
         Book book = bookRepository.findById(bookId).orElseThrow(
-                () -> new RuntimeException("bookId cannot found: " + bookId)
+                () -> new BookNotFoundException("bookId %d cannot found".formatted(bookId))
         );
 
         // 제목
@@ -139,18 +143,19 @@ public class BookService {
         if (bookRequestDTO.getStatusId() != null) {
             Long statusId = Long.parseLong(bookRequestDTO.getStatusId());
             BookStatus bookStatus = bookStatusRepository.findById(statusId)
-                    .orElseThrow(() -> new RuntimeException("status id cannot found: " + statusId));
+                    .orElseThrow(() -> new BookStatusNotFoundException("status id - %d cannot found: ".formatted(statusId)));
             book.setBookStatus(bookStatus);
         }
 
-        return book;
+        return bookRepository.save(book);
     }
+
 
     // 조회수
     @Transactional
     public void incrementBookView(Long bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("book not found with id: " + bookId));
+                .orElseThrow(() -> new BookNotFoundException("book not found with id - %d".formatted(bookId)));
 
         book.setBookView(book.getBookView() + 1);
 
@@ -160,30 +165,29 @@ public class BookService {
     @Transactional
     public void updateBookAmount(Long bookId, int quantity) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new RuntimeException("book not found with id: "+bookId));
+                .orElseThrow(() -> new RuntimeException("book not found with id: " + bookId));
 
         int updateAmount = book.getBookAmount() + quantity;
-        if(updateAmount < 0){
+        if (updateAmount < 0) {
             throw new RuntimeException("not enough bookAmount");
         }
 
         book.setBookAmount(updateAmount);
-
         bookRepository.save(book);
     }
 
-    // 판매수
     @Transactional
-    public void incrementBookSellCount(Long bookId, int quantity){
-        updateBookAmount(bookId,quantity);
+    public void incrementBookSellCount(Long bookId, int quantity) {
+        // 판매량 증가와 동시에 재고 감소 처리
+        updateBookAmount(bookId, -quantity);
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(()-> new RuntimeException("book not found with id: "+bookId));
+                .orElseThrow(() -> new RuntimeException("book not found with id: " + bookId));
 
         book.setBookSellCount(book.getBookSellCount() + quantity);
-
         bookRepository.save(book);
     }
+
 
     //delete
     @Transactional
