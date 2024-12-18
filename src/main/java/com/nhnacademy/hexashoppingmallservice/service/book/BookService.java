@@ -158,11 +158,11 @@ public class BookService {
     }
 
     @Transactional
-    public void updateBookAmount(Long bookId, int plus, int minus) {
+    public void updateBookAmount(Long bookId, int quantity) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(()-> new RuntimeException("book not found with id: "+bookId));
 
-        int updateAmount = book.getBookAmount() + plus - minus;
+        int updateAmount = book.getBookAmount() + quantity;
         if(updateAmount < 0){
             throw new RuntimeException("not enough bookAmount");
         }
@@ -175,7 +175,7 @@ public class BookService {
     // 판매수
     @Transactional
     public void incrementBookSellCount(Long bookId, int quantity){
-        updateBookAmount(bookId,0,quantity);
+        updateBookAmount(bookId,quantity);
 
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(()-> new RuntimeException("book not found with id: "+bookId));
