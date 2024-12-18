@@ -191,4 +191,11 @@ public class BookService {
         bookRepository.deleteById(bookId);
     }
 
+    // 도서 아이디로 조회
+    public Book getBook(Long bookId){
+        return bookRepository.findById(bookId).orElseThrow(
+                ()-> new RuntimeException("bookId not found: "+bookId)
+        );
+    }
+
 }
