@@ -20,7 +20,7 @@ public class MemberController {
     private final Integer SIZE = 10;
     private final MemberService memberService;
 
-    @GetMapping("/api/members")
+    @GetMapping("/api/admin/members")
     public List<MemberProjection> getMembers(
             @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(page, SIZE);
@@ -30,7 +30,7 @@ public class MemberController {
         return memberService.getMembers(pageable);
     }
 
-    @GetMapping("/api/members/{memberId}")
+    @GetMapping("/api/auth/members/{memberId}")
     public Member getMember(@PathVariable String memberId) {
         return memberService.getMember(memberId);
     }
@@ -40,7 +40,7 @@ public class MemberController {
         return ResponseEntity.status(201).body(memberService.createMember(memberRequestDto));
     }
 
-    @PatchMapping("/api/members/{memberId}")
+    @PatchMapping("/api/auth/members/{memberId}")
     public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberRequestDTO memberRequestDto) {
         return ResponseEntity.ok(memberService.updateMember(memberId, memberRequestDto));
     }
