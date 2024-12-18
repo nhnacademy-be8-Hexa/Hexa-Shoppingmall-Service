@@ -15,5 +15,6 @@ public class PointPolicy {
     private String pointPolicyName;
 
     @Column(nullable = false)
+    @Setter
     private Integer pointDelta;
 }

@@ -14,7 +14,7 @@ import lombok.*;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cartId;
+    private Long cartId;
 
     @NotNull
     @Setter
