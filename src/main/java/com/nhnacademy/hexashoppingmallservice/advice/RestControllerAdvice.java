@@ -6,6 +6,9 @@ import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailExcep
 import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,21 +18,24 @@ public class RestControllerAdvice {
     @ExceptionHandler({
             MemberAlreadyExistException.class
     })
-    public ResponseEntity<Void> handleMemberAlreadyExistException(MemberAlreadyExistException e) {
+    public ResponseEntity<Void> handleMemberAlreadyExistException(Exception e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @ExceptionHandler({
-            MemberNotFoundException.class
+            MemberNotFoundException.class,
+            MemberStatusNotFoundException.class,
+            RatingNotFoundException.class,
+            OrderStatusNotFoundException.class
     })
-    public ResponseEntity<Void> handleMemberNotFoundException(MemberNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<Void> handleMemberNotFoundException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @ExceptionHandler({
             SqlQueryExecuteFailException.class
     })
-    public ResponseEntity<Void> handleSqlQueryExecuteFailException(SqlQueryExecuteFailException e) {
+    public ResponseEntity<Void> handleSqlQueryExecuteFailException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
