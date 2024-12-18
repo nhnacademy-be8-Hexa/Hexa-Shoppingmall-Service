@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,8 +29,11 @@ public class ElasticSearchService {
         return elasticSearchRepository.save(book);
     }
 
-
-    public List<Book> searchBooksByTitle(String title) {
+    public List<Book> searchBooksBySellCount(Pageable pageable) {
+        return elasticSearchRepository.findAllByOrderByBookSellCountDesc(pageable);
+    }
+    
+    public List<Book> searchBooksByTitle(String title, Pageable pageable) {
         try {
             InlineScript inlineScript = new InlineScript.Builder()
                     .source("doc['bookTitle.keyword'].value.length()")
@@ -39,6 +43,9 @@ public class ElasticSearchService {
             Script script = new Script.Builder()
                     .inline(inlineScript)
                     .build();
+
+            int from = pageable.getPageNumber() * pageable.getPageSize();
+            int size = pageable.getPageSize();
 
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -52,6 +59,8 @@ public class ElasticSearchService {
                                     )
                             )
                     )
+                    .from(from)
+                    .size(size)
                     .sort(s -> s
                             .script(sr -> sr
                                     .type(ScriptSortType.Number)
@@ -75,7 +84,10 @@ public class ElasticSearchService {
     }
 
 
-    public List<Book> searchBooksByAuthor(String author) {
+    public List<Book> searchBooksByAuthor(String author, Pageable pageable) {
+        int from = pageable.getPageNumber() * pageable.getPageSize();
+        int size = pageable.getPageSize();
+
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -90,6 +102,8 @@ public class ElasticSearchService {
                                     )
                             )
                     )
+                    .from(from)
+                    .size(size)
                     .build();
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
@@ -105,7 +119,10 @@ public class ElasticSearchService {
         }
     }
 
-    public List<Book> searchBooksByDescription(String description) {
+    public List<Book> searchBooksByDescription(String description, Pageable pageable) {
+        int from = pageable.getPageNumber() * pageable.getPageSize();
+        int size = pageable.getPageSize();
+
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -119,6 +136,8 @@ public class ElasticSearchService {
                                     )
                             )
                     )
+                    .from(from)
+                    .size(size)
                     .build();
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
@@ -134,7 +153,10 @@ public class ElasticSearchService {
         }
     }
 
-    public List<Book> searchBooksByTag(String tag) {
+    public List<Book> searchBooksByTag(String tag, Pageable pageable) {
+        int from = pageable.getPageNumber() * pageable.getPageSize();
+        int size = pageable.getPageSize();
+
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -148,12 +170,38 @@ public class ElasticSearchService {
                                     )
                             )
                     )
+                    .from(from)
+                    .size(size)
                     .build();
 
-            // 검색 요청 실행
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            // 검색 결과를 리스트로 변환
+
+            List<Book> books = new ArrayList<>();
+            searchResponse.hits().hits().forEach(hit -> {
+                books.add(hit.source());
+            });
+
+            return books;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Book> searchBooksByIsbn(String isbn) {
+        try {
+            SearchRequest searchRequest = new SearchRequest.Builder()
+                    .index("book31")
+                    .query(q -> q
+                            .term(t -> t
+                                    .field("isbn.keyword")
+                                    .value(isbn)
+                            )
+                    )
+                    .build();
+
+            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+
             List<Book> books = new ArrayList<>();
             searchResponse.hits().hits().forEach(hit -> {
                 books.add(hit.source());
