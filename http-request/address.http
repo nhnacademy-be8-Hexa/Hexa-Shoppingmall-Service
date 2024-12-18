@@ -1,0 +1,64 @@
+### 회원 등급 저장
+POST localhost:8081/api/ratings
+Content-Type: application/json
+
+{
+  "ratingName": "Gold",
+  "ratingPercent": "20"
+}
+
+### 회원 상태 저장
+POST localhost:8081/api/memberStatus
+Content-Type: application/json
+
+{
+  "statusName": "활성"
+}
+
+### 회원 등록
+POST localhost:8081/api/members
+Content-Type: application/json
+
+{
+  "memberId": "john_doe_124",
+  "memberPassword": "securePassword123",
+  "memberName": "John Doe",
+  "memberNumber": "01012345678",
+  "memberEmail": "test@test.com",
+  "memberBirthAt": "1990-05-15",
+  "memberRole": "ADMIN",
+  "ratingId": "1",
+  "statusId": "1"
+}
+
+### 1. 주소 추가 (성공)
+POST http://localhost:8081/api/members/john_doe_124/addresses
+Content-Type: application/json
+
+{
+  "addressName": "Home",
+  "zoneCode": "12345",
+  "address": "123 Main St",
+  "addressDetail": "Apt 101"
+}
+
+### 2. 주소 추가 (필수 필드 누락 - 오류)
+POST http://localhost:8081/api/members/john_doe_124/addresses
+Content-Type: application/json
+
+{
+  "addressName": "Office",
+  "zoneCode": "67890"
+}
+
+### 3. 회원의 주소 목록 조회 (page 파라미터만)
+GET http://localhost:8081/api/members/john_doe_124/addresses?page=0
+Accept: application/json
+
+### 5. 존재하지 않는 회원의 주소 목록 조회 (오류)
+GET http://localhost:8081/api/members/nonexistentMember/addresses?page=0
+Accept: application/json
+
+### 6. 주소 삭제 (성공)
+DELETE http://localhost:8081/api/members/addresses/1
+Accept: application/json

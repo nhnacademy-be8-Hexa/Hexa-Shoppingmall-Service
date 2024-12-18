@@ -34,9 +34,9 @@ public class PointPolicyController {
         return ResponseEntity.ok(pointPolicies);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deletePointPolicy(@RequestBody PointPolicy pointPolicy) {
-        pointPolicyService.deletePointPolicy(pointPolicy);
+    @DeleteMapping("/{pointPolicyName}")
+    public ResponseEntity<Void> deletePointPolicy(@PathVariable String pointPolicyName) {
+        pointPolicyService.deletePointPolicy(pointPolicyName);
         return ResponseEntity.noContent().build();
     }
 }
