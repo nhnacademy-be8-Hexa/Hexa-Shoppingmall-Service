@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.repository.book;
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
+import com.nhnacademy.hexashoppingmallservice.projection.book.BookProjection;
 import feign.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +19,10 @@ public interface BookRepository extends JpaRepository<Book,Long> {
         JOIN b.publisher p
         WHERE LOWER(p.publisherName) LIKE LOWER(CONCAT('%', :publisherName, '%'))
     """)
-    Page<Book> findBooksByPublisherName(@Param("publisherName") String publisherName, Pageable pageable);
+    Page<BookProjection> findBooksByPublisherName(@Param("publisherName") String publisherName, Pageable pageable);
 
     // 도서 목록 - 도서명
-    Page<Book> findByBookTitleLike(@Param("bookTitle")String bookTitle,Pageable pageable);
+    Page<BookProjection> findByBookTitleLike(@Param("bookTitle")String bookTitle,Pageable pageable);
 
     // 도서 목록 - 저자 이름
     @Query("""
