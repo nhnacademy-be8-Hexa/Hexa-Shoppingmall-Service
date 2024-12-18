@@ -31,7 +31,7 @@ public class PointDetailsService {
         return pointDetailsRepository.save(pointDetails);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Long sumPoint(String memberId) {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException(memberId);
@@ -39,7 +39,7 @@ public class PointDetailsService {
         return pointDetailsRepository.sumPointDetailsIncrementByMemberId(memberId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PointDetailsProjection> getPointDetails(Pageable pageable, String memberId) {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException(memberId);

@@ -4,6 +4,7 @@ package com.nhnacademy.hexashoppingmallservice.entity.address;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -40,23 +41,26 @@ public class Address {
     @Length(max = 400)
     private String addressDetail;
 
-    @NotBlank
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @Setter
     private Member member;
 
     @Builder
-    public Address(String addressName, String zoneCode, String addressDetail, Member member) {
+    public Address(String addressName, String zoneCode, String address, String addressDetail, Member member) {
         this.addressName = addressName;
         this.zoneCode = zoneCode;
+        this.address = address;
         this.addressDetail = addressDetail;
         this.member = member;
     }
 
-    public static Address of(String addressName, String zoneCode, String addressDetail, Member member) {
+    public static Address of(String addressName, String zoneCode, String address, String addressDetail, Member member) {
         return builder()
                 .addressName(addressName)
                 .zoneCode(zoneCode)
+                .address(address)
                 .addressDetail(addressDetail)
                 .member(member)
                 .build();
