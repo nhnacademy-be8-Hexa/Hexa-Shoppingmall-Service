@@ -90,7 +90,7 @@ public class BookService {
 
     // 도서 목록 - 도서명
     public List<Book> getBooksByBookTitle(String bookTitle, Pageable pageable) {
-        return bookRepository.findByBookTitleLike(bookTitle, pageable).getContent();
+        return bookRepository.findByBookTitleContaining(bookTitle, pageable).getContent();
     }
 
     // 도서 목록 저자 이름
