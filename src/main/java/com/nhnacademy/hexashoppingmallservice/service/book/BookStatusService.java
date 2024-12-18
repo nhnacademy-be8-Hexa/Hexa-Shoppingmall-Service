@@ -1,15 +1,15 @@
 package com.nhnacademy.hexashoppingmallservice.service.book;
 
-import com.netflix.discovery.provider.Serializer;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookStatusRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
-@Serializer
+@Service
 @RequiredArgsConstructor
 public class BookStatusService {
     private final BookStatusRepository bookStatusRepository;
