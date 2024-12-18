@@ -21,7 +21,7 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     Page<Book> findBooksByPublisherName(@Param("publisherName") String publisherName, Pageable pageable);
 
     // 도서 목록 - 도서명
-    Page<Book> findByBookTitleLike(@Param("bookTitle")String bookTitle,Pageable pageable);
+    Page<Book> findByBookTitleContaining(@Param("bookTitle")String bookTitle, Pageable pageable);
 
     // 도서 목록 - 저자 이름
     @Query("""
