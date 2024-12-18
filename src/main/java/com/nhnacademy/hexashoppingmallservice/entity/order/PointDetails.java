@@ -19,6 +19,7 @@ public class PointDetails {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "member_id")
+    @Setter
     private Member member;
 
     @Column(nullable = false)
@@ -29,5 +30,6 @@ public class PointDetails {
     private String pointDetailsComment;
 
     @Column(nullable = false)
+    @Setter
     private LocalDateTime pointDetailsDatetime;
 }
