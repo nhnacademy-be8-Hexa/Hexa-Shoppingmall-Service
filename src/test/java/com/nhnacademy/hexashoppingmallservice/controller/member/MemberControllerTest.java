@@ -210,7 +210,7 @@ class MemberControllerTest {
 
         given(memberService.getMember("test1")).willReturn(mockMember);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/auth/members/{memberId}", "test1")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{memberId}", "test1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value("test1"))
