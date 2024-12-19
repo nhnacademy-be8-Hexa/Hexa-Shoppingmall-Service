@@ -7,11 +7,12 @@ import co.elastic.clients.elasticsearch._types.ScriptSortType;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.nhnacademy.hexashoppingmallservice.document.Book;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class ElasticSearchService {
     public List<Book> searchBooksBySellCount(Pageable pageable) {
         return elasticSearchRepository.findAllByOrderByBookSellCountDesc(pageable);
     }
-    
+
     public List<Book> searchBooksByTitle(String title, Pageable pageable) {
         try {
             InlineScript inlineScript = new InlineScript.Builder()
@@ -72,12 +73,10 @@ public class ElasticSearchService {
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -92,14 +91,9 @@ public class ElasticSearchService {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
                     .query(q -> q
-                            .nested(n -> n
-                                    .path("authors")
-                                    .query(q1 -> q1
-                                            .match(m -> m
-                                                    .field("authors.authorName")
-                                                    .query(author)
-                                            )
-                                    )
+                            .match(m -> m
+                                    .field("authors")
+                                    .query(author)
                             )
                     )
                     .from(from)
@@ -108,12 +102,10 @@ public class ElasticSearchService {
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -142,12 +134,10 @@ public class ElasticSearchService {
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -177,12 +167,10 @@ public class ElasticSearchService {
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -202,12 +190,10 @@ public class ElasticSearchService {
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Document(indexName = "book31")
@@ -15,8 +13,7 @@ public class Book {
     private Long bookId;
     private String bookTitle;
     private String bookDescription;
-    @Field(type = FieldType.Nested)
-    private List<Author> authors;
+    private List<String> authors;
     private String publisherName;
     private String bookStatusName;
     private String tagName;
@@ -32,7 +29,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long bookId, String bookTitle, String bookDescription, List<Author> authors, String publisherName,
+    public Book(Long bookId, String bookTitle, String bookDescription, List<String> authors, String publisherName,
                 String bookStatusName, String tagName, long isbn, LocalDate bookPubDate, int bookOriginPrice,
                 int bookPrice,
                 boolean bookWrappable, int bookView, int bookAmount, long bookSellCount) {
@@ -65,7 +62,7 @@ public class Book {
         return bookDescription;
     }
 
-    public List<Author> getAuthors() {
+    public List<String> getAuthors() {
         return authors;
     }
 
