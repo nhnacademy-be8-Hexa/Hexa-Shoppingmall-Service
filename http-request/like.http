@@ -1,0 +1,66 @@
+### 회원 등급 저장
+POST localhost:8081/api/ratings
+Content-Type: application/json
+
+{
+  "ratingName": "Gold",
+  "ratingPercent": "20"
+}
+
+### 회원 상태 저장
+POST localhost:8081/api/memberStatus
+Content-Type: application/json
+
+{
+  "statusName": "활성"
+}
+
+### 회원 등록
+POST localhost:8081/api/members
+Content-Type: application/json
+
+{
+  "memberId": "john_doe_124",
+  "memberPassword": "securePassword123",
+  "memberName": "John Doe",
+  "memberNumber": "01012345678",
+  "memberEmail": "test@test.com",
+  "memberBirthAt": "1990-05-15",
+  "memberRole": "ADMIN",
+  "ratingId": "1",
+  "statusId": "1"
+}
+
+### 1. 좋아요 생성 (성공)
+POST http://localhost:8081/api/auth/likes?bookId=1&memberId=john_doe_124
+Content-Type: application/json
+
+###
+
+### 2. 좋아요 생성 (책이 존재하지 않음 - 오류)
+POST http://localhost:8081/api/auth/likes?bookId=999&memberId=john_doe_124
+Content-Type: application/json
+
+###
+
+### 3. 좋아요 생성 (회원이 존재하지 않음 - 오류)
+POST http://localhost:8081/api/auth/likes?bookId=1&memberId=nonexistent_member
+Content-Type: application/json
+
+###
+
+### 4. 좋아요 생성 (중복 좋아요 - 오류)
+POST http://localhost:8081/api/auth/likes?bookId=1&memberId=john_doe_124
+Content-Type: application/json
+
+###
+
+### 5. 특정 책의 좋아요 합계 조회 (성공)
+GET http://localhost:8081/api/books/1/count
+Accept: application/json
+
+###
+
+### 6. 특정 책의 좋아요 합계 조회 (책이 존재하지 않음 - 오류)
+GET http://localhost:8081/api/books/999/count
+Accept: application/json
