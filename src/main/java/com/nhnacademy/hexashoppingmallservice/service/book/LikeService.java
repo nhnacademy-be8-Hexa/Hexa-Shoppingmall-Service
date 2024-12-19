@@ -4,6 +4,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Like;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotExistException;
+import com.nhnacademy.hexashoppingmallservice.exception.book.LikeAlreadyExistsException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.LikeRepository;
@@ -33,6 +34,11 @@ public class LikeService {
             throw new MemberNotFoundException("MemberId %s is not exist".formatted(memberId));
         }
 
+        boolean exists = likeRepository.existsByBookBookIdAndMemberMemberId(bookId, memberId);
+        if (exists) {
+            throw new LikeAlreadyExistsException(String.format("Like already exists for bookId %d and memberId %s.", bookId, memberId));
+        }
+
         Book book = bookRepository.findById(bookId).get();
         Member member = memberRepository.findById(memberId).get();
 
@@ -43,6 +49,9 @@ public class LikeService {
 
     @Transactional(readOnly = true)
     public Long sumLikes(Long bookId) {
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotExistException(String.format("BookId %d does not exist.", bookId));
+        }
         return likeRepository.countByBookBookId(bookId);
     }
 
