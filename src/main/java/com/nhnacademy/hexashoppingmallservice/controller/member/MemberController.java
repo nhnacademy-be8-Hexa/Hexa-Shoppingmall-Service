@@ -30,7 +30,7 @@ public class MemberController {
         return memberService.getMembers(pageable);
     }
 
-    @GetMapping("/api/auth/members/{memberId}")
+    @GetMapping("/api/members/{memberId}")
     public Member getMember(@PathVariable String memberId) {
         return memberService.getMember(memberId);
     }
