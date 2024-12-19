@@ -1,7 +1,7 @@
-package com.nhnacademy.hexashoppingmallservice.controller.point;
+package com.nhnacademy.hexashoppingmallservice.controller.order;
 
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointPolicy;
-import com.nhnacademy.hexashoppingmallservice.service.point.PointPolicyService;
+import com.nhnacademy.hexashoppingmallservice.service.order.PointPolicyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,9 +34,9 @@ public class PointPolicyController {
         return ResponseEntity.ok(pointPolicies);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deletePointPolicy(@RequestBody PointPolicy pointPolicy) {
-        pointPolicyService.deletePointPolicy(pointPolicy);
+    @DeleteMapping("/{pointPolicyName}")
+    public ResponseEntity<Void> deletePointPolicy(@PathVariable String pointPolicyName) {
+        pointPolicyService.deletePointPolicy(pointPolicyName);
         return ResponseEntity.noContent().build();
     }
 }

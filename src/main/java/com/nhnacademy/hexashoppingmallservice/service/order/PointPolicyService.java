@@ -1,9 +1,9 @@
-package com.nhnacademy.hexashoppingmallservice.service.point;
+package com.nhnacademy.hexashoppingmallservice.service.order;
 
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointPolicy;
 import com.nhnacademy.hexashoppingmallservice.exception.point.PointPolicyAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.point.PointPolicyNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.repository.point.PointPolicyRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.order.PointPolicyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +36,10 @@ public class PointPolicyService {
     }
 
     @Transactional
-    public void deletePointPolicy(PointPolicy pointPolicy) {
-        if (!pointPolicyRepository.existsById(pointPolicy.getPointPolicyName())) {
-            throw new PointPolicyAlreadyExistException("Point policy %s is not found".formatted(pointPolicy.getPointPolicyName()));
+    public void deletePointPolicy(String pointPolicyName) {
+        if (!pointPolicyRepository.existsById(pointPolicyName)) {
+            throw new PointPolicyAlreadyExistException("Point policy %s is not found".formatted(pointPolicyName));
         }
-        pointPolicyRepository.deleteById(pointPolicy.getPointPolicyName());
+        pointPolicyRepository.deleteById(pointPolicyName);
     }
 }

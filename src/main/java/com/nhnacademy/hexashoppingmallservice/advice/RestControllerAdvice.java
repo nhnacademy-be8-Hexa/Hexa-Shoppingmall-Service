@@ -1,8 +1,11 @@
 package com.nhnacademy.hexashoppingmallservice.advice;
 
+import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartAlreadyExistException;
+
+import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
+import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
@@ -34,5 +37,18 @@ public class RestControllerAdvice {
     })
     public ResponseEntity<Void> handleSqlQueryExecuteFailException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @ExceptionHandler({
+            CartAlreadyExistException.class
+    })
+    public ResponseEntity<Void> handleCartAlreadyExistException(CartAlreadyExistException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+    @ExceptionHandler({
+            CartNotFoundException.class
+    })
+    public ResponseEntity<Void> handleCartNotFoundException(CartNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
