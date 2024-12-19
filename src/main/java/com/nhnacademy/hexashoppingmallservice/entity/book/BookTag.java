@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -18,11 +19,13 @@ public class BookTag {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false, foreignKey = @ForeignKey(name = "book_tag_ibfk_1"))
+    @Setter
     private Book book;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tag_id", nullable = false, foreignKey = @ForeignKey(name = "book_tag_ibfk_2"))
+    @Setter
     private Tag tag;
 
     @Builder
