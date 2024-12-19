@@ -70,12 +70,21 @@ public class CartService {
     }
 
     @Transactional
+    public Cart getCartByMemberId(String memberId) {
+        Member member = memberRepository.findById(String.valueOf(memberId))
+                .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
+        return cartRepository.findByMember(member).orElseThrow(
+                () -> new CartNotFoundException("No cart items found for Member ID: " + memberId)
+        );
+    }
+
+    @Transactional
     public void deleteCart(Long cartId) {
         cartRepository.deleteById(cartId);
     }
 
     @Transactional
-    public void clearCartByMember(Long memberId) {
+    public void clearCartByMember(String memberId) {
         Member member = memberRepository.findById(String.valueOf(memberId))
                 .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
 
