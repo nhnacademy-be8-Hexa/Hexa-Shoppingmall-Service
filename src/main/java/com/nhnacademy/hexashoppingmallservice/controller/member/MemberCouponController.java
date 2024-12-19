@@ -34,11 +34,17 @@ public class MemberCouponController {
      * @param couponId 생성할 쿠폰의 ID
      * @return 생성된 MemberCoupon
      */
-    @PostMapping("/admin/members/{memberId}/coupons/{couponId}")
+    @PostMapping("/auth/members/{memberId}/coupons/{couponId}")
     public ResponseEntity<MemberCoupon> createMemberCoupon(
             @PathVariable String memberId,
             @PathVariable Long couponId) {
         MemberCoupon memberCoupon = memberCouponService.createMemberCoupon(couponId, memberId);
         return new ResponseEntity<>(memberCoupon, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/auth/members/{memberId}/coupons/{couponId}")
+    public ResponseEntity<Void> deleteMemberCoupon(@PathVariable String memberId, @PathVariable Long couponId) {
+        memberCouponService.deleteMemberCoupon(couponId, memberId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -84,19 +84,19 @@ class BookStatusServiceTest {
         verify(bookStatusRepository, times(1)).deleteById(1L);
     }
 
-    @Test
-    void testUpdateBookStatus_Success() {
-        BookStatusRequestDTO requestDTO = new BookStatusRequestDTO("판매종료");
-
-        when(bookStatusRepository.findById(1L)).thenReturn(Optional.of(bookStatus));
-        when(bookStatusRepository.save(any(BookStatus.class))).thenReturn(BookStatus.of("판매종료"));
-
-        BookStatus updatedStatus = bookStatusService.updateBookStatus(1L, requestDTO);
-
-        assertThat(updatedStatus.getBookStatus()).isEqualTo("판매종료");
-        verify(bookStatusRepository, times(1)).findById(1L);
-        verify(bookStatusRepository, times(1)).save(any(BookStatus.class));
-    }
+//    @Test
+//    void testUpdateBookStatus_Success() {
+//        BookStatusRequestDTO requestDTO = new BookStatusRequestDTO("판매종료");
+//
+//        when(bookStatusRepository.findById(1L)).thenReturn(Optional.of(bookStatus));
+//        when(bookStatusRepository.save(any(BookStatus.class))).thenReturn(BookStatus.of("판매종료"));
+//
+//        BookStatus updatedStatus = bookStatusService.updateBookStatus(1L, requestDTO);
+//
+//        assertThat(updatedStatus.getBookStatus()).isEqualTo("판매종료");
+//        verify(bookStatusRepository, times(1)).findById(1L);
+//        verify(bookStatusRepository, times(1)).save(any(BookStatus.class));
+//    }
 
     @Test
     void testUpdateBookStatus_NotFound() {

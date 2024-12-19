@@ -34,4 +34,16 @@ public class MemberCouponService {
         MemberCoupon memberCoupon = MemberCoupon.of(couponId, member);
         return memberCouponRepository.save(memberCoupon);
     }
+
+    @Transactional
+    public void deleteMemberCoupon(Long couponId, String memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException(memberId);
+        }
+        if (!memberCouponRepository.existsById(couponId)) {
+            throw new MemberNotFoundException("Coupon %d is not found".formatted(couponId));
+        }
+        MemberCoupon memberCoupon = memberCouponRepository.findById(couponId).get();
+        memberCouponRepository.delete(memberCoupon);
+    }
 }
