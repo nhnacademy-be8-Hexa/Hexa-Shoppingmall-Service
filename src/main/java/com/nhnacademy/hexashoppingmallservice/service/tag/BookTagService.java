@@ -1,6 +1,5 @@
 package com.nhnacademy.hexashoppingmallservice.service.tag;
 
-import com.nhnacademy.hexashoppingmallservice.dto.tag.BookTagRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookTag;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
@@ -39,25 +38,27 @@ public class BookTagService {
         return bookTagRepository.findBooksByTag_TagId(tagId, pageable).getContent();
     }
 
-    public void create(BookTagRequestDTO requestDTO) {
-        Book book = bookRepository.findById(requestDTO.bookId()).orElseThrow(
-                ()->new BookNotFoundException("Book: %d not found.".formatted(requestDTO.bookId()))
+    // 생성
+    public void create(Long bookId, Long tagId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(
+                ()->new BookNotFoundException("Book: %d not found.".formatted(bookId))
         );
 
-        Tag tag = tagRepository.findById(requestDTO.tagId()).orElseThrow(
-                ()->new TagNotFoundException("Tag: %d not found.".formatted(requestDTO.tagId()))
+        Tag tag = tagRepository.findById(tagId).orElseThrow(
+                ()->new TagNotFoundException("Tag: %d not found.".formatted(tagId))
         );
 
-        if(bookTagRepository.existsByBook_BookIdAndTag_TagId(requestDTO.bookId(), requestDTO.tagId())) {
-            throw new AlreadyExistsBookTagException("Book: %d, Tag: %d already exists".formatted(requestDTO.bookId(), requestDTO.tagId()));
+        if(bookTagRepository.existsByBook_BookIdAndTag_TagId(bookId, tagId)) {
+            throw new AlreadyExistsBookTagException("Book: %d, Tag: %d already exists".formatted(bookId, tagId));
         }
 
         BookTag bookTag = BookTag.of(book, tag);
         bookTagRepository.save(bookTag);
     }
 
-    public void delete(Long BookTagId) {
-        bookTagRepository.deleteById(BookTagId);
+    // 삭제
+    public void delete(Long bookId, Long tagId) {
+        bookTagRepository.deleteByBook_BookIdAndTag_TagId(bookId, tagId);
     }
 
 }
