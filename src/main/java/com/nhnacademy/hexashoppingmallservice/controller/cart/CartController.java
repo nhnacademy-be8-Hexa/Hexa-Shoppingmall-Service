@@ -28,6 +28,11 @@ public class CartController {
         return cartService.getCart(cartId);
     }
 
+    @GetMapping("/api/carts/member/{memberId}")
+    public Cart getCartByMemberId(@PathVariable String memberId) {
+        return cartService.getCartByMemberId(memberId);
+    }
+
     @PostMapping("/api/carts")
     public ResponseEntity<Cart> createCart(@RequestBody @Valid CartRequestDTO cartRequestDTO) {
         return ResponseEntity.ok(cartService.createCart(cartRequestDTO));
@@ -39,7 +44,7 @@ public class CartController {
     }
 
     @DeleteMapping("/api/carts/member/{memberId}")
-    public ResponseEntity<Void> clearCartByMember(@PathVariable Long memberId) {
+    public ResponseEntity<Void> clearCartByMember(@PathVariable String memberId) {
         cartService.clearCartByMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
