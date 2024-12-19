@@ -3,14 +3,13 @@ package com.nhnacademy.hexashoppingmallservice.entity.member;
 import com.nhnacademy.hexashoppingmallservice.entity.review.Review;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor
 @Getter
+@Builder
 public class MemberReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +25,7 @@ public class MemberReport {
     @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
-
+    public static MemberReport of(Member member, Review review) {
+        return MemberReport.builder().member(member).review(review).build();
+    }
 }
