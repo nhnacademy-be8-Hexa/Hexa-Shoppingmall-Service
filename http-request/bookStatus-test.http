@@ -1,0 +1,16 @@
+### 전체 도서 상태 조회
+GET localhost:8081/api/bookStatuses
+Accept: application/json
+
+### 도서 상태 생성
+POST localhost:8081/api/bookStatuses
+Content-Type: application/json
+
+{
+  "bookStatusId": 1,
+  "bookStatus": "판매중"
+}
+
+### 아이디로 조회
+GET localhost:8081/api/bookStatuses/1
+Accept: application/json
