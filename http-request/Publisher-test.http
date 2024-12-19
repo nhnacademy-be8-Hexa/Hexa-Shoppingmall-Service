@@ -1,0 +1,16 @@
+### 전체 출판사 조회
+GET localhost:8081/api/publishers
+Accept: application/json
+
+### 출판사 생성
+POST localhost:8081/api/publishers
+Content-Type: application/json
+
+{
+  "publisherId": 1,
+  "publisherName": "교보문고"
+}
+
+### 아이디로 조회
+GET localhost:8081/api/publishers/1
+Accept: application/json

@@ -1,0 +1,35 @@
+### 전체 도서 목록 조회
+GET http://localhost:8081/api/books?page=0
+Accept: application/json
+
+###
+
+### 도서 제목 검색
+GET http://localhost:8081/api/books?search=Gatsby
+Accept: application/json
+
+###
+
+### 도서 생성
+POST http://localhost:8081/api/books
+Content-Type: application/json
+
+{
+  "bookTitle": "The Great Gatsby",
+  "bookDescription": "A classic novel by F. Scott Fitzgerald.",
+  "bookPubDate": "1925-04-10",
+  "bookIsbn": 1234567890123,
+  "bookOriginPrice": 20000,
+  "bookPrice": 15000,
+  "bookWrappable": false,
+  "publisherId": "1",
+  "bookStatusId": "1"
+}
+
+###
+
+### 특정 도서 조회 (ID 1)
+GET http://localhost:8081/api/books/1
+Accept: application/json
+
+
