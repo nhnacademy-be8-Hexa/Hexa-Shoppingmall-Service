@@ -18,4 +18,6 @@ public interface BookTagRepository extends JpaRepository<BookTag, Long> {
 
     // 이미 존재하는 책,태그 짝 검사
     boolean existsByBook_BookIdAndTag_TagId(Long bookId, Long tagId);
+
+    List<BookTag> findByTag_TagId(Long tagId);
 }
