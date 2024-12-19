@@ -2,7 +2,6 @@ package com.nhnacademy.hexashoppingmallservice.controller.tag;
 
 import com.nhnacademy.hexashoppingmallservice.dto.tag.TagRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
-import com.nhnacademy.hexashoppingmallservice.service.tag.BookTagService;
 import com.nhnacademy.hexashoppingmallservice.service.tag.TagService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

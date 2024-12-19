@@ -1,0 +1,37 @@
+### 태그 모든 조회
+GET localhost:8081/api/tags
+
+### 태그 생성
+POST localhost:8081/api/admin/tags
+Content-Type: application/json
+
+{
+  "tagName": "남주인공"
+}
+
+### 태그 생성 2
+POST localhost:8081/api/admin/tags
+Content-Type: application/json
+
+{
+  "tagName": "여주인공"
+}
+
+### 태그 생성 3
+POST localhost:8081/api/admin/tags
+Content-Type: application/json
+
+{
+  "tagName": "외계인"
+}
+
+### 태그 수정
+PUT localhost:8081/api/admin/tags/3
+Content-Type: application/json
+
+{
+  "tagName": "동물"
+}
+
+### 태그 삭제
+DELETE localhost:8081/api/admin/tags/3
