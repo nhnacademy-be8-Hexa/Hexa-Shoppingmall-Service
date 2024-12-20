@@ -1,16 +1,15 @@
 package com.nhnacademy.hexashoppingmallservice.dto.order;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderStatusRequestDTO {
-    @NotNull
-    private String orderStatus;
+public class GuestOrderRequestDTO {
+    private Long orderId;
+    private String guestOrderPassword;
+    private String guestOrderNumber;
+    private String guestOrderEmail;
 }

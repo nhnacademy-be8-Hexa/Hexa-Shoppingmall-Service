@@ -23,8 +23,8 @@ public class OrderStatus {
     @NotBlank
     @Length(max = 20)
     private String orderStatus;
-    // 대기
     // 배송중
+    // 대기
     // 완료
     // 반품
     // 주문 취소
