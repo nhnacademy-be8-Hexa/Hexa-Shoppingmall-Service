@@ -86,3 +86,5 @@ Content-Type: application/json
   "statusId": "1"
 }
 
+### 로그인 호출
+PUT localhost:8081/api/auth/members/john_doe_124
