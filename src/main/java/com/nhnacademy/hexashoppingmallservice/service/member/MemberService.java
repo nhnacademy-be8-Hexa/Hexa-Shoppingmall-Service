@@ -110,4 +110,14 @@ public class MemberService {
     public List<MemberProjection> searchMembersById(Pageable pageable, String memberId) {
         return memberRepository.findByMemberIdContaining(memberId, pageable).getContent();
     }
+
+    @Transactional
+    public void login(String memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberNotFoundException(String.format("%s", memberId))
+        );
+
+        member.login();
+    }
+
 }

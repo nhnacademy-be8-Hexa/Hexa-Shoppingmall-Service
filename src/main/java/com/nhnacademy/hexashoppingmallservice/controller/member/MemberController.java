@@ -44,4 +44,12 @@ public class MemberController {
     public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberRequestDTO memberRequestDto) {
         return ResponseEntity.ok(memberService.updateMember(memberId, memberRequestDto));
     }
+
+    @PutMapping("/api/auth/members/{memberId}")
+    public ResponseEntity<Void> loginMember(
+            @PathVariable String memberId
+    ){
+        memberService.login(memberId);
+        return ResponseEntity.ok().build();
+    }
 }
