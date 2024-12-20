@@ -6,13 +6,16 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.Delivery;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.DeliveryNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.DeliveryRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Formatter;
 import java.util.List;
 
 @Service
@@ -24,8 +27,12 @@ public class DeliveryService {
 
     @Transactional
     public Delivery createDelivery(DeliveryRequestDTO deliveryRequestDTO) {
-        //Order order = orderRepository.findById(deliveryRequestDTO.getOrderId())
-        //.orElseThrow() -> new OrderNotFoundException("Order ID: %s not found", deliveryRequestDTO.getOrderId().toString());
+        Order order = orderRepository.findById(deliveryRequestDTO.getOrderId()).orElseThrow(
+                () -> {
+            String errorMessage = new Formatter().format("Order ID: %s not found", deliveryRequestDTO.getOrderId().toString()).toString();
+            return new OrderNotFoundException(errorMessage);
+        });
+
         Delivery delivery = Delivery.of(
                 order,
                 deliveryRequestDTO.getDeliveryAmount()

@@ -27,12 +27,10 @@ public class Delivery {
     @Column(nullable = false)
     private LocalDateTime deliveryReleaseDate;
 
-    public static Delivery of(Order order, Integer deliveryAmount, LocalDateTime deliveryDate, LocalDateTime deliveryReleaseDate) {
+    public static Delivery of(Order order, Integer deliveryAmount) {
         return Delivery.builder()
                 .order(order)
                 .deliveryAmount(deliveryAmount)
-                .deliveryDate(deliveryDate)
-                .deliveryReleaseDate(deliveryReleaseDate)
                 .build();
     }
 }
