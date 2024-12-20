@@ -12,7 +12,11 @@ import java.time.LocalDateTime;
 @Builder
 public class Delivery {
     @Id
+    @Column(name = "order_id")
+    private Long orderId;
+
     @OneToOne
+    @MapsId
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -30,6 +34,7 @@ public class Delivery {
     public static Delivery of(Order order, Integer deliveryAmount) {
         return Delivery.builder()
                 .order(order)
+                .orderId(order.getOrderId())
                 .deliveryAmount(deliveryAmount)
                 .build();
     }
