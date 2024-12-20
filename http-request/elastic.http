@@ -1,0 +1,35 @@
+###
+POST localhost:8081/books
+Content-Type: application/json
+
+{
+  "bookId": 3,
+  "bookTitle": "book",
+  "bookDescription": "bookDescription1",
+  "authors": [
+    {
+      "authorId": 1,
+      "authorName": "author1"
+    }
+  ],
+  "publisherName": "publisher1",
+  "bookStatusName": "bookStatus1",
+  "tagName": "tag1"
+}
+
+
+### 제목으로 검색
+GET localhost:8081/books/search/title?title=
+Accept: application/json
+
+### 저자로 검색
+GET localhost:8081/books/search/author?author=
+Accept: application/json
+
+### 설명으로 검색
+GET localhost:8081/books/search/description?description=
+Accept: application/json
+
+### 태그로 검색
+GET localhost:8081/books/search/tag?tag=
+Accept: application/json

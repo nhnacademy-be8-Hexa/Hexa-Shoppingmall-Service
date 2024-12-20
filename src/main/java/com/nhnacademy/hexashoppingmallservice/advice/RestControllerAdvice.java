@@ -8,6 +8,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.member.MemberAlreadyExis
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.order.DeliveryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,4 +52,11 @@ public class RestControllerAdvice {
     public ResponseEntity<Void> handleCartNotFoundException(CartNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+    @ExceptionHandler({
+            DeliveryNotFoundException.class
+    })
+    public ResponseEntity<Void> handleDeliveryNotFoundException(DeliveryNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
 }
