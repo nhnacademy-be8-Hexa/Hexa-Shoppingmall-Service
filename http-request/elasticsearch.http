@@ -1,44 +1,48 @@
 ###
-POST localhost:8081/api/books
+POST localhost:8081/api/search
 Content-Type: application/json
 
 {
   "bookId": 1,
-  "bookTitle": "book1",
-  "bookDescription": "bookDescription1",
+  "bookTitle": "bookTitle1",
+  "bookDescription": "1",
   "authors": [
-    "author1",
-    "author2"
+    "1",
+    "2"
   ],
-  "publisherName": "publisher1",
-  "bookStatusName": "bookStatus1",
-  "tagName": "tag1",
+  "publisherName": "1",
+  "bookStatusName": "1",
+  "tagName": "1",
   "isbn": 1111111111111,
   "bookSellCount": 1
 }
 
+### 통합 검색
+GET localhost:8081/api/search?search=
+Accept: application/json
+
 ### 제목으로 검색
 #&page=1&size=10
-GET localhost:8081/api/books/search/title?title=
+GET localhost:8081/api/search?title=
 Accept: application/json
 
 ### 저자로 검색
-GET localhost:8081/api/books/search/author?author=
+GET localhost:8081/api/search?author=
 Accept: application/json
 
 ### 설명으로 검색
-GET localhost:8081/api/books/search/description?description=
+GET localhost:8081/api/search?description=
 Accept: application/json
 
 ### 태그로 검색
-GET localhost:8081/api/books/search/tag?tag=
+GET localhost:8081/api/search?tag=
 Accept: application/json
 
 ### isbn으로 검색
-GET localhost:8081/api/books/search/isbn?isbn=
+GET localhost:8081/api/search?isbn=
 Accept: application/json
 
 ### 판매수 기준으로 정렬(베스트셀러)
-GET localhost:8081/api/books/search/sellCount
+GET localhost:8081/api/search
 Accept: application/json
 
