@@ -68,7 +68,7 @@ Content-Type: application/json
 }
 
 ### 회원 목록 조회
-GET localhost:8081/api/members?page=0
+GET localhost:8081/api/auth/members?page=0
 
 ### 회원 정보 업데이트(비밀번호 변경)
 PATCH localhost:8081/api/members/john_doe_124
