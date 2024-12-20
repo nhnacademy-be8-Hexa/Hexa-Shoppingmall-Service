@@ -23,7 +23,7 @@ public class BookTag {
     private Book book;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "tag_id", nullable = false, foreignKey = @ForeignKey(name = "book_tag_ibfk_2"))
     @Setter
     private Tag tag;

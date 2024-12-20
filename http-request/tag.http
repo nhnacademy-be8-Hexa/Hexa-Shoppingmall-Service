@@ -1,4 +1,4 @@
-### 태그 모든 조회
+### 태그 리스트 조회
 GET localhost:8081/api/tags
 
 ### 태그 생성
@@ -35,3 +35,17 @@ Content-Type: application/json
 
 ### 태그 삭제
 DELETE localhost:8081/api/admin/tags/3
+
+
+
+### 1번 도서의 태그 조회
+GET localhost:8081/api/books/1/tags
+
+### 1번 태그의 도서 조회
+GET localhost:8081/api/tags/1/books
+
+### 1번 도서에 1번 태그 추가
+POST localhost:8081/api/admin/books/1/tags/1
+
+### 1번 도서에 1번 태그 삭제
+DELETE localhost:8081/api/admin/books/1/tags/1

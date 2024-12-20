@@ -12,11 +12,13 @@ import com.nhnacademy.hexashoppingmallservice.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookTagService {
     private final BookTagRepository bookTagRepository;
     private final TagRepository tagRepository;
@@ -27,7 +29,7 @@ public class BookTagService {
         if(!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException("Book: %d not found.".formatted(bookId));
         }
-        return bookTagRepository.findTagsByBook_BookId(bookId);
+        return bookTagRepository.findTagsByBookId(bookId);
     }
 
     // 태그 아이디로 책 리스트 조회
@@ -35,10 +37,11 @@ public class BookTagService {
         if(!tagRepository.existsById(tagId)) {
             throw new TagNotFoundException("Tag: %d not found.".formatted(tagId));
         }
-        return bookTagRepository.findBooksByTag_TagId(tagId, pageable).getContent();
+        return bookTagRepository.findBooksByTagId(tagId, pageable).getContent();
     }
 
     // 생성
+    @Transactional
     public void create(Long bookId, Long tagId) {
         Book book = bookRepository.findById(bookId).orElseThrow(
                 ()->new BookNotFoundException("Book: %d not found.".formatted(bookId))
@@ -57,6 +60,7 @@ public class BookTagService {
     }
 
     // 삭제
+    @Transactional
     public void delete(Long bookId, Long tagId) {
         bookTagRepository.deleteByBook_BookIdAndTag_TagId(bookId, tagId);
     }
