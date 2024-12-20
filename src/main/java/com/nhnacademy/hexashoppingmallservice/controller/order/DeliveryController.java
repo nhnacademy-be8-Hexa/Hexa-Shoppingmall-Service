@@ -5,8 +5,10 @@ import com.nhnacademy.hexashoppingmallservice.dto.order.DeliveryRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.cart.Cart;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Delivery;
 import com.nhnacademy.hexashoppingmallservice.service.order.DeliveryService;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,8 @@ public class DeliveryController {
     }
 
     @GetMapping("/api/delivery")
-    public List<Delivery> getAllDelivery() {
-        return deliveryService.getDeliveries();
+    public List<Delivery> getAllDelivery(Pageable pageable) {
+        return deliveryService.getDeliveries(pageable);
     }
 
     @GetMapping("/api/delivery/order/{orderId}")

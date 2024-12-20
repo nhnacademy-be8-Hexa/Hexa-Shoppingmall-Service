@@ -12,6 +12,7 @@ import com.nhnacademy.hexashoppingmallservice.repository.order.DeliveryRepositor
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public List<Delivery> getDeliveries() { return deliveryRepository.findAll();}
+    public List<Delivery> getDeliveries(Pageable pageable) { return deliveryRepository.findAll(pageable).getContent();}
 
     @Transactional
     public Delivery getDeliveryByOrderId(Long orderId) {
