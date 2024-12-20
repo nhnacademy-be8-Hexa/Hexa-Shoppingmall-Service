@@ -131,7 +131,7 @@ class MemberControllerTest {
 
         given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/admin/members")
+        mockMvc.perform(get("/api/auth/members")
                         .param("page", "0")
                         .param("search", search)
                         .accept(MediaType.APPLICATION_JSON))
@@ -178,7 +178,7 @@ class MemberControllerTest {
 
         given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/admin/members")
+        mockMvc.perform(get("/api/auth/members")
                         .param("page", "0")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
