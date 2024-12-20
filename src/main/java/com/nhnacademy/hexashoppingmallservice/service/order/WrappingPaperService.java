@@ -3,7 +3,6 @@ package com.nhnacademy.hexashoppingmallservice.service.order;
 import com.nhnacademy.hexashoppingmallservice.dto.order.WrappingPaperRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.WrappingPaper;
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.member.wrappingpaper.WrappingPaperProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.order.WrappingPaperRepository;
 import java.util.List;
 import java.util.Objects;
@@ -37,8 +36,8 @@ public class WrappingPaperService {
 
 
     @Transactional(readOnly = true)
-    public List<WrappingPaperProjection> getAllWrappingPaper() {
-        return wrappingPaperRepository.findAllBy();
+    public List<WrappingPaper> getAllWrappingPaper() {
+        return wrappingPaperRepository.findAll();
     }
 
 

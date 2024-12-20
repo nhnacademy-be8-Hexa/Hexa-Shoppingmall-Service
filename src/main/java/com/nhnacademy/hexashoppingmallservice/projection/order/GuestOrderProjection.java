@@ -1,7 +1,7 @@
-package com.nhnacademy.hexashoppingmallservice.projection.member.order;
+package com.nhnacademy.hexashoppingmallservice.projection.order;
 
 public interface GuestOrderProjection {
-    String getGuestOrderPassword();
+    String getOrderId();
 
     String getGuestOrderNumber();
 

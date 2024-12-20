@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,10 +18,10 @@ public class ElasticSearchController {
     @Autowired
     private ElasticSearchService elasticSearchService;
 
-    @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return elasticSearchService.saveBook(book);
-    }
+//    @PostMapping
+//    public Book addBook(@RequestBody Book book) {
+//        return elasticSearchService.saveBook(book);
+//    }
 
     @GetMapping("/search/title")
     public List<Book> searchBooksByTitle(@RequestParam("title") String title, Pageable pageable) {
@@ -34,7 +32,7 @@ public class ElasticSearchController {
     public List<Book> searchBooksByAuthor(@RequestParam("author") String author, Pageable pageable) {
         return elasticSearchService.searchBooksByAuthor(author, pageable);
     }
-    
+
     @GetMapping("/search/description")
     public List<Book> searchBooksByDescription(@RequestParam("description") String description, Pageable pageable) {
         return elasticSearchService.searchBooksByDescription(description, pageable);

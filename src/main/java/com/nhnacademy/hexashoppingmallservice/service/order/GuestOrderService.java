@@ -5,7 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.GuestOrder;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.exception.order.GuestOrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.member.order.GuestOrderProjection;
+import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.order.GuestOrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import java.util.List;
@@ -36,7 +36,7 @@ public class GuestOrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<GuestOrder> getGuestOrders(Pageable pageable) {
+    public List<GuestOrderProjection> getGuestOrders(Pageable pageable) {
         return guestOrderRepository.findAllBy(pageable).getContent();
     }
 
@@ -46,15 +46,16 @@ public class GuestOrderService {
             throw new GuestOrderNotFoundException("GuestOrder ID %s not found".formatted(orderId));
         }
 
-        return guestOrderRepository.findGuestOrderByOrderId(orderId);
+        return guestOrderRepository.findByOrderId(orderId);
     }
 
     @Transactional
-    public GuestOrder updateGuestOrder(Long OrderId, GuestOrderRequestDTO guestOrderRequestDTO) {
-        if (!guestOrderRepository.existsById(OrderId)) {
-            throw new GuestOrderNotFoundException("GuestOrder ID %s not found".formatted(OrderId));
+    public GuestOrder updateGuestOrder(GuestOrderRequestDTO guestOrderRequestDTO) {
+        if (!guestOrderRepository.existsById(guestOrderRequestDTO.getOrderId())) {
+            throw new GuestOrderNotFoundException(
+                    "GuestOrder ID %s not found".formatted(guestOrderRequestDTO.getOrderId()));
         }
-        GuestOrder guestOrder = guestOrderRepository.findById(OrderId).orElseThrow();
+        GuestOrder guestOrder = guestOrderRepository.findById(guestOrderRequestDTO.getOrderId()).orElseThrow();
         updateIfNotNull(guestOrderRequestDTO.getGuestOrderPassword(), guestOrder::setGuestOrderPassword);
         updateIfNotNull(guestOrderRequestDTO.getGuestOrderNumber(), guestOrder::setGuestOrderNumber);
         updateIfNotNull(guestOrderRequestDTO.getGuestOrderEmail(), guestOrder::setGuestOrderEmail);

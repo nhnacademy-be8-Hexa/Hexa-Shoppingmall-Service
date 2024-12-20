@@ -5,9 +5,10 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.entity.order.OrderStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.order.WrappingPaper;
+import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.member.order.OrderProjection;
+import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderStatusRepository;
@@ -31,10 +32,26 @@ public class OrderService {
     @Transactional
     public Order createOrder(OrderRequestDTO orderRequestDTO) {
         String memberId = orderRequestDTO.getMemberId();
-        Member member = memberRepository.findById(memberId).orElse(null);
+        Member member = null;
+
+        if (Objects.nonNull(memberId)) {
+            if (!memberRepository.existsById(memberId) && !memberId.isEmpty()) {
+                throw new MemberNotFoundException(
+                        "Member ID %s not found".formatted(memberId));
+            }
+            member = memberRepository.findById(memberId).orElseThrow();
+        }
 
         Long wrappingPaperId = orderRequestDTO.getWrappingPaperId();
-        WrappingPaper wrappingPaper = wrappingPaperRepository.findById(wrappingPaperId).orElse(null);
+        WrappingPaper wrappingPaper = null;
+
+        if (Objects.nonNull(wrappingPaperId)) {
+            if (!wrappingPaperRepository.existsById(wrappingPaperId)) {
+                throw new WrappingPaperNotFoundException(
+                        "WrappingPaper ID %s not found".formatted(wrappingPaperId));
+            }
+            wrappingPaper = wrappingPaperRepository.findById(wrappingPaperId).orElseThrow();
+        }
 
         Long orderStatusId = orderRequestDTO.getOrderStatusId();
         if (!orderStatusRepository.existsById(orderStatusId)) {
@@ -63,7 +80,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderProjection> getOrdersByMemberId(String memberId, Pageable pageable) {
+    public List<Order> getOrdersByMemberId(String memberId, Pageable pageable) {
         return orderRepository.findOrdersByMember_MemberId(memberId, pageable).getContent();
     }
 
@@ -73,7 +90,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new OrderNotFoundException(String.format("%s", orderId))
         );
-
+        
         updateIfNotNull(orderRequestDTO.getOrderPrice(), order::setOrderPrice);
         updateIfNotNull(orderRequestDTO.getZoneCode(), order::setZoneCode);
         updateIfNotNull(orderRequestDTO.getAddressDetail(), order::setAddressDetail);
@@ -87,9 +104,18 @@ public class OrderService {
         }
         order.setOrderStatus(orderStatus);
 
-        WrappingPaper wrappingpaper =
-                wrappingPaperRepository.findById(orderRequestDTO.getWrappingPaperId()).orElse(null);
-        order.setWrappingPaper(wrappingpaper);
+        Long wrappingPaperId = orderRequestDTO.getWrappingPaperId();
+        WrappingPaper wrappingPaper = null;
+
+        if (Objects.nonNull(wrappingPaperId)) {
+            if (!wrappingPaperRepository.existsById(wrappingPaperId)) {
+                throw new WrappingPaperNotFoundException(
+                        "WrappingPaper ID %s not found".formatted(wrappingPaperId));
+            }
+            wrappingPaper = wrappingPaperRepository.findById(wrappingPaperId).orElseThrow();
+        }
+
+        order.setWrappingPaper(wrappingPaper);
 
         return order;
     }

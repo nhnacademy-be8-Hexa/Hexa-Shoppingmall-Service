@@ -2,7 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.controller.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.order.GuestOrderRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.GuestOrder;
-import com.nhnacademy.hexashoppingmallservice.projection.member.order.GuestOrderProjection;
+import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.GuestOrderService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -32,7 +32,7 @@ public class GuestOrderController {
     }
 
     @GetMapping
-    public List<GuestOrder> getAllGuestOrders(@RequestParam(defaultValue = "0") int page) {
+    public List<GuestOrderProjection> getAllGuestOrders(@RequestParam(defaultValue = "0") int page) {
         Pageable pageable = PageRequest.of(page, SIZE);
         return guestOrderService.getGuestOrders(pageable);
     }
@@ -42,11 +42,11 @@ public class GuestOrderController {
         return guestOrderService.getGuestOrder(orderId);
     }
 
-    @PatchMapping("/{orderId}")
-    public ResponseEntity<GuestOrder> updateGuestOrder(@PathVariable Long orderId,
-                                                       @Valid @RequestBody GuestOrderRequestDTO guestOrderRequestDTOs) {
-        return ResponseEntity.ok(guestOrderService.updateGuestOrder(orderId, guestOrderRequestDTOs));
+    @PatchMapping
+    public ResponseEntity<GuestOrder> updateGuestOrder(@Valid @RequestBody GuestOrderRequestDTO guestOrderRequestDTOs) {
+        return ResponseEntity.ok(guestOrderService.updateGuestOrder(guestOrderRequestDTOs));
     }
+
 
 }
 

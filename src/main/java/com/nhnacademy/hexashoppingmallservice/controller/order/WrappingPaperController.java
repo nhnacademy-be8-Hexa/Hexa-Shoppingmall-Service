@@ -5,8 +5,8 @@ import com.nhnacademy.hexashoppingmallservice.dto.order.WrappingPaperRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.WrappingPaper;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.member.wrappingpaper.WrappingPaperProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.WrappingPaperService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -28,13 +27,13 @@ public class WrappingPaperController {
     private final WrappingPaperService wrappingPaperService;
 
     @GetMapping
-    public List<WrappingPaperProjection> getAllWrappingPapers(@RequestParam(defaultValue = "0") int page) {
+    public List<WrappingPaper> getAllWrappingPapers() {
         return wrappingPaperService.getAllWrappingPaper();
     }
 
     @PostMapping
     public ResponseEntity<WrappingPaper> createWrappingPaper(
-            @RequestBody WrappingPaperRequestDTO wrappingPaperRequestDTO) {
+            @Valid @RequestBody WrappingPaperRequestDTO wrappingPaperRequestDTO) {
         return ResponseEntity.status(201).body(wrappingPaperService.createWrappingPaper(wrappingPaperRequestDTO));
     }
 
@@ -46,7 +45,7 @@ public class WrappingPaperController {
 
     @PatchMapping("/{wrappingPaperId}")
     public ResponseEntity<WrappingPaper> updateWrappingPaper(@PathVariable Long wrappingPaperId,
-                                                             @RequestBody
+                                                             @Valid @RequestBody
                                                              WrappingPaperRequestDTO wrappingPaperRequestDTO) {
         return ResponseEntity.ok(wrappingPaperService.updateWrappingPaper(wrappingPaperId, wrappingPaperRequestDTO));
     }
@@ -62,6 +61,6 @@ public class WrappingPaperController {
         } catch (RuntimeException e) {
             throw new SqlQueryExecuteFailException(e.getMessage());
         }
-        return null;
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.entity.order;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -17,7 +18,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 public class GuestOrder {
     @Id
-    @JoinColumn(name = "order_id")
+    @Column(name = "order_id")
     private Long orderId;
 
     @OneToOne

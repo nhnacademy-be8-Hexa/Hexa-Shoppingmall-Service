@@ -2,7 +2,6 @@ package com.nhnacademy.hexashoppingmallservice.controller.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.order.OrderRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
-import com.nhnacademy.hexashoppingmallservice.projection.member.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.OrderService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -38,8 +37,8 @@ public class OrderController {
     }
 
     @GetMapping("/{memberId}")
-    public List<OrderProjection> getOrdersByMemberId(@Valid @RequestParam(defaultValue = "0") int page,
-                                                     @PathVariable String memberId) {
+    public List<Order> getOrdersByMemberId(@Valid @RequestParam(defaultValue = "0") int page,
+                                           @PathVariable String memberId) {
         Pageable pageable = PageRequest.of(page, SIZE);
         return orderService.getOrdersByMemberId(memberId, pageable);
     }

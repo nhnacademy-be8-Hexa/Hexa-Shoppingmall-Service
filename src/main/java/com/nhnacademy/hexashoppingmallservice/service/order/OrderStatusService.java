@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class OrderStatusService {
     private final OrderStatusRepository orderStatusRepository;
 
@@ -45,7 +44,7 @@ public class OrderStatusService {
         if (orderStatus == null) {
             throw new OrderStatusNotFoundException("order status %d not found.".formatted(orderStatusId));
         }
-        orderStatus.setOrderStatus(orderStatus.getOrderStatus());
+        orderStatus.setOrderStatus(orderStatusRequestDTO.getOrderStatus());
         return orderStatus;
     }
 
