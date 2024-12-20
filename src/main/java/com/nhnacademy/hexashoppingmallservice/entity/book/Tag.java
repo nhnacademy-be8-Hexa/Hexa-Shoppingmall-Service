@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @NoArgsConstructor
@@ -19,6 +21,8 @@ public class Tag {
     @NotBlank
     @Size(max = 30)
     @Column(nullable = false, unique = true, length = 30)
+    @Length(max = 30)
+    @Setter
     private String tagName;
 
     @Builder

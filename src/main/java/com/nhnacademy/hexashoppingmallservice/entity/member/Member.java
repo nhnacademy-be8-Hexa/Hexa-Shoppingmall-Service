@@ -63,4 +63,8 @@ public class Member {
                 .memberStatus(memberStatus)
                 .build();
     }
+
+    public void login(){
+        this.memberLastLoginAt = LocalDateTime.now();
+    }
 }

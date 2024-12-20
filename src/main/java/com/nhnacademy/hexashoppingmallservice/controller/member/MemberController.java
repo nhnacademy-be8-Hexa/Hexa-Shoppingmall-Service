@@ -23,7 +23,7 @@ public class MemberController {
     private final MemberService memberService;
     private final LikeService likeService;
 
-    @GetMapping("/api/admin/members")
+    @GetMapping("/api/auth/members")
     public List<MemberProjection> getMembers(
             @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(page, SIZE);
@@ -52,5 +52,13 @@ public class MemberController {
     public ResponseEntity<List<Book>> getLikedBooks(@PathVariable String memberId) {
         List<Book> likedBooks = likeService.getBooksLikedByMember(memberId);
         return ResponseEntity.ok(likedBooks); // 200 OK
+    }
+  
+    @PutMapping("/api/auth/members/{memberId}")
+    public ResponseEntity<Void> loginMember(
+            @PathVariable String memberId
+    ){
+        memberService.login(memberId);
+        return ResponseEntity.ok().build();
     }
 }

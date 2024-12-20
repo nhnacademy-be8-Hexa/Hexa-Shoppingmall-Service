@@ -1,9 +1,16 @@
 package com.nhnacademy.hexashoppingmallservice.dto.order;
 
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public record OrderStatusRequestDTO(
-        @NotBlank @Length(max = 20) String orderStatus
-) {
+@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderStatusRequestDTO {
+    @NotNull
+    private String orderStatus;
 }

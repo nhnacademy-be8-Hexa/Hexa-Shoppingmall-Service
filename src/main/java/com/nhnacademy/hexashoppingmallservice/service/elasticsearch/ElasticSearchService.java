@@ -1,18 +1,18 @@
 package com.nhnacademy.hexashoppingmallservice.service.elasticsearch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.InlineScript;
-import co.elastic.clients.elasticsearch._types.Script;
-import co.elastic.clients.elasticsearch._types.ScriptSortType;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.google.common.collect.Lists;
 import com.nhnacademy.hexashoppingmallservice.document.Book;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,17 +28,64 @@ public class ElasticSearchService {
         return elasticSearchRepository.save(book);
     }
 
+    public List<Book> searchBooksBySellCount(Pageable pageable) {
+        return elasticSearchRepository.findAllByOrderByBookSellCountDesc(pageable);
+    }
 
-    public List<Book> searchBooksByTitle(String title) {
+    public List<Book> searchBooks(String search, Pageable pageable) {
         try {
-            InlineScript inlineScript = new InlineScript.Builder()
-                    .source("doc['bookTitle.keyword'].value.length()")
-                    .lang("painless")
+            int from = pageable.getPageNumber() * pageable.getPageSize();
+            int size = pageable.getPageSize();
+
+            SearchRequest searchRequest = new SearchRequest.Builder()
+                    .index("book31")
+                    .query(query -> query
+                            .bool(boolQuery -> boolQuery
+                                    .should(shouldQuery -> shouldQuery
+                                            .multiMatch(mm -> mm
+                                                    .query(search)
+                                                    .fields(Lists.newArrayList(
+                                                            "bookTitle^10",
+                                                            "authors^3",
+                                                            "bookDescription^3",
+                                                            "tagName^2"
+                                                    ))
+                                            )
+                                    )
+                                    .should(shouldQuery -> shouldQuery
+                                            .term(t -> t
+                                                    .field("isbn.keyword")
+                                                    .value(search)
+                                            )
+                                    )
+                            )
+                    )
+                    .from(from)
+                    .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
                     .build();
 
-            Script script = new Script.Builder()
-                    .inline(inlineScript)
-                    .build();
+            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public List<Book> searchBooksByTitle(String title, Pageable pageable) {
+        try {
+            int from = pageable.getPageNumber() * pageable.getPageSize();
+            int size = pageable.getPageSize();
 
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -52,60 +99,67 @@ public class ElasticSearchService {
                                     )
                             )
                     )
-                    .sort(s -> s
-                            .script(sr -> sr
-                                    .type(ScriptSortType.Number)
-                                    .script(script)
-                                    .order(SortOrder.Asc)
+                    .from(from)
+                    .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
                             )
                     )
                     .build();
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    public List<Book> searchBooksByAuthor(String author) {
+    public List<Book> searchBooksByAuthor(String author, Pageable pageable) {
+        int from = pageable.getPageNumber() * pageable.getPageSize();
+        int size = pageable.getPageSize();
+
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
                     .query(q -> q
-                            .nested(n -> n
-                                    .path("authors")
-                                    .query(q1 -> q1
-                                            .match(m -> m
-                                                    .field("authors.authorName")
-                                                    .query(author)
-                                            )
-                                    )
+                            .match(m -> m
+                                    .field("authors")
+                                    .query(author)
+                            )
+                    )
+                    .from(from)
+                    .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
                             )
                     )
                     .build();
 
+
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<Book> searchBooksByDescription(String description) {
+    public List<Book> searchBooksByDescription(String description, Pageable pageable) {
+        int from = pageable.getPageNumber() * pageable.getPageSize();
+        int size = pageable.getPageSize();
+
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -119,22 +173,31 @@ public class ElasticSearchService {
                                     )
                             )
                     )
+                    .from(from)
+                    .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
                     .build();
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
 
-            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<Book> searchBooksByTag(String tag) {
+    public List<Book> searchBooksByTag(String tag, Pageable pageable) {
+        int from = pageable.getPageNumber() * pageable.getPageSize();
+        int size = pageable.getPageSize();
+
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
                     .index("book31")
@@ -148,18 +211,46 @@ public class ElasticSearchService {
                                     )
                             )
                     )
+                    .from(from)
+                    .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
                     .build();
 
-            // 검색 요청 실행
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
-            // 검색 결과를 리스트로 변환
-            List<Book> books = new ArrayList<>();
-            searchResponse.hits().hits().forEach(hit -> {
-                books.add(hit.source());
-            });
 
-            return books;
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Book> searchBooksByIsbn(String isbn) {
+        try {
+            SearchRequest searchRequest = new SearchRequest.Builder()
+                    .index("book31")
+                    .query(q -> q
+                            .term(t -> t
+                                    .field("isbn.keyword")
+                                    .value(isbn)
+                            )
+                    )
+                    .build();
+
+            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
