@@ -4,48 +4,53 @@ import com.nhnacademy.hexashoppingmallservice.dto.order.OrderStatusRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.OrderStatus;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderStatusRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class OrderStatusService {
     private final OrderStatusRepository orderStatusRepository;
 
-    public OrderStatus getOrderStatus(Long orderId) {
-        Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(orderId);
-        if(orderStatusOptional.isEmpty()) {
-            throw new OrderStatusNotFoundException("order status %d not found.".formatted(orderId));
+    @Transactional(readOnly = true)
+    public OrderStatus getOrderStatus(Long orderStatusId) {
+        Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(orderStatusId);
+        if (orderStatusOptional.isEmpty()) {
+            throw new OrderStatusNotFoundException("order status %d not found.".formatted(orderStatusId));
         }
         return orderStatusOptional.get();
     }
 
-    public List<OrderStatus> getAll() {
+    @Transactional(readOnly = true)
+    public List<OrderStatus> getAllOrderStatus() {
         return orderStatusRepository.findAll();
     }
 
     @Transactional
-    public OrderStatus create(OrderStatus orderStatus) {
+    public OrderStatus createOrderStatus(OrderStatusRequestDTO orderStatusRequestDTO) {
+        OrderStatus orderStatus = OrderStatus.of(
+                orderStatusRequestDTO.getOrderStatus()
+        );
         return orderStatusRepository.save(orderStatus);
     }
 
+
     @Transactional
-    public OrderStatus update(Long orderStatusId, OrderStatusRequestDTO requestDTO) {
+    public OrderStatus updateOrderStatus(Long orderStatusId, OrderStatusRequestDTO orderStatusRequestDTO) {
         OrderStatus orderStatus = orderStatusRepository.findById(orderStatusId).orElse(null);
-        if(orderStatus == null) {
+        if (orderStatus == null) {
             throw new OrderStatusNotFoundException("order status %d not found.".formatted(orderStatusId));
         }
-        orderStatus.setOrderStatus(orderStatus.getOrderStatus());
+        orderStatus.setOrderStatus(orderStatusRequestDTO.getOrderStatus());
         return orderStatus;
     }
 
+
     @Transactional
-    public void delete(Long orderStatusId) {
+    public void deleteOrderStatus(Long orderStatusId) {
         orderStatusRepository.deleteById(orderStatusId);
     }
 
