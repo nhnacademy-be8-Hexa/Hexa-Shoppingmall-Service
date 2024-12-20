@@ -1,0 +1,25 @@
+### 주문 상태 생성
+POST localhost:8081/api/orderStatus
+Content-Type: application/json
+
+{
+  "orderStatus": "대기"
+}
+
+### 주문 상태 삭제
+DELETE localhost:8081/api/orderStatus/1
+Content-Type: application/json
+
+###
+POST localhost:8081/api/orders
+Content-Type: application/json
+
+{
+  "memberId": "member1",
+  "orderPrice": 1,
+  "wrappingPaperId": 1,
+  "orderStatusId": 1,
+  "zoneCode": "1",
+  "address": "1",
+  "addressDetail": "1"
+}
