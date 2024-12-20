@@ -1,0 +1,24 @@
+### 주문 상태 생성
+POST localhost:8081/api/orderStatus
+Content-Type: application/json
+
+{
+  "orderStatus": "대기"
+}
+
+### 주문 상태 목록 조회
+GET localhost:8081/api/orderStatus
+
+### 주문 상태 수정
+PATCH localhost:8081/api/orderStatus/1
+Content-Type: application/json
+
+{
+  "orderStatus": "주문 취소"
+}
+
+### 주문 상태 삭제
+DELETE localhost:8081/api/orderStatus/1
+Content-Type: application/json
+
+

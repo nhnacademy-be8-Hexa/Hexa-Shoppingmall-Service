@@ -1,0 +1,23 @@
+### 포장지 정보 생성
+POST localhost:8081/api/wrappingPaper
+Content-Type: application/json
+
+{
+  "wrappingPaperName": "포장지1",
+  "wrappingPaperPrice": 12000
+}
+
+### 포장지 정보 조회
+GET localhost:8081/api/wrappingPaper
+
+### 포장지 정보 수정
+PATCH localhost:8081/api/wrappingPaper/1
+Content-Type: application/json
+
+{
+  "wrappingPaperName": "포장지2",
+  "wrappingPaperPrice": 9300
+}
+
+### 포장지 정보 삭제
+DELETE localhost:8081/api/wrappingPaper/1
