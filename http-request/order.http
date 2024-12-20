@@ -15,7 +15,7 @@ POST localhost:8081/api/orders
 Content-Type: application/json
 
 {
-  "memberId": "member1",
+  "memberId": "john_doe_124",
   "orderPrice": 1,
   "wrappingPaperId": 1,
   "orderStatusId": 1,

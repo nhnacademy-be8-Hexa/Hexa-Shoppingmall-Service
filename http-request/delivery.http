@@ -12,18 +12,18 @@ GET http://localhost:8081/api/delivery
 Accept: application/json
 
 ### 특정 주문 아이디의 배송 목록 조회
-GET http://localhost:8081/api/delivery/1
+GET http://localhost:8081/api/delivery/order/1
 Accept: application/json
 
 ### 특정 회원의 배송 목록 조회
-GET http://localhost:8081/api/delivery/john_doe_124
+GET http://localhost:8081/api/delivery/member/john_doe_124
 Accept: application/json
 
 ### 배송 정보 업데이트
-PATCH http://localhost:8081/api/delivery/1
+PATCH http://localhost:8081/api/delivery/order/1
 Content-Type: application/json
 
 {
-  "deliveryDate": "2024-4-10",
-  "deliveryReleaseDate": "2024-09-18"
+  "deliveryDate": "2024-04-10T00:00:00",
+  "deliveryReleaseDate": "2024-09-18T00:00:00"
 }

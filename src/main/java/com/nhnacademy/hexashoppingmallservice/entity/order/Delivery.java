@@ -24,17 +24,14 @@ public class Delivery {
     private Integer deliveryAmount;
 
     @Setter
-    @Column(nullable = false)
     private LocalDateTime deliveryDate;
 
     @Setter
-    @Column(nullable = false)
     private LocalDateTime deliveryReleaseDate;
 
     public static Delivery of(Order order, Integer deliveryAmount) {
         return Delivery.builder()
                 .order(order)
-                .orderId(order.getOrderId())
                 .deliveryAmount(deliveryAmount)
                 .build();
     }

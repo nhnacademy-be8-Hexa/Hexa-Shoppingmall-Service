@@ -55,7 +55,7 @@ public class DeliveryService {
     public Delivery getDeliveryByMemberId(String memberId) {
         Member member = memberRepository.findById(String.valueOf(memberId))
                 .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
-        return deliveryRepository.findByMember(member).orElseThrow(
+        return deliveryRepository.findByOrder_Member(member).orElseThrow(
                 () -> new DeliveryNotFoundException("Delivery ID: %s not found". formatted(memberId))
         );
     }

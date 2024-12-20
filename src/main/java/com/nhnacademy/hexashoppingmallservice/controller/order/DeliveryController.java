@@ -28,17 +28,17 @@ public class DeliveryController {
         return deliveryService.getDeliveries();
     }
 
-    @GetMapping("/api/delivery/{orderId}")
+    @GetMapping("/api/delivery/order/{orderId}")
     public Delivery getDelivery(@PathVariable Long orderId) {
         return deliveryService.getDeliveryByOrderId(orderId);
     }
 
-    @GetMapping("/api/delivery/{memberId}")
+    @GetMapping("/api/delivery/member/{memberId}")
     public Delivery getDeliveryByMemberId(@PathVariable String memberId) {
         return deliveryService.getDeliveryByMemberId(memberId);
     }
 
-    @PatchMapping("/api/delivery/{orderId}")
+    @PatchMapping("/api/delivery/order/{orderId}")
     public ResponseEntity<Delivery> updateDelivery(@PathVariable Long orderId, @RequestBody @Valid DeliveryRequestDTO deliveryRequestDTO)
     {
         Delivery delivery = deliveryService.updateDelivery(orderId, deliveryRequestDTO);
