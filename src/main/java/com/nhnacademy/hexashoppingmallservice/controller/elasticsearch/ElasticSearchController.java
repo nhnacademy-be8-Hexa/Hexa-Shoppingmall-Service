@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/books")
 public class ElasticSearchController {
 
     @Autowired
