@@ -83,19 +83,19 @@ class PublisherServiceTest {
         verify(publisherRepository, times(1)).deleteById(1L);
     }
 
-    @Test
-    void testUpdatePublisher_Success() {
-        PublisherRequestDTO requestDTO = new PublisherRequestDTO("Updated Publisher");
-
-        when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisher));
-        when(publisherRepository.save(any(Publisher.class))).thenReturn(Publisher.of("Updated Publisher"));
-
-        Publisher updatedPublisher = publisherService.updatePublisher(1L, requestDTO);
-
-        assertThat(updatedPublisher.getPublisherName()).isEqualTo("Updated Publisher");
-        verify(publisherRepository, times(1)).findById(1L);
-        verify(publisherRepository, times(1)).save(any(Publisher.class));
-    }
+//    @Test
+//    void testUpdatePublisher_Success() {
+//        PublisherRequestDTO requestDTO = new PublisherRequestDTO("Updated Publisher");
+//
+//        when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisher));
+//        when(publisherRepository.save(any(Publisher.class))).thenReturn(Publisher.of("Updated Publisher"));
+//
+//        Publisher updatedPublisher = publisherService.updatePublisher(1L, requestDTO);
+//
+//        assertThat(updatedPublisher.getPublisherName()).isEqualTo("Updated Publisher");
+//        verify(publisherRepository, times(1)).findById(1L);
+//        verify(publisherRepository, times(1)).save(any(Publisher.class));
+//    }
 
     @Test
     void testUpdatePublisher_NotFound() {

@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import java.math.BigDecimal;
 
 @Entity
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Getter
 public class Review {
@@ -34,13 +34,11 @@ public class Review {
     @NotNull
     private boolean reviewIsblocked;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "member_id")
     @NotNull
     private Member member;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "book_id")
     @NotNull
