@@ -7,7 +7,6 @@ POST localhost:8081/api/publishers
 Content-Type: application/json
 
 {
-  "publisherId": 1,
   "publisherName": "교보문고"
 }
 

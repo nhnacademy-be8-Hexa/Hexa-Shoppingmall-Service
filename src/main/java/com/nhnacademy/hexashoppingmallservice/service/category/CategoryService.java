@@ -1,8 +1,13 @@
 package com.nhnacademy.hexashoppingmallservice.service.category;
 
 import com.nhnacademy.hexashoppingmallservice.dto.category.CategoryDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
+import com.nhnacademy.hexashoppingmallservice.entity.book.BookCategory;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.category.CategoryNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +23,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final BookRepository bookRepository;
+    private final BookCategoryRepository bookCategoryRepository;
     @Transactional(readOnly = true)
     public List<CategoryDTO> getAllCategoriesWithSubCategories() {
         List<Category> categories = categoryRepository.findAllFirstLevelWithSubCategories();
@@ -55,5 +62,23 @@ public class CategoryService {
         subCategory.setParentCategory(parentCategory);
 
         return parentCategory;
+    }
+
+    @Transactional
+    public void insertBook(Long categoryId, Long bookId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException("Category Not Found. ID: %d".formatted(categoryId));
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException("Book Not Found. ID: %d".formatted(bookId));
+        }
+        Book book = bookRepository.findById(bookId).get();
+        Category category = categoryRepository.findById(categoryId).get();
+
+        BookCategory bookCategory = BookCategory.of(
+                category,
+                book
+        );
+        bookCategoryRepository.save(bookCategory);
     }
 }
