@@ -1,0 +1,28 @@
+### 1. 반품 사유 생성 (POST /api/returnsReason)
+POST http://localhost:8081/api/returnsReason
+Content-Type: application/json
+
+{
+  "returnsReasonId": 1,
+  "returnsReason": "상품 하자"
+}
+
+### 2. 모든 반품 사유 조회 (GET /api/returnsReason)
+GET http://localhost:8081/api/returnsReason?page=0&size=10
+
+### 3. 특정 반품 사유 조회 (GET /api/returnsReason/{returnsReasonId})
+GET http://localhost:8081/api/returnsReason/1
+
+### 4. 특정 회원 ID에 대한 반품 사유 조회 (GET /api/returnsReason/member/{memberId})
+GET http://localhost:8081/api/returnsReason/member/12345
+
+### 5. 반품 사유 수정 (PATCH /api/returnsReason/{returnsReasonId})
+PATCH http://localhost:8081/api/returnsReason/1
+Content-Type: application/json
+
+{
+  "returnsReason": "배송 지연"
+}
+
+### 6. 반품 사유 삭제 (DELETE /api/returnsReason/{returnsReasonId})
+DELETE http://localhost:8081/api/returnsReason/1

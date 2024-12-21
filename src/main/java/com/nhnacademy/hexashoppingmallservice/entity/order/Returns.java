@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.entity.order;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -10,10 +11,20 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Builder
 public class Returns {
-    @OneToOne
-    @JoinColumn(name = "order_id")
     @Id
+    @Column(name = "order_id")
+    private Long orderId;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "order_id")
     private Order order;
+
+    @Setter
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name="returns_reason_id")
+    private ReturnsReason returnsReason;
 
     @Column
     @Length(min = 100)
