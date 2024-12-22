@@ -1,0 +1,94 @@
+### 1. OrderBook 생성 (성공) - 주문 상태, 주문, 출판사, 도서 상태, 도서 생성 후 가능
+# 특정 주문(orderId)에 특정 책(bookId)을 연결하여 OrderBook을 생성합니다.
+POST http://localhost:8081/api/orderbook/orders/1/books/1
+Content-Type: application/json
+
+{
+  "orderBookAmount": 3,
+  "couponId": 1
+}
+
+
+### 2. OrderBook 생성 (주문 ID 존재하지 않음 - 오류)
+# 존재하지 않는 주문 ID로 OrderBook을 생성하려 시도합니다.
+POST http://localhost:8081/api/orderbook/orders/999/books/1
+Content-Type: application/json
+
+{
+  "orderBookAmount": 3,
+  "couponId": 1
+}
+
+
+### 3. OrderBook 생성 (책 ID 존재하지 않음 - 오류)
+# 존재하지 않는 책 ID로 OrderBook을 생성하려 시도합니다.
+POST http://localhost:8081/api/orderbook/orders/1/books/999
+Content-Type: application/json
+
+{
+  "orderBookAmount": 3,
+  "couponId": 1
+}
+
+
+### 4. 모든 OrderBook 조회 (성공)
+# 모든 OrderBook을 페이징 및 정렬하여 조회합니다.
+GET http://localhost:8081/api/orderbook?page=0&size=10&sort=orderBookId,asc
+Accept: application/json
+
+
+### 5. 특정 주문에 연결된 OrderBook 조회 (성공)
+# 특정 주문(orderId)에 연결된 OrderBook을 페이징 및 정렬하여 조회합니다.
+GET http://localhost:8081/api/orderbook/orders/1?page=0&size=5&sort=orderBookAmount,desc
+Accept: application/json
+
+
+### 6. 특정 주문에 연결된 OrderBook 조회 (주문 ID 존재하지 않음 - 오류)
+# 존재하지 않는 주문 ID로 OrderBook을 조회하려 시도합니다.
+GET http://localhost:8081/api/orderbook/orders/999?page=0&size=5&sort=orderBookAmount,desc
+Accept: application/json
+
+
+### 7. 특정 책에 연결된 OrderBook 조회 (성공)
+# 특정 책(bookId)에 연결된 OrderBook을 페이징 및 정렬하여 조회합니다.
+GET http://localhost:8081/api/orderbook/books/1?page=0&size=5&sort=orderBookId,asc
+Accept: application/json
+
+
+### 8. 특정 책에 연결된 OrderBook 조회 (책 ID 존재하지 않음 - 오류)
+# 존재하지 않는 책 ID로 OrderBook을 조회하려 시도합니다.
+GET http://localhost:8081/api/orderbook/books/999?page=0&size=5&sort=orderBookId,asc
+Accept: application/json
+
+
+### 9. OrderBook 업데이트 (성공)
+# 특정 OrderBook(orderBookId)을 업데이트합니다.
+PUT http://localhost:8081/api/orderbook/1
+Content-Type: application/json
+
+{
+  "orderBookAmount": 10,
+  "couponId": 2
+}
+
+
+### 10. OrderBook 업데이트 (OrderBook ID 존재하지 않음 - 오류)
+# 존재하지 않는 OrderBook ID로 OrderBook을 업데이트하려 시도합니다.
+PUT http://localhost:8081/api/orderbook/999
+Content-Type: application/json
+
+{
+  "orderBookAmount": 10,
+  "couponId": 2
+}
+
+
+### 11. OrderBook 삭제 (성공)
+# 특정 OrderBook(orderBookId)을 삭제합니다.
+DELETE http://localhost:8081/api/orderbook/1
+
+
+### 12. OrderBook 삭제 (OrderBook ID 존재하지 않음 - 오류)
+# 존재하지 않는 OrderBook ID로 OrderBook을 삭제하려 시도합니다.
+DELETE http://localhost:8081/api/orderbook/999
+
