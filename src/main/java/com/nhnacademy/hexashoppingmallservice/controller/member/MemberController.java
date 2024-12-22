@@ -1,9 +1,11 @@
 package com.nhnacademy.hexashoppingmallservice.controller.member;
 
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection;
+import com.nhnacademy.hexashoppingmallservice.service.book.LikeService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 public class MemberController {
     private final Integer SIZE = 10;
     private final MemberService memberService;
+    private final LikeService likeService;
 
     @GetMapping("/api/auth/members")
     public List<MemberProjection> getMembers(
@@ -45,6 +48,12 @@ public class MemberController {
         return ResponseEntity.ok(memberService.updateMember(memberId, memberRequestDto));
     }
 
+    @GetMapping("/api/auth/members/{memberId}/liked-books")
+    public ResponseEntity<List<Book>> getLikedBooks(@PathVariable String memberId) {
+        List<Book> likedBooks = likeService.getBooksLikedByMember(memberId);
+        return ResponseEntity.ok(likedBooks); // 200 OK
+    }
+  
     @PutMapping("/api/auth/members/{memberId}")
     public ResponseEntity<Void> loginMember(
             @PathVariable String memberId

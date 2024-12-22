@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.repository.book;
 
+import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import feign.Param;
 import org.springframework.data.domain.Page;
@@ -73,4 +74,14 @@ public interface BookRepository extends JpaRepository<Book,Long> {
 
     // ISBN 중복확인
     boolean existsByBookIsbn(@Param("bookIsbn") Long bookIsbn);
+
+
+    // 특정 BookId에 대한 Author 리스트 조회
+    @Query("""
+        SELECT a
+        FROM Author a
+        JOIN BookAuthor ba ON ba.author = a
+        WHERE ba.book.bookId = :bookId
+    """)
+    List<Author> findAuthorsByBookId(@Param("bookId") Long bookId);
 }
