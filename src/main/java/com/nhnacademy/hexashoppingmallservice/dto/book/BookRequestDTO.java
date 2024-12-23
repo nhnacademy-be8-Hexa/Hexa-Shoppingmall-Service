@@ -1,11 +1,14 @@
 package com.nhnacademy.hexashoppingmallservice.dto.book;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -22,7 +25,7 @@ public class BookRequestDTO {
     private LocalDate bookPubDate;
 
     @NotNull
-    @Digits(integer = 13,fraction = 0)
+    @Digits(integer = 13, fraction = 0)
     private Long bookIsbn;
 
     @NotNull
@@ -41,6 +44,5 @@ public class BookRequestDTO {
 
     @NotNull
     private String bookStatusId;
-
 
 }
