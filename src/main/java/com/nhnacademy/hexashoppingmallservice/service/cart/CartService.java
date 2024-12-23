@@ -12,6 +12,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartNotFou
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 
 
+import com.nhnacademy.hexashoppingmallservice.projection.cart.CartProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.cart.CartRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
@@ -30,7 +31,7 @@ public class CartService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public Cart createCart(CartRequestDTO cartRequestDto) {
+    public void createCart(CartRequestDTO cartRequestDto) {
         Member member = memberRepository.findById(String.valueOf(cartRequestDto.getMemberId())).orElseThrow(
                 ()-> {
                     String errorMessage = new Formatter().format("Member ID: %s not found.", cartRequestDto.getMemberId()).toString();
@@ -54,29 +55,30 @@ public class CartService {
                 book
         );
 
-        return cartRepository.save(cart);
+        cartRepository.save(cart);
 
     }
 
-    @Transactional
-    public List<Cart> getCarts() {
-        return cartRepository.findAll();
-    }
+    //전체 카트 목록을 조회할 이유가 없음
+//
+//    @Transactional
+//    public List<Cart> getCarts() {
+//        return cartRepository.findAll();
+//    }
 
     @Transactional
-    public Cart getCart(Long cartId) {
-        return cartRepository.findById(cartId).orElseThrow(
+    public CartProjection getCart(Long cartId) {
+        return cartRepository.findByCartId(cartId).orElseThrow(
                 () -> new CartNotFoundException("Cart ID: %s not found".formatted(cartId))
         );
     }
 
     @Transactional
-    public Cart getCartByMemberId(String memberId) {
-        Member member = memberRepository.findById(String.valueOf(memberId))
-                .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
-        return cartRepository.findByMember(member).orElseThrow(
-                () -> new CartNotFoundException("No cart items found for Member ID: " + memberId)
-        );
+    public List<CartProjection> getCartByMemberId(String memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException("Member ID: %s not found".formatted(memberId));
+        }
+        return cartRepository.findAllByMemberMemberId(memberId);
     }
 
     @Transactional
@@ -86,15 +88,18 @@ public class CartService {
 
     @Transactional
     public void clearCartByMember(String memberId) {
-        Member member = memberRepository.findById(String.valueOf(memberId))
-                .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException("Member ID: %s not found".formatted(memberId));
+        }
 
-        List<Cart> carts = cartRepository.findAllByMember(member);
+        List<CartProjection> carts = cartRepository.findAllByMemberMemberId(memberId);
         if (carts.isEmpty()) {
             throw new CartNotFoundException("No cart items found for Member ID: " + memberId);
         }
 
-        cartRepository.deleteAll(carts);
+        for (CartProjection cart : carts) {
+            cartRepository.deleteById(cart.getCartId());
+        }
     }
 
     @Transactional

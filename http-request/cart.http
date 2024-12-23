@@ -1,36 +1,107 @@
-### 장바구니 생성
-POST localhost:8081/api/carts
+### 회원 등급 저장
+POST localhost:8081/api/ratings
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+{
+  "ratingName": "Gold",
+  "ratingPercent": "20"
+}
+
+### 회원 상태 저장
+POST localhost:8081/api/memberStatus
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+{
+  "statusName": "활성"
+}
+
+### 회원 등록
+POST localhost:8081/api/members
 Content-Type: application/json
 
 {
-
   "memberId": "john_doe_124",
-  "bookId": 1,
-  "cartAmount": 2
+  "memberPassword": "securePassword123",
+  "memberName": "John Doe",
+  "memberNumber": "01012345678",
+  "memberEmail": "test@test.com",
+  "memberBirthAt": "1990-05-15",
+  "memberRole": "ADMIN",
+  "ratingId": "1",
+  "statusId": "1"
+}
 
+### 출판사 생성
+POST localhost:8081/api/publishers
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+{
+  "publisherName": "교보문고"
+}
+
+### 도서 상태 생성
+POST localhost:8081/api/bookStatuses
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+{
+  "bookStatus": "판매중"
+}
+
+### 도서 생성
+POST http://localhost:8081/api/books
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+{
+  "bookTitle": "The Great Gatsby",
+  "bookDescription": "A classic novel by F. Scott Fitzgerald.",
+  "bookPubDate": "1925-04-10",
+  "bookIsbn": 1234567890123,
+  "bookOriginPrice": 20000,
+  "bookPrice": 15000,
+  "bookWrappable": false,
+  "publisherId": "1",
+  "bookStatusId": "1"
 }
 
 
-### 모든 장바구니 항목 조회
-GET http://localhost:8081/api/carts
-Accept: application/json
+
+### 장바구니 생성
+POST localhost:8081/api/carts
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+{
+  "memberId": "john_doe_124",
+  "bookId": 1,
+  "cartAmount": 2
+}
 
 ### 특정 장바구니 조회
-GET http://localhost:8081/api/carts/1
+GET http://localhost:8081/api/members/john_doe_124/carts/1
 Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ### 특정 회원의 장바구니 조회
-GET http://localhost:8081/api/carts/member/john_doe_124
+GET http://localhost:8081/api/members/john_doe_124/carts
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ### 특정 장바구니 항목 삭제
-DELETE http://localhost:8081/api/carts/1
+DELETE http://localhost:8081/api/members/john_doe_124/carts/1
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ### 특정 회원의 장바구니 전체 삭제
-DELETE http://localhost:8081/api/carts/member/john_doe_124
+DELETE http://localhost:8081/api/members/john_doe_124/carts
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ### 장바구니 항목 수량 업데이트
 PATCH http://localhost:8081/api/carts/1/quantity
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "cartAmount": 5

@@ -4,6 +4,8 @@ import com.nhnacademy.hexashoppingmallservice.dto.address.AddressRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.address.Address;
 import com.nhnacademy.hexashoppingmallservice.projection.address.AddressProjection;
 import com.nhnacademy.hexashoppingmallservice.service.address.AddressService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +18,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members/auth")
+@RequestMapping("/api/members")
 public class AddressController {
     private final AddressService addressService;
+    private final JwtUtils jwtUtils;
 
     /**
      * 새로운 주소를 추가하는 엔드포인트
@@ -30,8 +33,8 @@ public class AddressController {
     @PostMapping("/{memberId}/addresses")
     public ResponseEntity<AddressRequestDTO> addAddress(
             @PathVariable String memberId,
-            @RequestBody @Valid AddressRequestDTO addressRequestDTO) {
-
+            @RequestBody @Valid AddressRequestDTO addressRequestDTO, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         // 서비스 호출하여 주소 추가
         addressService.addAddress(addressRequestDTO, memberId);
 
@@ -48,8 +51,9 @@ public class AddressController {
     @GetMapping("/{memberId}/addresses")
     public ResponseEntity<List<AddressProjection>> getAddresses(
             @PathVariable String memberId,
-            Pageable pageable) {
-
+            Pageable pageable,
+            HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         // 서비스 호출하여 주소 목록 조회
         List<AddressProjection> addresses = addressService.getAddress(pageable, memberId);
 
@@ -62,9 +66,10 @@ public class AddressController {
      * @param addressId 삭제할 주소의 ID
      * @return 응답 없음
      */
-    @DeleteMapping("/addresses/{addressId}")
+    @DeleteMapping("/{memberId}/addresses/{addressId}")
     public ResponseEntity<Void> deleteAddress(
-            @PathVariable Long addressId) {
+            @PathVariable Long addressId, @PathVariable String memberId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
 
         // 서비스 호출하여 주소 삭제
         addressService.deleteAddress(addressId);

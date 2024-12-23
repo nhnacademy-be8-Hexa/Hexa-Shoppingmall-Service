@@ -7,8 +7,10 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,6 +48,9 @@ class RatingControllerTest {
 
     @MockBean
     private RatingService ratingService;
+
+    @MockBean
+    private JwtUtils jwtUtils;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 

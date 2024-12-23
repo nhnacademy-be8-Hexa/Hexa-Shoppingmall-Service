@@ -1,6 +1,7 @@
 ### 회원 등급 저장
 POST localhost:8081/api/ratings
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "ratingName": "Gold",
@@ -10,6 +11,7 @@ Content-Type: application/json
 ### 회원 상태 저장
 POST localhost:8081/api/memberStatus
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "statusName": "활성"
@@ -32,25 +34,26 @@ Content-Type: application/json
 }
 
 ### 1. 좋아요 생성 (성공)
-POST http://localhost:8081/api/auth/likes?bookId=1&memberId=john_doe_124
+POST http://localhost:8081/api/likes?bookId=1&memberId=john_doe_124
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 2. 좋아요 생성 (책이 존재하지 않음 - 오류)
-POST http://localhost:8081/api/auth/likes?bookId=999&memberId=john_doe_124
+POST http://localhost:8081/api/likes?bookId=999&memberId=john_doe_124
 Content-Type: application/json
 
 ###
 
 ### 3. 좋아요 생성 (회원이 존재하지 않음 - 오류)
-POST http://localhost:8081/api/auth/likes?bookId=1&memberId=nonexistent_member
+POST http://localhost:8081/api/likes?bookId=1&memberId=nonexistent_member
 Content-Type: application/json
 
 ###
 
 ### 4. 좋아요 생성 (중복 좋아요 - 오류)
-POST http://localhost:8081/api/auth/likes?bookId=1&memberId=john_doe_124
+POST http://localhost:8081/api/likes?bookId=1&memberId=john_doe_124
 Content-Type: application/json
 
 ###

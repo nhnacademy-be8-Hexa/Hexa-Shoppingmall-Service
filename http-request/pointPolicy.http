@@ -1,6 +1,7 @@
 ### 1. 포인트 정책 생성
 POST http://localhost:8081/api/pointPolicies
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "pointPolicyName": "Gold",
@@ -10,6 +11,7 @@ Content-Type: application/json
 ### 2. 포인트 정책 업데이트
 PATCH http://localhost:8081/api/pointPolicies
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "pointPolicyName": "Gold",
@@ -21,10 +23,7 @@ GET http://localhost:8081/api/pointPolicies
 Accept: application/json
 
 ### 4. 포인트 정책 삭제
-DELETE http://localhost:8081/api/pointPolicies
+DELETE http://localhost:8081/api/pointPolicies/Gold
 Content-Type: application/json
-
-{
-  "pointPolicyName": "Gold"
-}
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
