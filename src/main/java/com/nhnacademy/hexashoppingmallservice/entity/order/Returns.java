@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 public class Returns {
     @Id
     @Column(name = "order_id")
+    @NotNull
     private Long orderId;
 
     @OneToOne
@@ -26,7 +27,16 @@ public class Returns {
     @JoinColumn(name="returns_reason_id")
     private ReturnsReason returnsReason;
 
+    @Setter
     @Column
     @Length(min = 100)
     private String returnsDetail;
+
+    public static Returns of(Order order, ReturnsReason returnsReason, String returnsDetail) {
+        return Returns.builder()
+                .order(order)
+                .returnsReason(returnsReason)
+                .returnsDetail(returnsDetail)
+                .build();
+    }
 }

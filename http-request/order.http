@@ -3,6 +3,7 @@ POST localhost:8081/api/orders
 Content-Type: application/json
 
 {
+  "memberId": "john_doe_124",
   "orderPrice": 1,
   "orderStatusId": 1,
   "zoneCode": "12345",

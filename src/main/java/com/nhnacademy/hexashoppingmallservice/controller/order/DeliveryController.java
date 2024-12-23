@@ -27,7 +27,7 @@ public class DeliveryController {
 
     @GetMapping("/api/delivery")
     public List<Delivery> getAllDelivery(Pageable pageable) {
-        return deliveryService.getDeliveries(pageable);
+        return deliveryService.getDeliveries(pageable   );
     }
 
     @GetMapping("/api/delivery/order/{orderId}")

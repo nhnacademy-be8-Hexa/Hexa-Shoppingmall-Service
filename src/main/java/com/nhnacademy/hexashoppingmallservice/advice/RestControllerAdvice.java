@@ -10,6 +10,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFo
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.DeliveryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.order.ReturnsNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.ReturnsReasonNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +64,13 @@ public class RestControllerAdvice {
             ReturnsReasonNotFoundException.class
     })
     public ResponseEntity<Void> ReturnsReasonNotFoundException(ReturnsReasonNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler({
+            ReturnsNotFoundException.class
+    })
+    public ResponseEntity<Void> ReturnsNotFoundException(ReturnsNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
