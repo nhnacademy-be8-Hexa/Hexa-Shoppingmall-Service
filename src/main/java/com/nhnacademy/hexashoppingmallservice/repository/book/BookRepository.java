@@ -84,4 +84,6 @@ public interface BookRepository extends JpaRepository<Book,Long> {
         WHERE ba.book.bookId = :bookId
     """)
     List<Author> findAuthorsByBookId(@Param("bookId") Long bookId);
+
+    long countByBookIdIn(List<Long> bookIds);
 }
