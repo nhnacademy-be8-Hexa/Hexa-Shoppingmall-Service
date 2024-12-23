@@ -43,6 +43,7 @@ POST localhost:8081/api/orders?bookIds=1&amounts=1
 Content-Type: application/json
 
 {
+  "orderPrice": 1,
   "orderPrice": 15000,
   "orderStatusId": 1,
   "zoneCode": "12345",

@@ -5,6 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.dto.cart.CartRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.cart.Cart;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartAlreadyExistException;
 
 import com.nhnacademy.hexashoppingmallservice.exception.cartException.CartNotFoundException;
@@ -39,7 +40,7 @@ public class CartService {
         Book book = bookRepository.findById(cartRequestDto.getBookId()).orElseThrow(
                 ()-> {
                     String errorMessage = new Formatter().format("Book ID: %s not found.", cartRequestDto.getBookId()).toString();
-                    return new RuntimeException(errorMessage);
+                    return new BookNotExistException(errorMessage);
                 }
         );
 
