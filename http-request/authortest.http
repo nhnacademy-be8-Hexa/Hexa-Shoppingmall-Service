@@ -1,0 +1,7 @@
+POST http://localhost:8081/api/admin/authors
+Content-Type: application/json
+
+{
+  "authorName": "test",
+  "bookId": 1
+}

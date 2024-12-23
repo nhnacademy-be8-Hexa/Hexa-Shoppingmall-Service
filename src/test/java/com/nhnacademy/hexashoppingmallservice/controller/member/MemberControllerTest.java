@@ -11,6 +11,7 @@ import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
+import com.nhnacademy.hexashoppingmallservice.service.book.LikeService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
@@ -89,6 +90,9 @@ class MemberControllerTest {
     private MemberStatusService memberStatusService;
 
     @MockBean
+    private LikeService likeService;
+
+    @MockBean
     private RatingRepository ratingRepository;
 
     @MockBean
@@ -131,7 +135,7 @@ class MemberControllerTest {
 
         given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/admin/members")
+        mockMvc.perform(get("/api/auth/members")
                         .param("page", "0")
                         .param("search", search)
                         .accept(MediaType.APPLICATION_JSON))
@@ -178,7 +182,7 @@ class MemberControllerTest {
 
         given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/admin/members")
+        mockMvc.perform(get("/api/auth/members")
                         .param("page", "0")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

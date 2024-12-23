@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 ### 1. 주소 추가 (성공)
-POST http://localhost:8081/api/members/john_doe_124/addresses
+POST http://localhost:8081/api/members/auth/john_doe_124/addresses
 Content-Type: application/json
 
 {

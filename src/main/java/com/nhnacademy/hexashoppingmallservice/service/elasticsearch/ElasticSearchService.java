@@ -1,13 +1,11 @@
 package com.nhnacademy.hexashoppingmallservice.service.elasticsearch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.InlineScript;
-import co.elastic.clients.elasticsearch._types.Script;
-import co.elastic.clients.elasticsearch._types.ScriptSortType;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.google.common.collect.Lists;
 import com.nhnacademy.hexashoppingmallservice.document.Book;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.io.IOException;
@@ -34,17 +32,58 @@ public class ElasticSearchService {
         return elasticSearchRepository.findAllByOrderByBookSellCountDesc(pageable);
     }
 
+    public List<Book> searchBooks(String search, Pageable pageable) {
+        try {
+            int from = pageable.getPageNumber() * pageable.getPageSize();
+            int size = pageable.getPageSize();
+
+            SearchRequest searchRequest = new SearchRequest.Builder()
+                    .index("book31")
+                    .query(query -> query
+                            .bool(boolQuery -> boolQuery
+                                    .should(shouldQuery -> shouldQuery
+                                            .multiMatch(mm -> mm
+                                                    .query(search)
+                                                    .fields(Lists.newArrayList(
+                                                            "bookTitle^10",
+                                                            "authors^3",
+                                                            "bookDescription^3",
+                                                            "tagName^2"
+                                                    ))
+                                            )
+                                    )
+                                    .should(shouldQuery -> shouldQuery
+                                            .term(t -> t
+                                                    .field("isbn.keyword")
+                                                    .value(search)
+                                            )
+                                    )
+                            )
+                    )
+                    .from(from)
+                    .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
+                    .build();
+
+            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+
+            return searchResponse.hits().hits().stream()
+                    .map(Hit::source)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public List<Book> searchBooksByTitle(String title, Pageable pageable) {
         try {
-            InlineScript inlineScript = new InlineScript.Builder()
-                    .source("doc['bookTitle.keyword'].value.length()")
-                    .lang("painless")
-                    .build();
-
-            Script script = new Script.Builder()
-                    .inline(inlineScript)
-                    .build();
-
             int from = pageable.getPageNumber() * pageable.getPageSize();
             int size = pageable.getPageSize();
 
@@ -62,11 +101,10 @@ public class ElasticSearchService {
                     )
                     .from(from)
                     .size(size)
-                    .sort(s -> s
-                            .script(sr -> sr
-                                    .type(ScriptSortType.Number)
-                                    .script(script)
-                                    .order(SortOrder.Asc)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
                             )
                     )
                     .build();
@@ -98,7 +136,14 @@ public class ElasticSearchService {
                     )
                     .from(from)
                     .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
                     .build();
+
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
 
@@ -130,6 +175,12 @@ public class ElasticSearchService {
                     )
                     .from(from)
                     .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
                     .build();
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
@@ -162,6 +213,12 @@ public class ElasticSearchService {
                     )
                     .from(from)
                     .size(size)
+                    .sort(sort -> sort
+                            .field(f -> f
+                                    .field("_score")
+                                    .order(SortOrder.Desc)
+                            )
+                    )
                     .build();
 
             SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);

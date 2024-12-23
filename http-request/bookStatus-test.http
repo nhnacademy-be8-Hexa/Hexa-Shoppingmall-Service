@@ -7,7 +7,6 @@ POST localhost:8081/api/bookStatuses
 Content-Type: application/json
 
 {
-  "bookStatusId": 1,
   "bookStatus": "판매중"
 }
 

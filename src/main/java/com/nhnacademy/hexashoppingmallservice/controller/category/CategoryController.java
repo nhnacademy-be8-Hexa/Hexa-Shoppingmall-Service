@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.controller.category;
 
 import com.nhnacademy.hexashoppingmallservice.dto.category.CategoryDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.service.category.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -69,4 +70,9 @@ public class CategoryController {
 //        categoryService.deleteCategory(categoryId);
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
+    @PostMapping("/{categoryId}/books/{bookId}")
+    public ResponseEntity<Void> getAllBooksByCategoryId(@PathVariable Long categoryId, @PathVariable Long bookId) {
+        categoryService.insertBook(categoryId, bookId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
