@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.feignclient.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
@@ -43,12 +44,22 @@ public class AladinApiService {
         this.bookStatusRepository = bookStatusRepository;
     }
 
-    public List<Book> searchBooks(String query, Long bookStatusId, Long publisherId) {
+    public List<Book> searchBooks(String query) {
+        try {
+            ResponseEntity<String> response = aladinApi.searchBooks(ttbkey, query, output, version);
+            ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
+            return books.getItem();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Book> createBooks(String query, Long bookStatusId, Long publisherId) {
         try {
             ResponseEntity<String> response = aladinApi.searchBooks(ttbkey, query, output, version);
             ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
             List<Book> items = books.getItem();
-            
+
             for (Book item : items) {
 
                 if (bookRepository.existsByBookIsbn(Long.valueOf(item.getIsbn13()))) {
