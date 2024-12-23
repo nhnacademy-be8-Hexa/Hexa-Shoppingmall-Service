@@ -23,7 +23,7 @@ Content-Type: application/json
   "memberId": "john_doe_124",
   "memberPassword": "securePassword123",
   "memberName": "John Doe",
-  "memberNumber": "01012345678",
+  "memberNumber": "01043214321",
   "memberEmail": "test@test.com",
   "memberBirthAt": "1990-05-15",
   "memberRole": "ADMIN",

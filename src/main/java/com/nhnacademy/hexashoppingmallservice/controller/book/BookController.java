@@ -25,14 +25,23 @@ public class BookController {
     @GetMapping
     public List<Book> getBooks(
             Pageable pageable,
+            //도서 제목으로 검색
             @RequestParam(required = false) String search,
+            //카테고리(아이디)로 검색
             @RequestParam(required = false) List<Long> categoryIds,
+            //출판사명으로 검색
             @RequestParam(required = false) String publisherName,
+            //작가명으로 검색
             @RequestParam(required = false) String authorName,
-            @RequestParam(required = false) String tagName,
+            //태그명 검색은 tagAPI에서 구현됨
+//            @RequestParam(required = false) String tagName,
+            //조회수에 의한 정렬
             @RequestParam(required = false) Boolean sortByView,
+            //판매수에 의한 정렬
             @RequestParam(required = false) Boolean sortBySellCount,
+            //좋아요수에 의한 정렬
             @RequestParam(required = false) Boolean sortByLikeCount,
+            //출간일 최신순으로 정렬
             @RequestParam(required = false) Boolean latest
     ){
         if(search != null && !search.isEmpty()){
@@ -47,9 +56,10 @@ public class BookController {
         if(authorName != null && !authorName.isEmpty()){
             return bookService.getBooksByAuthorName(authorName, pageable);
         }
-        if(tagName != null && !tagName.isEmpty()){
-            return bookService.getBooksByTag(tagName, pageable);
-        }
+//        if(tagName != null && !tagName.isEmpty()){
+//            return bookService.getBooksByTag(tagName, pageable);
+//        }
+        //가장 많이 열람한 횟수로 정렬
         if(sortByView != null && sortByView){
             return bookService.getBooksByBookView(pageable);
         }

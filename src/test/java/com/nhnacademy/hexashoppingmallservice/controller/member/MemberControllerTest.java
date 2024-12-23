@@ -11,6 +11,7 @@ import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
+import com.nhnacademy.hexashoppingmallservice.service.book.LikeService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
@@ -87,6 +88,9 @@ class MemberControllerTest {
 
     @MockBean
     private MemberStatusService memberStatusService;
+
+    @MockBean
+    private LikeService likeService;
 
     @MockBean
     private RatingRepository ratingRepository;

@@ -1,9 +1,49 @@
-### 주문 상태 필요, 주문 생성 (memberId, wrappingPaper null 가능)
-POST localhost:8081/api/orders
+### 주문 상태 생성
+POST localhost:8081/api/orderStatus
 Content-Type: application/json
 
 {
-  "orderPrice": 1,
+  "orderStatus": "대기"
+}
+
+### 출판사 생성
+POST localhost:8081/api/publishers
+Content-Type: application/json
+
+{
+  "publisherName": "교보문고"
+}
+
+### 도서 상태 생성
+POST localhost:8081/api/bookStatuses
+Content-Type: application/json
+
+{
+  "bookStatus": "판매중"
+}
+
+### 도서 생성
+POST http://localhost:8081/api/books
+Content-Type: application/json
+
+{
+  "bookTitle": "The Great Gatsby",
+  "bookDescription": "A classic novel by F. Scott Fitzgerald.",
+  "bookPubDate": "1925-04-10",
+  "bookIsbn": 1234567890123,
+  "bookOriginPrice": 20000,
+  "bookPrice": 15000,
+  "bookWrappable": false,
+  "publisherId": "1",
+  "bookStatusId": "1"
+}
+
+### 주문 상태 필요, 주문 생성 (memberId, wrappingPaper null 가능)
+POST localhost:8081/api/orders?bookIds=1&amounts=1
+Content-Type: application/json
+
+{
+  "orderPrice": 15000,
   "orderStatusId": 1,
   "zoneCode": "12345",
   "address": "address1",
@@ -14,7 +54,7 @@ Content-Type: application/json
 GET localhost:8081/api/orders
 
 ### 회원 주문 목록 조회
-GET localhost:8081/api/orders/
+GET localhost:8081/api/orders
 
 ### 주문 수정 (상태 수정)
 PATCH localhost:8081/api/orders/1
@@ -22,7 +62,6 @@ Content-Type: application/json
 
 {
   "orderPrice": 9,
-  "wrappingPaperId": 1,
   "orderStatusId": 1,
   "zoneCode": "12333",
   "address": "address2",

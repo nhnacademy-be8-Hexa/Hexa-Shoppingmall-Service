@@ -1,15 +1,22 @@
 package com.nhnacademy.hexashoppingmallservice.service.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.order.OrderRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
+import com.nhnacademy.hexashoppingmallservice.entity.order.OrderBook;
 import com.nhnacademy.hexashoppingmallservice.entity.order.OrderStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.order.WrappingPaper;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.order.ParameterNotEnouthException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
+import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.WrappingPaperRepository;
@@ -28,9 +35,11 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final WrappingPaperRepository wrappingPaperRepository;
     private final OrderStatusRepository orderStatusRepository;
+    private final OrderBookRepository orderBookRepository;
+    private final BookRepository bookRepository;
 
     @Transactional
-    public Order createOrder(OrderRequestDTO orderRequestDTO) {
+    public void createOrder(OrderRequestDTO orderRequestDTO, List<Long> bookIds, List<Integer> amounts, Long couponId) {
         String memberId = orderRequestDTO.getMemberId();
         Member member = null;
 
@@ -48,7 +57,7 @@ public class OrderService {
         if (Objects.nonNull(wrappingPaperId)) {
             if (!wrappingPaperRepository.existsById(wrappingPaperId)) {
                 throw new WrappingPaperNotFoundException(
-                        "WrappingPaper ID %s not found".formatted(wrappingPaperId));
+                        "WrappingPaper ID %d not found".formatted(wrappingPaperId));
             }
             wrappingPaper = wrappingPaperRepository.findById(wrappingPaperId).orElseThrow();
         }
@@ -56,7 +65,11 @@ public class OrderService {
         Long orderStatusId = orderRequestDTO.getOrderStatusId();
         if (!orderStatusRepository.existsById(orderStatusId)) {
             throw new OrderStatusNotFoundException(
-                    "OrderStatus ID %s is not found".formatted(orderStatusId));
+                    "OrderStatus ID %d is not found".formatted(orderStatusId));
+        }
+
+        if (bookRepository.countByBookIdIn(bookIds) == 0) {
+            throw new BookNotFoundException("Book IDs aren't found");
         }
 
         OrderStatus orderStatus = orderStatusRepository.findById(orderStatusId).orElseThrow();
@@ -71,22 +84,56 @@ public class OrderService {
                 orderRequestDTO.getAddressDetail()
         );
 
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        if (bookIds.size() != amounts.size()) {
+            throw new ParameterNotEnouthException("Parameters not enough");
+        }
+
+        int index = 0;
+
+        for (Long bookId : bookIds) {
+            Book book = bookRepository.findById(bookId).orElseThrow(
+                    () -> new BookNotFoundException("Book ID %d not found".formatted(bookId))
+            );
+
+            OrderBook orderBook = OrderBook.of(order, book, amounts.get(index), couponId);
+            orderBookRepository.save(orderBook);
+            index++;
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<Order> getAllOrders(Pageable pageable) {
+    public List<OrderProjection> getAllOrders(Pageable pageable) {
         return orderRepository.findAllBy(pageable).getContent();
     }
 
     @Transactional(readOnly = true)
-    public List<Order> getOrdersByMemberId(String memberId, Pageable pageable) {
-        return orderRepository.findOrdersByMember_MemberId(memberId, pageable).getContent();
+    public List<OrderProjection> getOrdersByMemberId(String memberId, Pageable pageable) {
+        return orderRepository.findByMember_MemberId(memberId, pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
+    public OrderProjection getOrder(Long orderId) {
+        if (!orderRepository.existsById(orderId)) {
+            throw new OrderNotFoundException("Order ID %d not found".formatted(orderId));
+        }
+        return orderRepository.findByOrderId(orderId).get();
+    }
+
+    @Transactional(readOnly = true)
+    public Long getAmount(Long orderId, Long bookId) {
+        if (!orderRepository.existsById(orderId)) {
+            throw new OrderNotFoundException("Order ID %d not found".formatted(orderId));
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException("Book ID %d not found".formatted(bookId));
+        }
+        return orderBookRepository.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
+    }
 
     @Transactional
-    public Order updateOrder(Long orderId, OrderRequestDTO orderRequestDTO) {
+    public void updateOrder(Long orderId, OrderRequestDTO orderRequestDTO) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new OrderNotFoundException(String.format("%s", orderId))
         );
@@ -116,8 +163,6 @@ public class OrderService {
         }
 
         order.setWrappingPaper(wrappingPaper);
-
-        return order;
     }
 
     private <T> void updateIfNotNull(T value, Consumer<T> updater) {
