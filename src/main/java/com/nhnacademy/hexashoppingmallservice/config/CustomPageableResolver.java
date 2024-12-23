@@ -17,7 +17,7 @@ public class CustomPageableResolver implements HandlerMethodArgumentResolver {
     public boolean supportsParameter(MethodParameter parameter) {
         return Pageable.class.isAssignableFrom(parameter.getParameterType());
     }
-
+    
     @Override
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,

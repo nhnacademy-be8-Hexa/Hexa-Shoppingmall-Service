@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
   "orderPrice": 9,
-  "wrappingPaperId": 2,
+  "wrappingPaperId": 1,
   "orderStatusId": 1,
   "zoneCode": "12333",
   "address": "address2",
