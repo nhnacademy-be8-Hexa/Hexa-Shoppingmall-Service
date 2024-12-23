@@ -1,23 +1,24 @@
 package com.nhnacademy.hexashoppingmallservice.service.book;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookStatusRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 class BookStatusServiceTest {
 
@@ -52,7 +53,7 @@ class BookStatusServiceTest {
         List<BookStatus> bookStatuses = bookStatusService.getAllBookStatus();
 
         assertThat(bookStatuses).hasSize(1);
-        assertThat(bookStatuses.get(0).getBookStatus()).isEqualTo("판매중");
+        assertThat(bookStatuses.getFirst().getBookStatus()).isEqualTo("판매중");
         verify(bookStatusRepository, times(1)).findAll();
     }
 
@@ -84,19 +85,18 @@ class BookStatusServiceTest {
         verify(bookStatusRepository, times(1)).deleteById(1L);
     }
 
-//    @Test
-//    void testUpdateBookStatus_Success() {
-//        BookStatusRequestDTO requestDTO = new BookStatusRequestDTO("판매종료");
-//
-//        when(bookStatusRepository.findById(1L)).thenReturn(Optional.of(bookStatus));
-//        when(bookStatusRepository.save(any(BookStatus.class))).thenReturn(BookStatus.of("판매종료"));
-//
-//        BookStatus updatedStatus = bookStatusService.updateBookStatus(1L, requestDTO);
-//
-//        assertThat(updatedStatus.getBookStatus()).isEqualTo("판매종료");
-//        verify(bookStatusRepository, times(1)).findById(1L);
-//        verify(bookStatusRepository, times(1)).save(any(BookStatus.class));
-//    }
+    // 수정
+    @Test
+    void testUpdateBookStatus_Success() {
+        BookStatusRequestDTO requestDTO = new BookStatusRequestDTO("판매종료");
+
+        when(bookStatusRepository.findById(1L)).thenReturn(Optional.of(bookStatus));
+
+        BookStatus updatedStatus = bookStatusService.updateBookStatus(1L, requestDTO);
+
+        assertThat(updatedStatus.getBookStatus()).isEqualTo("판매종료");
+        verify(bookStatusRepository, times(1)).findById(1L);
+    }
 
     @Test
     void testUpdateBookStatus_NotFound() {
