@@ -17,7 +17,7 @@ public class JwtUtils {
 
     private final JwtProperties jwtProperties;
 
-    // 헤더에서 토큰 뽑기
+    // 리퀘스트를 받고, 헤더에서 토큰 뽑기
     public String getTokenFromRequest(HttpServletRequest request) {
         String header = request.getHeader(jwtProperties.getHeaderString());
         if(header == null || !header.startsWith(jwtProperties.getTokenPrefix())) {
@@ -48,7 +48,7 @@ public class JwtUtils {
                 .get("userId", String.class);
     }
 
-    // JWT에서 권한 추출
+    // 토큰에서 권한 추출 (ROLE_ADMIN, ROLE_MEMBER)
     public String getRoleFromToken(String token) {
 
         return Jwts.parser()
