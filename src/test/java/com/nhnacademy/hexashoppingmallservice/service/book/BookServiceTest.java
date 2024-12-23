@@ -1,5 +1,14 @@
 package com.nhnacademy.hexashoppingmallservice.service.book;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
@@ -8,18 +17,13 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
+import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 class BookServiceTest {
 
