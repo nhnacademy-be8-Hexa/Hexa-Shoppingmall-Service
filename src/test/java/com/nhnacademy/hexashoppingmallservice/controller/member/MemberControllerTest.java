@@ -2,6 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
@@ -364,7 +365,7 @@ class MemberControllerTest {
         );
 
         // Mock service response
-        given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(updatedMember);
+        given(memberService.updateMember(anyString(), any(MemberUpdateDTO.class))).willReturn(updatedMember);
 
         // Perform PATCH request
         mockMvc.perform(patch("/api/members/{memberId}", "test1")

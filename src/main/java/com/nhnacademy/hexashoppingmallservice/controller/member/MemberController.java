@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.controller.member;
 
+import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
@@ -51,9 +52,9 @@ public class MemberController {
     }
 
     @PatchMapping("/api/members/{memberId}")
-    public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberRequestDTO memberRequestDto, HttpServletRequest request) {
+    public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberUpdateDTO memberUpdateDTO, HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
-        return ResponseEntity.ok(memberService.updateMember(memberId, memberRequestDto));
+        return ResponseEntity.ok(memberService.updateMember(memberId, memberUpdateDTO));
     }
 
     @GetMapping("/api/members/{memberId}/liked-books")

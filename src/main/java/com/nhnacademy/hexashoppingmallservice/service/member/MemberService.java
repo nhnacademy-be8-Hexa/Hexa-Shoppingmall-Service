@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.service.member;
 
+import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
@@ -73,27 +74,27 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(String memberId, MemberRequestDTO memberRequestDto) {
+    public Member updateMember(String memberId, MemberUpdateDTO memberUpdateDTO) {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberNotFoundException(String.format("%s", memberId))
         );
 
-        updateIfNotNull(memberRequestDto.getMemberPassword(), member::setMemberPassword);
-        updateIfNotNull(memberRequestDto.getMemberNumber(), member::setMemberNumber);
-        updateIfNotNull(memberRequestDto.getMemberBirthAt(), member::setMemberBirthAt);
-        updateIfNotNull(memberRequestDto.getMemberLastLoginAt(), member::setMemberLastLoginAt);
+        updateIfNotNull(memberUpdateDTO.getMemberPassword(), member::setMemberPassword);
+        updateIfNotNull(memberUpdateDTO.getMemberNumber(), member::setMemberNumber);
+        updateIfNotNull(memberUpdateDTO.getMemberBirthAt(), member::setMemberBirthAt);
+        updateIfNotNull(memberUpdateDTO.getMemberLastLoginAt(), member::setMemberLastLoginAt);
 
-        if (memberRequestDto.getRatingId() != null) {
-            Rating rating = ratingRepository.findById(Long.parseLong(memberRequestDto.getRatingId()))
+        if (memberUpdateDTO.getRatingId() != null) {
+            Rating rating = ratingRepository.findById(Long.parseLong(memberUpdateDTO.getRatingId()))
                     .orElseThrow(
-                            () -> new RatingNotFoundException(String.format("%s", memberRequestDto.getRatingId())));
+                            () -> new RatingNotFoundException(String.format("%s", memberUpdateDTO.getRatingId())));
             member.setRating(rating);
         }
 
-        if (memberRequestDto.getStatusId() != null) {
-            MemberStatus memberStatus = memberStatusRepository.findById(Long.parseLong(memberRequestDto.getStatusId()))
+        if (memberUpdateDTO.getStatusId() != null) {
+            MemberStatus memberStatus = memberStatusRepository.findById(Long.parseLong(memberUpdateDTO.getStatusId()))
                     .orElseThrow(() -> new MemberStatusNotFoundException(
-                            String.format("%s", memberRequestDto.getStatusId())));
+                            String.format("%s", memberUpdateDTO.getStatusId())));
             member.setMemberStatus(memberStatus);
         }
 
