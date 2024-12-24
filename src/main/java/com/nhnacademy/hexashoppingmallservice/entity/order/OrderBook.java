@@ -30,4 +30,8 @@ public class OrderBook {
 
     @Column(columnDefinition = "bigint")
     private Long couponId;
+
+    public static OrderBook of(Order order, Book book, Integer orderBookAmount, Long couponId) {
+        return OrderBook.builder().book(book).order(order).orderBookAmount(orderBookAmount).couponId(couponId).build();
+    }
 }

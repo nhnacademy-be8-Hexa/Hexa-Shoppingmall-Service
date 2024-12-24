@@ -4,21 +4,62 @@ Content-Type: application/json
 
 {
   "bookId": 1,
-  "bookTitle": "bookTitle1",
-  "bookDescription": "1",
+  "bookTitle": "Elasticsearch Basics",
+  "bookDescription": "Learn Elasticsearch from scratch.",
   "authors": [
-    "1",
-    "2"
+    {
+      "authorId": 101,
+      "authorName": "John Doe"
+    },
+    {
+      "authorId": 102,
+      "authorName": "Jane Smith"
+    }
   ],
-  "publisherName": "1",
-  "bookStatusName": "1",
-  "tagName": "1",
-  "isbn": 1111111111111,
-  "bookSellCount": 1
+  "publisher": {
+    "publisherId": 201,
+    "publisherName": "Tech Books Publishing"
+  },
+  "bookStatus": {
+    "statusId": 301,
+    "statusName": "AVAILABLE"
+  },
+  "tags": [
+    {
+      "tagId": 401,
+      "tagName": "search"
+    },
+    {
+      "tagId": 402,
+      "tagName": "elasticsearch"
+    },
+    {
+      "tagId": 403,
+      "tagName": "technology"
+    }
+  ],
+  "isbn": 9780134438422,
+  "bookPubDate": "2024-01-01",
+  "bookOriginPrice": 30000,
+  "bookPrice": 25000,
+  "bookWrappable": true,
+  "bookView": 120,
+  "bookAmount": 100,
+  "bookSellCount": 50,
+  "categories": [
+    {
+      "categoryId": 501,
+      "categoryName": "Technology"
+    },
+    {
+      "categoryId": 502,
+      "categoryName": "Programming"
+    }
+  ]
 }
 
 ### 통합 검색
-GET localhost:8081/api/search?search=
+GET localhost:8081/api/search?search=ea
 Accept: application/json
 
 ### 제목으로 검색

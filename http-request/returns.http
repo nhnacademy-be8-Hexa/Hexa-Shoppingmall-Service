@@ -1,0 +1,33 @@
+### Create a new return
+POST http://localhost:8081/api/returns
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "returnsReasonId": 1,
+  "returnsDetail": "상품이ㅕㅛㅕㅛㅕㅛㅛㅛㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅁㅁㅇㅁㄹㅇㄴㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓ하먾;ㅕ맏ㄱㅎ;볃ㅎ미ㅑㅕㄷㅂㅁ이ㅑㅕㅁㅎㄹ나ㅓ하ㅓㅇㄹㄹ아ㅓ라러알어ㅏ파손되어 도착했습니다."
+}
+
+### Get all returns (paginated)
+GET http://localhost:8081/api/returns?page=0&size=10
+
+### Get a return by ReturnsReasonId
+GET http://localhost:8081/api/returns/returnReason/1
+
+### Get a return by OrderId
+GET http://localhost:8081/api/returns/order/1
+
+### Get a return by MemberId
+GET http://localhost:8081/api/returns/member/john_doe_124
+
+### Update a return by OrderId
+PATCH http://localhost:8081/api/returns/order/1
+Content-Type: application/json
+
+{
+  "returnsReason": "상품 반품",
+  "returnsDetail": "ㅈㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷㄷ제품이 맞지 않아 반품합니다."
+}
+
+### Delete a return by OrderId
+DELETE http://localhost:8081/api/returns/order/1

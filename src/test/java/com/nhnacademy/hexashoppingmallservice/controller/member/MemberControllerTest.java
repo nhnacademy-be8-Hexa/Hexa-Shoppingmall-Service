@@ -2,6 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
@@ -11,9 +12,11 @@ import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
+import com.nhnacademy.hexashoppingmallservice.service.book.LikeService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,6 +92,12 @@ class MemberControllerTest {
     private MemberStatusService memberStatusService;
 
     @MockBean
+    private LikeService likeService;
+
+    @MockBean
+    private JwtUtils jwtUtils;
+
+    @MockBean
     private RatingRepository ratingRepository;
 
     @MockBean
@@ -131,7 +140,7 @@ class MemberControllerTest {
 
         given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/auth/members")
+        mockMvc.perform(get("/api/members")
                         .param("page", "0")
                         .param("search", search)
                         .accept(MediaType.APPLICATION_JSON))
@@ -178,7 +187,7 @@ class MemberControllerTest {
 
         given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/auth/members")
+        mockMvc.perform(get("/api/members")
                         .param("page", "0")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -356,10 +365,10 @@ class MemberControllerTest {
         );
 
         // Mock service response
-        given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(updatedMember);
+        given(memberService.updateMember(anyString(), any(MemberUpdateDTO.class))).willReturn(updatedMember);
 
         // Perform PATCH request
-        mockMvc.perform(patch("/api/auth/members/{memberId}", "test1")
+        mockMvc.perform(patch("/api/members/{memberId}", "test1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())

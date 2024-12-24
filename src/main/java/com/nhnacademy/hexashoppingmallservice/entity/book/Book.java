@@ -1,13 +1,25 @@
 package com.nhnacademy.hexashoppingmallservice.entity.book;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -80,7 +92,8 @@ public class Book {
     private BookStatus bookStatus;
 
     @Builder
-    private Book(String bookTitle, String bookDescription, LocalDate bookPubDate, Long bookIsbn, int bookOriginPrice, int bookPrice, Publisher publisher, BookStatus bookStatus) {
+    private Book(String bookTitle, String bookDescription, LocalDate bookPubDate, Long bookIsbn, int bookOriginPrice,
+                 int bookPrice, Publisher publisher, BookStatus bookStatus) {
         this.bookTitle = bookTitle;
         this.bookDescription = bookDescription;
         this.bookPubDate = bookPubDate;
@@ -97,7 +110,9 @@ public class Book {
         this.bookSellCount = 0L;
     }
 
-    public static Book of(String bookTitle, String bookDescription, LocalDate bookPubDate, Long bookIsbn, int bookOriginPrice, int bookPrice, Publisher publisher, BookStatus bookStatus) {
+    public static Book of(String bookTitle, String bookDescription, LocalDate bookPubDate, Long bookIsbn,
+                          int bookOriginPrice, int bookPrice, Publisher publisher,
+                          BookStatus bookStatus) {
         return Book.builder()
                 .bookTitle(bookTitle)
                 .bookDescription(bookDescription)
