@@ -22,9 +22,8 @@ public class AladinApiController {
 
     @PostMapping("/api/aladinApi")
     private List<Book> getBooks(@RequestParam String query,
-                                @RequestParam Long bookStatusId,
-                                @RequestParam Long publisherId) {
-        return aladinApiService.createBooks(query, bookStatusId, publisherId);
+                                @RequestParam Long bookStatusId) {
+        return aladinApiService.createBooks(query, bookStatusId);
     }
 
 }
