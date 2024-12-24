@@ -6,6 +6,8 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.OrderStatus;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.service.order.OrderStatusService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/orderStatus")
 public class OrderStatusController {
     private final OrderStatusService orderStatusService;
+    private final JwtUtils jwtUtils;
 
     @GetMapping
     public List<OrderStatus> getAllOrderStatus() {
@@ -33,7 +36,9 @@ public class OrderStatusController {
 
     @PostMapping
     public ResponseEntity<OrderStatus> createOrderStatus(
-            @Valid @RequestBody OrderStatusRequestDTO orderStatusRequestDTO) {
+            @Valid @RequestBody OrderStatusRequestDTO orderStatusRequestDTO,
+            HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.status(201).body(orderStatusService.createOrderStatus(orderStatusRequestDTO));
     }
 
@@ -44,12 +49,15 @@ public class OrderStatusController {
 
     @PatchMapping("/{orderStatusId}")
     public ResponseEntity<OrderStatus> updateOrderStatus(@PathVariable Long orderStatusId,
-                                                         @RequestBody OrderStatusRequestDTO orderStatusRequestDTO) {
+                                                         @RequestBody OrderStatusRequestDTO orderStatusRequestDTO,
+                                                         HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(orderStatusService.updateOrderStatus(orderStatusId, orderStatusRequestDTO));
     }
 
     @DeleteMapping("/{orderStatusId}")
-    public ResponseEntity<OrderStatus> deleteOrderStatus(@PathVariable Long orderStatusId) {
+    public ResponseEntity<OrderStatus> deleteOrderStatus(@PathVariable Long orderStatusId, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         OrderStatus orderStatus = orderStatusService.getOrderStatus(orderStatusId);
         if (Objects.isNull(orderStatus)) {
             throw new OrderStatusNotFoundException(Long.toString(orderStatusId));

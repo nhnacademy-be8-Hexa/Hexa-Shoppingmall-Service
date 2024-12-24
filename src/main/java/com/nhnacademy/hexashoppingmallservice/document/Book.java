@@ -3,10 +3,12 @@ package com.nhnacademy.hexashoppingmallservice.document;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
 @Document(indexName = "book31")
 public class Book {
     @Id
@@ -38,8 +40,8 @@ public class Book {
         this.bookDescription = bookDescription;
         this.authors = authors;
         this.publisherName = publisherName;
-        this.bookStatusName = bookStatusName;
         this.tagName = tagName;
+        this.bookStatusName = bookStatusName;
         this.isbn = isbn;
         this.bookPubDate = bookPubDate;
         this.bookOriginPrice = bookOriginPrice;
@@ -48,66 +50,6 @@ public class Book {
         this.bookView = bookView;
         this.bookAmount = bookAmount;
         this.bookSellCount = bookSellCount;
-    }
-
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public String getBookTitle() {
-        return bookTitle;
-    }
-
-    public String getBookDescription() {
-        return bookDescription;
-    }
-
-    public List<String> getAuthors() {
-        return authors;
-    }
-
-    public String getPublisherName() {
-        return publisherName;
-    }
-
-    public String getBookStatusName() {
-        return bookStatusName;
-    }
-
-    public String getTagName() {
-        return tagName;
-    }
-
-    public long getIsbn() {
-        return isbn;
-    }
-
-    public LocalDate getBookPubDate() {
-        return bookPubDate;
-    }
-
-    public int getBookOriginPrice() {
-        return bookOriginPrice;
-    }
-
-    public int getBookPrice() {
-        return bookPrice;
-    }
-
-    public boolean isBookWrappable() {
-        return bookWrappable;
-    }
-
-    public int getBookView() {
-        return bookView;
-    }
-
-    public int getBookAmount() {
-        return bookAmount;
-    }
-
-    public long getBookSellCount() {
-        return bookSellCount;
     }
 }
 

@@ -6,6 +6,8 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.WrappingPaper;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.service.order.WrappingPaperService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/wrappingPaper")
 public class WrappingPaperController {
     private final WrappingPaperService wrappingPaperService;
+    private final JwtUtils jwtUtils;
 
     @GetMapping
     public List<WrappingPaper> getAllWrappingPapers() {
@@ -33,7 +36,8 @@ public class WrappingPaperController {
 
     @PostMapping
     public ResponseEntity<WrappingPaper> createWrappingPaper(
-            @Valid @RequestBody WrappingPaperRequestDTO wrappingPaperRequestDTO) {
+            @Valid @RequestBody WrappingPaperRequestDTO wrappingPaperRequestDTO, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.status(201).body(wrappingPaperService.createWrappingPaper(wrappingPaperRequestDTO));
     }
 
@@ -46,12 +50,15 @@ public class WrappingPaperController {
     @PatchMapping("/{wrappingPaperId}")
     public ResponseEntity<WrappingPaper> updateWrappingPaper(@PathVariable Long wrappingPaperId,
                                                              @Valid @RequestBody
-                                                             WrappingPaperRequestDTO wrappingPaperRequestDTO) {
+                                                             WrappingPaperRequestDTO wrappingPaperRequestDTO,
+                                                             HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(wrappingPaperService.updateWrappingPaper(wrappingPaperId, wrappingPaperRequestDTO));
     }
 
     @DeleteMapping("/{wrappingPaperId}")
-    public ResponseEntity<WrappingPaper> deleteWrappingPaper(@PathVariable Long wrappingPaperId) {
+    public ResponseEntity<WrappingPaper> deleteWrappingPaper(@PathVariable Long wrappingPaperId, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         WrappingPaper wrappingPaper = wrappingPaperService.getWrappingPaper(wrappingPaperId);
         if (Objects.isNull(wrappingPaper)) {
             throw new WrappingPaperNotFoundException(Long.toString(wrappingPaperId));

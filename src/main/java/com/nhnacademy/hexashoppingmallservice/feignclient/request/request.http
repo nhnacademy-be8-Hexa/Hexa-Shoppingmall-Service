@@ -1,0 +1,36 @@
+### 도서 상태 생성
+POST localhost:8081/api/bookStatuses
+Content-Type: application/json
+
+{
+  "bookStatusId": 1,
+  "bookStatus": "판매중"
+}
+
+### 출판사 생성
+POST localhost:8081/api/publishers
+Content-Type: application/json
+
+{
+  "publisherId": 1,
+  "publisherName": "교보문고"
+}
+
+### 네이버
+GET http://localhost:8081/api/naverApi?query=한강
+
+### 알라딘
+GET http://localhost:8081/api/aladinApi?query=한강
+
+### 알라딘 (DB 저장), 저장전에 도서, 출판사 있는지 확인
+POST http://localhost:8081/api/aladinApi?query=한강&bookStatusId=1&publisherId=1
+
+### 전체 도서 목록 조회
+GET http://localhost:8081/api/books?page=0
+Accept: application/json
+
+
+
+
+
+
