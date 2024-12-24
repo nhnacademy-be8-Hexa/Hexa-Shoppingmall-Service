@@ -143,7 +143,7 @@ class MemberStatusControllerTest {
 
         given(memberStatusService.updateMemberStatus(eq(1L), any(MemberStatusRequestDTO.class))).willReturn(updatedStatus);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/memberStatus/{memberStatusId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/memberStatus/{memberStatusId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())

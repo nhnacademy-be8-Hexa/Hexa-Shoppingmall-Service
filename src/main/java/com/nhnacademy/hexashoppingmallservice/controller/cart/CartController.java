@@ -60,7 +60,7 @@ public class CartController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/api/carts/{cartId}/quantity")
+    @PutMapping("/api/carts/{cartId}/quantity")
     public ResponseEntity<Cart> updateCartItemQuantity(
             @PathVariable Long cartId,
             @RequestBody CartRequestDTO cartRequestDto) {
