@@ -24,30 +24,30 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
     private final JwtUtils jwtUtils;
 
-    @PostMapping("/api/delivery")
+    @PostMapping("/api/deliveries")
     public ResponseEntity<Void> createDelivery(@RequestBody @Valid DeliveryRequestDTO deliveryRequestDTO) {
         deliveryService.createDelivery(deliveryRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/api/delivery")
+    @GetMapping("/api/deliveries")
     public List<DeliveryProjection> getAllDelivery(Pageable pageable, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         return deliveryService.getDeliveries(pageable   );
     }
 
-    @GetMapping("/api/orders/{orderId}/delivery")
+    @GetMapping("/api/orders/{orderId}/deliveries")
     public DeliveryProjection getDelivery(@PathVariable Long orderId) {
         return deliveryService.getDeliveryByOrderId(orderId);
     }
 
-    @GetMapping("/api/members/{memberId}/delivery")
+    @GetMapping("/api/members/{memberId}/deliveries")
     public List<DeliveryProjection> getDeliveryByMemberId(@PathVariable String memberId, Pageable pageable, HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         return deliveryService.getDeliveriesByMemberId(memberId, pageable);
     }
 
-    @PatchMapping("/api/orders/{orderId}/delivery")
+    @PatchMapping("/api/orders/{orderId}/deliveries")
     public ResponseEntity<Void> updateDelivery(@PathVariable Long orderId, @RequestBody @Valid DeliveryRequestDTO deliveryRequestDTO)
     {
         deliveryService.updateDelivery(orderId, deliveryRequestDTO);
