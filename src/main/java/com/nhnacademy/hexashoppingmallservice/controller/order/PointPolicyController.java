@@ -26,7 +26,7 @@ public class PointPolicyController {
         return new ResponseEntity<>(createdPointPolicy, HttpStatus.CREATED);
     }
 
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<PointPolicy> updatePointPolicy(@RequestBody @Valid PointPolicy pointPolicy, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         PointPolicy updatedPointPolicy = pointPolicyService.updatePointPolicy(pointPolicy);

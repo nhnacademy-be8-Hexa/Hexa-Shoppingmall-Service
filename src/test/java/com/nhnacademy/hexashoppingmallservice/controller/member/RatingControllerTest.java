@@ -147,7 +147,7 @@ class RatingControllerTest {
 
         given(ratingService.updateRating(eq(1L), any(RatingRequestDTO.class))).willReturn(updatedRating);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/ratings/{ratingId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/ratings/{ratingId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
@@ -174,7 +174,7 @@ class RatingControllerTest {
 
         given(ratingService.updateRating(eq(1L), any(RatingRequestDTO.class))).willThrow(new RatingNotFoundException("1"));
 
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/ratings/{ratingId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/ratings/{ratingId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest());

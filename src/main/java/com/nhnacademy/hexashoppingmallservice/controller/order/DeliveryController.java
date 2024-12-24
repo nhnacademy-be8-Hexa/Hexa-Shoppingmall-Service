@@ -47,7 +47,7 @@ public class DeliveryController {
         return deliveryService.getDeliveriesByMemberId(memberId, pageable);
     }
 
-    @PatchMapping("/api/orders/{orderId}/deliveries")
+    @PutMapping("/api/orders/{orderId}/deliveries")
     public ResponseEntity<Void> updateDelivery(@PathVariable Long orderId, @RequestBody @Valid DeliveryRequestDTO deliveryRequestDTO)
     {
         deliveryService.updateDelivery(orderId, deliveryRequestDTO);

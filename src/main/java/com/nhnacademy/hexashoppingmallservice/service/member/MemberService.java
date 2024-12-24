@@ -79,6 +79,7 @@ public class MemberService {
                 () -> new MemberNotFoundException(String.format("%s", memberId))
         );
 
+        updateIfNotNull(memberUpdateDTO.getMemberName(), member::setMemberName);
         updateIfNotNull(memberUpdateDTO.getMemberPassword(), member::setMemberPassword);
         updateIfNotNull(memberUpdateDTO.getMemberNumber(), member::setMemberNumber);
         updateIfNotNull(memberUpdateDTO.getMemberBirthAt(), member::setMemberBirthAt);

@@ -1,0 +1,25 @@
+= MemberCoupon API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 멤버 쿠폰 등록
+
+=== 요청
+
+include::{snippets}/create-member-coupon/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/create-member-coupon/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/create-member-coupon/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-member-coupon/http-response.adoc[]
+
+==
