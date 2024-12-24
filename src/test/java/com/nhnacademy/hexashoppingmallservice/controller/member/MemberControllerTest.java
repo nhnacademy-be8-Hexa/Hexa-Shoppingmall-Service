@@ -131,11 +131,11 @@ class MemberControllerTest {
                 new TestMemberProjection(
                         "test1", "John Doe", "01012345678", "john@test.com",
                         LocalDate.of(1990, 1, 1), LocalDateTime.of(2024, 1, 1, 10, 0),
-                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.MEMBER, null, null),
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.MEMBER, rating, memberStatus),
                 new TestMemberProjection(
                         "test2", "Jane Doe", "01098765432", "jane@test.com",
                         LocalDate.of(1985, 5, 15), LocalDateTime.of(2023, 5, 10, 8, 0),
-                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, null, null)
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, rating, memberStatus)
         );
 
         given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
@@ -163,8 +163,13 @@ class MemberControllerTest {
                                 fieldWithPath("[].memberCreatedAt").description("회원 생성일").optional(),
                                 fieldWithPath("[].memberLastLoginAt").description("회원 마지막 로그인 시간").optional(),
                                 fieldWithPath("[].memberRole").description("회원 권한").optional(),
-                                fieldWithPath("[].rating").description("회원 등급 정보").optional(),
-                                fieldWithPath("[].memberStatus").description("회원 상태 정보").optional()
+                                // Nested fields for rating
+                                fieldWithPath("[].rating.ratingId").description("회원 등급 ID"),
+                                fieldWithPath("[].rating.ratingName").description("회원 등급 이름"),
+                                fieldWithPath("[].rating.ratingPercent").description("회원 등급 퍼센트"),
+                                // Nested fields for memberStatus
+                                fieldWithPath("[].memberStatus.statusId").description("회원 상태 ID"),
+                                fieldWithPath("[].memberStatus.statusName").description("회원 상태 이름")
                         )
                 ));
 
@@ -178,11 +183,11 @@ class MemberControllerTest {
                 new TestMemberProjection(
                         "test1", "John Doe", "01012345678", "john@test.com",
                         LocalDate.of(1990, 1, 1), LocalDateTime.of(2024, 1, 1, 10, 0),
-                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.MEMBER, null, null),
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.MEMBER, rating, memberStatus),
                 new TestMemberProjection(
                         "test2", "Jane Doe", "01098765432", "jane@test.com",
                         LocalDate.of(1985, 5, 15), LocalDateTime.of(2023, 5, 10, 8, 0),
-                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, null, null)
+                        LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, rating, memberStatus)
         );
 
         given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
@@ -368,7 +373,7 @@ class MemberControllerTest {
         given(memberService.updateMember(anyString(), any(MemberUpdateDTO.class))).willReturn(updatedMember);
 
         // Perform PATCH request
-        mockMvc.perform(patch("/api/members/{memberId}", "test1")
+        mockMvc.perform(put("/api/members/{memberId}", "test1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())

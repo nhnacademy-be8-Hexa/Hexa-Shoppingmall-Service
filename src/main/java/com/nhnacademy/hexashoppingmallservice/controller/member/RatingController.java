@@ -47,7 +47,7 @@ public class RatingController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/api/ratings/{ratingId}")
+    @PutMapping("/api/ratings/{ratingId}")
     public ResponseEntity<Rating> updateRating(@PathVariable Long ratingId, @RequestBody RatingRequestDTO ratingRequestDTO, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(ratingService.updateRating(ratingId, ratingRequestDTO));

@@ -51,7 +51,7 @@ public class MemberController {
         return ResponseEntity.status(201).body(memberService.createMember(memberRequestDto));
     }
 
-    @PatchMapping("/api/members/{memberId}")
+    @PutMapping("/api/members/{memberId}")
     public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberUpdateDTO memberUpdateDTO, HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         return ResponseEntity.ok(memberService.updateMember(memberId, memberUpdateDTO));
@@ -64,7 +64,7 @@ public class MemberController {
         return ResponseEntity.ok(likedBooks); // 200 OK
     }
   
-    @PutMapping("/api/members/{memberId}")
+    @PutMapping("/api/members/{memberId}/login")
     public ResponseEntity<Void> loginMember(
             @PathVariable String memberId
     ){

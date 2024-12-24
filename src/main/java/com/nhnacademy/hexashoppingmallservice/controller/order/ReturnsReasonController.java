@@ -42,7 +42,7 @@ public class ReturnsReasonController {
 //        return returnsReasonService.getReturnsReason(memberId);
 //    }
 
-    @PatchMapping("/api/returnsReason/{returnsReasonId}")
+    @PutMapping("/api/returnsReason/{returnsReasonId}")
     public ResponseEntity<ReturnsReason> updateReturnsReason(@PathVariable Long returnsReasonId, @Valid @RequestBody ReturnsReasonRequestDTO returnsReasonRequestDTO, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         ReturnsReason returnsReason = returnsReasonService.updateReturnsReason(returnsReasonId, returnsReasonRequestDTO);

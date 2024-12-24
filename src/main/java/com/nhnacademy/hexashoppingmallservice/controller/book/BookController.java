@@ -99,14 +99,14 @@ public class BookController {
     }
 
     // 도서 조회수 증가
-    @PatchMapping("/{bookId}/view")
+    @PutMapping("/{bookId}/view")
     public ResponseEntity<Void> incrementBookView(@PathVariable Long bookId){
         bookService.incrementBookView(bookId);
         return ResponseEntity.noContent().build();
     }
 
     // 도서 판매량 증가
-    @PatchMapping("/{bookId}/sell-count")
+    @PutMapping("/{bookId}/sell-count")
     public ResponseEntity<Void> incrementBookSellCount(@PathVariable Long bookId, @RequestParam int quantity){
         bookService.incrementBookSellCount(bookId, quantity);
         return ResponseEntity.noContent().build();

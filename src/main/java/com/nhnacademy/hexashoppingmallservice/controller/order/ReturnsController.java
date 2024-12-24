@@ -41,7 +41,7 @@ public class ReturnsController {
         return returnsService.getReturnsByMemberId(memberId);
     }
 
-    @PatchMapping("/api/returns/order/{orderId}")
+    @PutMapping("/api/returns/order/{orderId}")
     public ResponseEntity<Returns> updateReturns(@PathVariable Long orderId, @Valid @RequestBody ReturnsRequestDTO returnsRequestDTO) {
         return ResponseEntity.ok(returnsService.updateReturns(orderId, returnsRequestDTO));
     }
