@@ -1,6 +1,7 @@
 ### 1. 반품 사유 생성 (POST /api/returnsReason)
 POST http://localhost:8081/api/returnsReason
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "returnsReasonId": 1,
@@ -19,6 +20,7 @@ GET http://localhost:8081/api/returnsReason/member/12345
 ### 5. 반품 사유 수정 (PATCH /api/returnsReason/{returnsReasonId})
 PATCH http://localhost:8081/api/returnsReason/1
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "returnsReason": "배송 지연"
@@ -26,3 +28,4 @@ Content-Type: application/json
 
 ### 6. 반품 사유 삭제 (DELETE /api/returnsReason/{returnsReasonId})
 DELETE http://localhost:8081/api/returnsReason/1
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4

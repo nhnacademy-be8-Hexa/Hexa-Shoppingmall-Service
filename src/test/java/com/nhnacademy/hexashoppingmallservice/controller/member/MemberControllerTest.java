@@ -15,6 +15,7 @@ import com.nhnacademy.hexashoppingmallservice.service.book.LikeService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,6 +94,9 @@ class MemberControllerTest {
     private LikeService likeService;
 
     @MockBean
+    private JwtUtils jwtUtils;
+
+    @MockBean
     private RatingRepository ratingRepository;
 
     @MockBean
@@ -135,7 +139,7 @@ class MemberControllerTest {
 
         given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/auth/members")
+        mockMvc.perform(get("/api/members")
                         .param("page", "0")
                         .param("search", search)
                         .accept(MediaType.APPLICATION_JSON))
@@ -182,7 +186,7 @@ class MemberControllerTest {
 
         given(memberService.getMembers(any(Pageable.class))).willReturn(mockMembers);
 
-        mockMvc.perform(get("/api/auth/members")
+        mockMvc.perform(get("/api/members")
                         .param("page", "0")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -363,7 +367,7 @@ class MemberControllerTest {
         given(memberService.updateMember(anyString(), any(MemberRequestDTO.class))).willReturn(updatedMember);
 
         // Perform PATCH request
-        mockMvc.perform(patch("/api/auth/members/{memberId}", "test1")
+        mockMvc.perform(patch("/api/members/{memberId}", "test1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())

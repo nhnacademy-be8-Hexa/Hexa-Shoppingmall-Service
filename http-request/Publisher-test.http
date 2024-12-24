@@ -1,10 +1,12 @@
 ### 전체 출판사 조회
 GET localhost:8081/api/publishers
 Accept: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ### 출판사 생성
 POST localhost:8081/api/publishers
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "publisherName": "교보문고"

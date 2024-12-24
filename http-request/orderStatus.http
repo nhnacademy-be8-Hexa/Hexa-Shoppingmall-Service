@@ -1,6 +1,7 @@
 ### 주문 상태 생성
 POST localhost:8081/api/orderStatus
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "orderStatus": "대기"
@@ -12,6 +13,7 @@ GET localhost:8081/api/orderStatus
 ### 주문 상태 수정
 PATCH localhost:8081/api/orderStatus/1
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "orderStatus": "주문 취소"
@@ -20,5 +22,6 @@ Content-Type: application/json
 ### 주문 상태 삭제
 DELETE localhost:8081/api/orderStatus/1
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 

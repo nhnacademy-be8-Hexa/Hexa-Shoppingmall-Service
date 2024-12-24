@@ -4,6 +4,8 @@ import com.nhnacademy.hexashoppingmallservice.dto.order.OrderRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.OrderService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     private final Integer SIZE = 10;
     private final OrderService orderService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping
     public ResponseEntity<Void> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO,
@@ -36,14 +39,16 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderProjection>> getAllOrders(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<List<OrderProjection>> getAllOrders(@RequestParam(defaultValue = "0") int page, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         Pageable pageable = PageRequest.of(page, SIZE);
         return ResponseEntity.ok(orderService.getAllOrders(pageable));
     }
 
     @GetMapping("/{memberId}")
     public ResponseEntity<List<OrderProjection>> getOrdersByMemberId(@Valid @RequestParam(defaultValue = "0") int page,
-                                           @PathVariable String memberId) {
+                                           @PathVariable String memberId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         Pageable pageable = PageRequest.of(page, SIZE);
         return ResponseEntity.ok(orderService.getOrdersByMemberId(memberId, pageable));
     }

@@ -2,8 +2,11 @@ package com.nhnacademy.hexashoppingmallservice.controller.cart;
 
 import com.nhnacademy.hexashoppingmallservice.dto.cart.CartRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.cart.Cart;
+import com.nhnacademy.hexashoppingmallservice.projection.cart.CartProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.cart.CartRepository;
 import com.nhnacademy.hexashoppingmallservice.service.cart.CartService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,34 +20,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
+    private final JwtUtils jwtUtils;
 
-    @GetMapping("/api/carts")
-    public List<Cart> getCarts() {
-        return cartService.getCarts();
-    }
+    // 전체 카트 목록 가져올 이유가 없음
+//    @GetMapping("/api/carts")
+//    public List<Cart> getCarts() {
+//        return cartService.getCarts();
+//    }
 
-    @GetMapping("/api/carts/{cartId}")
-    public Cart getCart(@PathVariable Long cartId) {
+    //
+    @GetMapping("/api/members/{memberId}/carts/{cartId}")
+    public CartProjection getCart(@PathVariable String memberId, @PathVariable Long cartId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         return cartService.getCart(cartId);
     }
 
-    @GetMapping("/api/carts/member/{memberId}")
-    public Cart getCartByMemberId(@PathVariable String memberId) {
+    @GetMapping("/api/members/{memberId}/carts")
+    public List<CartProjection> getCartByMemberId(@PathVariable String memberId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         return cartService.getCartByMemberId(memberId);
     }
 
     @PostMapping("/api/carts")
-    public ResponseEntity<Cart> createCart(@RequestBody @Valid CartRequestDTO cartRequestDTO) {
-        return ResponseEntity.ok(cartService.createCart(cartRequestDTO));
+    public ResponseEntity<Void> createCart(@RequestBody @Valid CartRequestDTO cartRequestDTO) {
+        cartService.createCart(cartRequestDTO);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/api/carts/{cartId}")
-    public void deleteCart(@PathVariable Long cartId) {
+    @DeleteMapping("/api/members/{memberId}/carts/{cartId}")
+    public void deleteCart(@PathVariable String memberId, @PathVariable Long cartId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         cartService.deleteCart(cartId);
     }
 
-    @DeleteMapping("/api/carts/member/{memberId}")
-    public ResponseEntity<Void> clearCartByMember(@PathVariable String memberId) {
+    @DeleteMapping("/api/members/{memberId}/carts")
+    public ResponseEntity<Void> clearCartByMember(@PathVariable String memberId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         cartService.clearCartByMember(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -56,6 +67,4 @@ public class CartController {
         Cart updatedCart = cartService.updateCartItemQuantity(cartId, cartRequestDto);
         return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
-
-
 }

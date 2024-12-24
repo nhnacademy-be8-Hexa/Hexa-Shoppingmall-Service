@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.util;
 
+import com.nhnacademy.hexashoppingmallservice.exception.InvalidTokenException;
 import com.nhnacademy.hexashoppingmallservice.exception.TokenNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.TokenPermissionDenied;
 import com.nhnacademy.hexashoppingmallservice.properties.JwtProperties;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -38,6 +40,13 @@ public class JwtUtils {
         }
     }
 
+    // 토큰이 올바른지 검증
+    public void validateTokenOrThrow(String token) {
+        if (!validateToken(token)) {
+            throw new InvalidTokenException("Invalid JWT token");
+        }
+    }
+
     // 토큰 에서 사용자 ID 추출
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
@@ -52,11 +61,34 @@ public class JwtUtils {
     public String getRoleFromToken(String token) {
 
         return Jwts.parser()
-                        .setSigningKey(jwtProperties.getSecret())
+                .setSigningKey(jwtProperties.getSecret())
                 .build()
-                        .parseClaimsJws(token)
-                        .getBody()
-                        .get("role", String.class);
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 
+    // 관리자 권한 검증 메서드
+    public void ensureAdmin(HttpServletRequest request) {
+        String token = getTokenFromRequest(request);
+        validateTokenOrThrow(token);
+        String role = getRoleFromToken(token);
+        if (role == null || !role.contains("ADMIN")) {
+            throw new TokenPermissionDenied();
+        }
+    }
+
+    // 특정 사용자와 일치하는지 검증 메서드
+    public void ensureUserAccess(HttpServletRequest request, String memberId) {
+        String token = getTokenFromRequest(request);
+        validateTokenOrThrow(token);
+        String id = getUsernameFromToken(token);
+        String role = getRoleFromToken(token);
+        if (role != null && role.contains("ADMIN")) {
+            return;
+        }
+        if (id == null || !id.equals(memberId)) {
+            throw new TokenPermissionDenied();
+        }
+    }
 }

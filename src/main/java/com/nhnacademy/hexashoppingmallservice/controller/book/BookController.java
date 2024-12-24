@@ -5,6 +5,8 @@ import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.service.book.BookService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookController {
     private final BookService bookService;
+    private final JwtUtils jwtUtils;
 
     // 통합된 도서 목록 조회
     @GetMapping
@@ -77,19 +80,21 @@ public class BookController {
 
     // 도서 생성
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody @Valid BookRequestDTO bookRequestDTO){
+    public ResponseEntity<Book> createBook(@RequestBody @Valid BookRequestDTO bookRequestDTO, HttpServletRequest request){
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.status(201).body(bookService.createBook(bookRequestDTO));
     }
 
     // 도서 아이디로 조회
     @GetMapping("/{bookId}")
-    public Book getBook(@PathVariable Long bookId){
+    public Book getBook(@PathVariable Long bookId){;
         return bookService.getBook(bookId);
     }
 
     // 도서 수정
     @PutMapping("/{bookId}")
-    public Book updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateRequestDTO bookRequestDTO){
+    public Book updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateRequestDTO bookRequestDTO, HttpServletRequest request){
+        jwtUtils.ensureAdmin(request);
         return bookService.updateBook(bookId, bookRequestDTO);
     }
 
@@ -109,7 +114,8 @@ public class BookController {
 
     // 도서 삭제
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId){
+    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId, HttpServletRequest request){
+        jwtUtils.ensureAdmin(request);
         bookService.deleteBook(bookId);
         return ResponseEntity.noContent().build();
     }
@@ -120,8 +126,10 @@ public class BookController {
         return bookService.getAuthors(bookId);
     }
 
+    // 책 수량 증가
     @GetMapping("/{bookId}/amount-increase")
-    public ResponseEntity<Void> incrementBookAmountIncrease(@PathVariable Long bookId, @RequestParam int quantity){
+    public ResponseEntity<Void> incrementBookAmountIncrease(@PathVariable Long bookId, @RequestParam int quantity, HttpServletRequest request){
+        jwtUtils.ensureAdmin(request);
         bookService.incrementBookAmount(bookId, quantity);
         return ResponseEntity.noContent().build();
     }

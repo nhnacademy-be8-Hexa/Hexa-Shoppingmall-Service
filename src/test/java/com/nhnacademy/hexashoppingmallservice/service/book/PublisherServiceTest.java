@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,13 +50,29 @@ class PublisherServiceTest {
 
     @Test
     void testGetAllPublisher() {
-        when(publisherRepository.findAll()).thenReturn(Arrays.asList(publisher));
+        // Publisher 객체 생성 및 설정
+        Publisher publisher = new Publisher();
+        publisher.setPublisherName("Test Publisher");
+        // 필요한 다른 필드들도 설정
 
-        List<Publisher> publishers = publisherService.getAllPublisher();
+        // Pageable 객체 생성
+        Pageable pageable = PageRequest.of(0, 10);
 
+        // Page<Publisher> 객체 생성
+        Page<Publisher> publisherPage = new PageImpl<>(Arrays.asList(publisher), pageable, 1);
+
+        // publisherRepository.findAllBy(pageable) 메서드 모킹
+        when(publisherRepository.findAllBy(pageable)).thenReturn(publisherPage);
+
+        // service 메서드 호출
+        List<Publisher> publishers = publisherService.getAllPublisher(pageable);
+
+        // Assertions
         assertThat(publishers).hasSize(1);
         assertThat(publishers.get(0).getPublisherName()).isEqualTo("Test Publisher");
-        verify(publisherRepository, times(1)).findAll();
+
+        // verify 호출된 메서드 확인
+        verify(publisherRepository, times(1)).findAllBy(pageable);
     }
 
     @Test

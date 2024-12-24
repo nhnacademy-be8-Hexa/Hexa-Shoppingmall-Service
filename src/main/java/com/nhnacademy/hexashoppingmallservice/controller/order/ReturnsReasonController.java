@@ -4,6 +4,8 @@ package com.nhnacademy.hexashoppingmallservice.controller.order;
 import com.nhnacademy.hexashoppingmallservice.dto.order.ReturnsReasonRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.ReturnsReason;
 import com.nhnacademy.hexashoppingmallservice.service.order.ReturnsReasonService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReturnsReasonController {
     private final ReturnsReasonService returnsReasonService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping("/api/returnsReason")
-    public ResponseEntity<ReturnsReason> createReturnsReason(@Valid @RequestBody ReturnsReasonRequestDTO returnsReasonRequestDTO) {
+    public ResponseEntity<ReturnsReason> createReturnsReason(@Valid @RequestBody ReturnsReasonRequestDTO returnsReasonRequestDTO, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(returnsReasonService.createReturnsReason(returnsReasonRequestDTO));
     }
 
@@ -39,13 +43,15 @@ public class ReturnsReasonController {
 //    }
 
     @PatchMapping("/api/returnsReason/{returnsReasonId}")
-    public ResponseEntity<ReturnsReason> updateReturnsReason(@PathVariable Long returnsReasonId, @Valid @RequestBody ReturnsReasonRequestDTO returnsReasonRequestDTO) {
+    public ResponseEntity<ReturnsReason> updateReturnsReason(@PathVariable Long returnsReasonId, @Valid @RequestBody ReturnsReasonRequestDTO returnsReasonRequestDTO, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         ReturnsReason returnsReason = returnsReasonService.updateReturnsReason(returnsReasonId, returnsReasonRequestDTO);
         return ResponseEntity.ok(returnsReason);
     }
 
     @DeleteMapping("/api/returnsReason/{returnsReasonId}")
-    public void deleteReturnsReason(@PathVariable Long returnsReasonId) {
+    public void deleteReturnsReason(@PathVariable Long returnsReasonId, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         returnsReasonService.deleteReturnsReason(returnsReasonId);
     }
 
