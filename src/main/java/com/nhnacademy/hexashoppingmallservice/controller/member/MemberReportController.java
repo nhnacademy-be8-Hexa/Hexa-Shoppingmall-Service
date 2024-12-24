@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.controller.member;
 
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberReportService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberReportController {
     private final MemberReportService memberReportService;
+    private final JwtUtils jwtUtils;
 
     /**
      * 새로운 회원 신고를 생성하는 엔드포인트
@@ -19,10 +22,12 @@ public class MemberReportController {
      * @param reviewId 신고할 리뷰의 ID
      * @return 생성된 신고의 상태 코드
      */
-    @PostMapping("/auth/reports/members/{memberId}/reviews/{reviewId}")
+    @PostMapping("/reports/members/{memberId}/reviews/{reviewId}")
     public ResponseEntity<Void> saveMemberReport(
             @PathVariable String memberId,
-            @PathVariable Long reviewId) {
+            @PathVariable Long reviewId,
+            HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         memberReportService.saveMemberReport(memberId, reviewId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -35,7 +40,8 @@ public class MemberReportController {
      */
     @GetMapping("/admin/reports/reviews/{reviewId}/count")
     public ResponseEntity<Long> getTotalReport(
-            @PathVariable Long reviewId) {
+            @PathVariable Long reviewId, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         Long totalReport = memberReportService.totalReport(reviewId);
         return ResponseEntity.ok(totalReport);
     }
@@ -48,7 +54,8 @@ public class MemberReportController {
      */
     @DeleteMapping("/admin/reports/admin/reviews/{reviewId}")
     public ResponseEntity<Void> allDelete(
-            @PathVariable Long reviewId) {
+            @PathVariable Long reviewId, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         memberReportService.allDelete(reviewId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

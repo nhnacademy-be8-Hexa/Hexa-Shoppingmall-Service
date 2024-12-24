@@ -56,5 +56,16 @@ public class LikeService {
     }
 
 
-    //TODO 좋아요 선택된 도서 목록 구현은 도서 API에서?
+    /**
+     * 특정 멤버가 좋아요한 책 목록을 조회합니다.
+     *
+     * @param memberId 멤버의 ID
+     * @return 멤버가 좋아요한 책 리스트
+     */
+    public List<Book> getBooksLikedByMember(String memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException("MemberId %s is not exist".formatted(memberId));
+        }
+        return likeRepository.findBooksLikedByMemberId(memberId);
+    }
 }

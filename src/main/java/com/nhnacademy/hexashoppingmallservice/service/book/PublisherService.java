@@ -4,6 +4,7 @@ import com.nhnacademy.hexashoppingmallservice.dto.book.PublisherRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,10 @@ public class PublisherService {
         return publisherRepository.save(publisher);
     }
 
+    // 관리자가 출판사 조회하는 용도
     @Transactional(readOnly = true)
-    public List<Publisher> getAllPublisher(){
-        return publisherRepository.findAll();
+    public List<Publisher> getAllPublisher(Pageable pageable){
+        return publisherRepository.findAllBy(pageable).getContent();
     }
 
     @Transactional(readOnly = true)

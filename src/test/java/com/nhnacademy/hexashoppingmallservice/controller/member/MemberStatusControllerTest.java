@@ -7,6 +7,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.exception.SqlQueryExecuteFailException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberStatusService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +47,9 @@ class MemberStatusControllerTest {
 
     @MockBean
     private MemberStatusService memberStatusService;
+
+    @MockBean
+    private JwtUtils jwtUtils;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 

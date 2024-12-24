@@ -1,5 +1,6 @@
 POST http://localhost:8081/api/categories
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "categoryName": "Fiction"
@@ -8,18 +9,19 @@ Content-Type: application/json
 ### 다른 카테고리 추가
 POST http://localhost:8081/api/categories
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "categoryName": "Novel"
 }
 
 ### 서브 카테고리를 1차 카테고리에 삽입
-POST http://localhost:8081/api/categories/1/subcategories/3
+POST http://localhost:8081/api/categories/1/subcategories/2
 Content-Type: application/json
-
-{
-  "categoryName": "Science Fiction"
-}
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ### 1차 카테고리와 서브 카테고리 한번에 조회
 GET http://localhost:8081/api/categories
+
+### 도서를 카테고리에 추가
+POST http://localhost:8081/api/categories/1/books/1

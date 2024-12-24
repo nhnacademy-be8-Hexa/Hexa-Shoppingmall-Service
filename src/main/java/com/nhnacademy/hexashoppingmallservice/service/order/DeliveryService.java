@@ -7,6 +7,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.DeliveryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.projection.order.DeliveryProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.DeliveryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
@@ -43,26 +44,24 @@ public class DeliveryService {
     }
 
     @Transactional
-    public List<Delivery> getDeliveries(Pageable pageable) { return deliveryRepository.findAll(pageable).getContent();}
+    public List<DeliveryProjection> getDeliveries(Pageable pageable) { return deliveryRepository.findAllBy(pageable).getContent();}
 
     @Transactional
-    public Delivery getDeliveryByOrderId(Long orderId) {
-        return deliveryRepository.findById(orderId).orElseThrow(
+    public DeliveryProjection getDeliveryByOrderId(Long orderId) {
+        return deliveryRepository.findByOrderId(orderId).orElseThrow(
                 () -> new DeliveryNotFoundException("Delivery ID: %s not found". formatted(orderId))
         );
     }
 
     @Transactional
-    public Delivery getDeliveryByMemberId(String memberId) {
+    public List<DeliveryProjection> getDeliveriesByMemberId(String memberId, Pageable pageable) {
         Member member = memberRepository.findById(String.valueOf(memberId))
                 .orElseThrow(() -> new MemberNotFoundException("Member ID: %s not found".formatted(memberId)));
-        return deliveryRepository.findByOrder_Member(member).orElseThrow(
-                () -> new DeliveryNotFoundException("Delivery ID: %s not found". formatted(memberId))
-        );
+        return deliveryRepository.findAllByOrder_Member(member, pageable).getContent();
     }
 
     @Transactional
-    public Delivery updateDelivery(Long orderId, DeliveryRequestDTO deliveryRequestDTO) {
+    public void updateDelivery(Long orderId, DeliveryRequestDTO deliveryRequestDTO) {
         Delivery delivery = deliveryRepository.findById(orderId)
                 .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found for orderId: " + orderId));
 
@@ -72,7 +71,7 @@ public class DeliveryService {
         if (deliveryRequestDTO.getDeliveryReleaseDate() != null) {
             delivery.setDeliveryReleaseDate(deliveryRequestDTO.getDeliveryReleaseDate());
         }
-        return deliveryRepository.save(delivery);
+        deliveryRepository.save(delivery);
     }
 
 

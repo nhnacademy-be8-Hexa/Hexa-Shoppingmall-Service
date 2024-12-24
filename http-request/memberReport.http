@@ -1,6 +1,7 @@
 ### 회원 등급 저장
 POST localhost:8081/api/ratings
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "ratingName": "Gold",
@@ -10,6 +11,7 @@ Content-Type: application/json
 ### 회원 상태 저장
 POST localhost:8081/api/memberStatus
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "statusName": "활성"
@@ -34,6 +36,7 @@ Content-Type: application/json
 ### 도서 상태 생성
 POST localhost:8081/api/bookStatuses
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "bookStatusId": 1,
@@ -43,6 +46,7 @@ Content-Type: application/json
 ### 출판사 생성
 POST localhost:8081/api/publishers
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "publisherId": 1,
@@ -52,6 +56,7 @@ Content-Type: application/json
 ### 도서 생성
 POST http://localhost:8081/api/books
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "bookTitle": "The Great Gatsby",
@@ -66,8 +71,9 @@ Content-Type: application/json
 }
 
 ### 1. 리뷰 생성 (성공)
-POST http://localhost:8081/api/auth/members/john_doe_124/books/1/reviews
+POST http://localhost:8081/api/members/john_doe_124/books/1/reviews
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "reviewContent": "이 책 정말 좋았습니다!",
@@ -75,69 +81,63 @@ Content-Type: application/json
 }
 
 ### 1. 사용자 신고 생성 (성공)
-POST http://localhost:8081/api/auth/reports/members/john_doe_124/reviews/1
+POST http://localhost:8081/api/reports/members/john_doe_124/reviews/1
 Content-Type: application/json
-Authorization: Basic am9obl9kb2VfMTI0OnBhc3N3b3JkMTIz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 2. 사용자 신고 생성 (회원이 존재하지 않음 - 오류)
-POST http://localhost:8081/api/auth/reports/members/nonexistent_member/reviews/1
+POST http://localhost:8081/api/reports/members/nonexistent_member/reviews/1
 Content-Type: application/json
-Authorization: Basic bm9uZXhpc3RlbnRfY29tOnBhc3N3b3JkMTIz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 3. 사용자 신고 생성 (리뷰가 존재하지 않음 - 오류)
-POST http://localhost:8081/api/auth/reports/members/john_doe_124/reviews/999
+POST http://localhost:8081/api/reports/members/john_doe_124/reviews/999
 Content-Type: application/json
-Authorization: Basic am9obl9kb2VfMTI0OnBhc3N3b3JkMTIz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 4. 특정 리뷰의 신고 총계 조회 (성공)
 GET http://localhost:8081/api/admin/reports/reviews/1/count
 Accept: application/json
-Authorization: Basic YWRtaW46YWRtaW5wYXNz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 5. 특정 리뷰의 신고 총계 조회 (리뷰가 존재하지 않음 - 오류)
 GET http://localhost:8081/api/admin/reports/reviews/999/count
 Accept: application/json
-Authorization: Basic YWRtaW46YWRtaW5wYXNz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
-### 6. 특정 리뷰의 신고 총계 조회 (권한 없음 - 오류)
-GET http://localhost:8081/api/admin/reports/reviews/1/count
-Accept: application/json
-Authorization: Basic am9obl9kb2VfMTI0OnBhc3N3b3JkMTIz
-
-###
 
 ### 7. 관리자 - 특정 리뷰의 모든 신고 삭제 (성공)
 DELETE http://localhost:8081/api/admin/reports/admin/reviews/1
-Authorization: Basic YWRtaW46YWRtaW5wYXNz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 8. 관리자 - 특정 리뷰의 모든 신고 삭제 (리뷰가 존재하지 않음 - 오류)
 DELETE http://localhost:8081/api/admin/reports/admin/reviews/999
-Authorization: Basic YWRtaW46YWRtaW5wYXNz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 9. 관리자 - 특정 리뷰의 모든 신고 삭제 (권한 없음 - 오류)
 DELETE http://localhost:8081/api/admin/reports/admin/reviews/1
-Authorization: Basic am9obl9kb2VfMTI0OnBhc3N3b3JkMTIz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 
 ### 10. 사용자 신고 생성 (유효성 검증 실패 - 리뷰 ID 누락 - 오류)
-POST http://localhost:8081/api/auth/reports/members/john_doe_124/reviews/
+POST http://localhost:8081/api/reports/members/john_doe_124/reviews/
 Content-Type: application/json
-Authorization: Basic am9obl9kb2VfMTI0OnBhc3N3b3JkMTIz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 {
   "reviewContent": "이 리뷰는 리뷰 ID가 누락되었습니다.",
@@ -148,6 +148,6 @@ Authorization: Basic am9obl9kb2VfMTI0OnBhc3N3b3JkMTIz
 
 ### 11. 관리자 - 특정 리뷰의 모든 신고 삭제 (잘못된 리뷰 ID 형식 - 오류)
 DELETE http://localhost:8081/api/admin/reports/admin/reviews/invalid_id
-Authorization: Basic YWRtaW46YWRtaW5wYXNz
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
