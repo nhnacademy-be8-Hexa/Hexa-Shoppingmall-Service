@@ -18,5 +18,4 @@ public class Book {
     private String description;
     private String categoryName;
     private String salesPoint;
-
 }

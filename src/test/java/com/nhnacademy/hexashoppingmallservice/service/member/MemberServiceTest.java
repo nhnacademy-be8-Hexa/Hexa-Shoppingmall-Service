@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.service.member;
 
+import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
@@ -135,8 +136,7 @@ class MemberServiceTest {
     @Test
     void updateMember_success() {
         String memberId = "123";
-        MemberRequestDTO requestDTO = new MemberRequestDTO(
-                null,
+        MemberUpdateDTO requestDTO = new MemberUpdateDTO(
                 "newPassword",
                 null,
                 "0987654321",
@@ -182,11 +182,11 @@ class MemberServiceTest {
     @Test
     void updateMember_notFound() {
         String memberId = "123";
-        MemberRequestDTO requestDTO = new MemberRequestDTO();
+        MemberUpdateDTO updateDTO = new MemberUpdateDTO();
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
-        assertThrows(MemberNotFoundException.class, () -> memberService.updateMember(memberId, requestDTO));
+        assertThrows(MemberNotFoundException.class, () -> memberService.updateMember(memberId, updateDTO));
         verify(memberRepository).findById(memberId);
     }
 
