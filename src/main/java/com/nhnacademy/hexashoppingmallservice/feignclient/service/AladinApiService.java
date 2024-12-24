@@ -23,6 +23,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AladinApiService {
@@ -62,6 +63,7 @@ public class AladinApiService {
         }
     }
 
+    @Transactional
     public List<Book> createBooks(String query, Long bookStatusId, Long publisherId) {
         try {
             ResponseEntity<String> response = aladinApi.searchBooks(ttbkey, query, output, version);
@@ -73,7 +75,7 @@ public class AladinApiService {
                 if (bookRepository.existsByBookIsbn(Long.valueOf(item.getIsbn13()))) {
                     throw new BookIsbnAlreadyExistException("isbn - %s already exist ".formatted(item.getIsbn13()));
                 }
-                
+
                 if (!publisherRepository.existsById(publisherId)) {
                     throw new PublisherNotFoundException("publisher - %s not found".formatted(publisherId));
                 }
