@@ -65,10 +65,8 @@ public class MemberController {
   
     @PutMapping("/api/members/{memberId}")
     public ResponseEntity<Void> loginMember(
-            @PathVariable String memberId,
-            HttpServletRequest request
+            @PathVariable String memberId
     ){
-        jwtUtils.ensureUserAccess(request, memberId);
         memberService.login(memberId);
         return ResponseEntity.ok().build();
     }
