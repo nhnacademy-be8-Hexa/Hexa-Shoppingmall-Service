@@ -136,7 +136,7 @@ class BookServiceTest {
         assertThrows(BookNotFoundException.class, () ->
                 bookService.updateBook(1L, bookUpdateRequestDTO));
     }
-
+    
 
     @Test
     void updateBook_StatusNotFound() {

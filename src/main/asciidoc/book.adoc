@@ -1,0 +1,163 @@
+= Book API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 도서 목록 조회
+
+=== 요청
+
+include::{snippets}/get-books/http-request.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/get-books/query-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-books/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-books/response-body.adoc[]
+
+== 도서 단일 조회
+
+=== 요청
+
+include::{snippets}/get-book/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-book/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-book/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-book/response-body.adoc[]
+
+== 도서 등록
+
+=== 요청
+
+include::{snippets}/create-book/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-book/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-book/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-book/response-body.adoc[]
+
+== 도서 정보 수정
+
+=== 요청
+
+include::{snippets}/update-book/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/update-book/path-parameters.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/update-book/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/update-book/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-book/response-body.adoc[]
+
+== 도서 삭제
+
+=== 요청
+
+include::{snippets}/delete-book/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/delete-book/path-parameters.adoc[]
+
+=== 응답 상태
+
+HTTP 상태 코드 204 No Content
+
+== 도서 저자 조회
+
+=== 요청
+
+include::{snippets}/get-book-authors/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-book-authors/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-book-authors/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-book-authors/response-body.adoc[]
+
+== 도서 재고 증가
+
+=== 요청
+
+include::{snippets}/increment-book-amount-increase/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/increment-book-amount-increase/path-parameters.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/increment-book-amount-increase/query-parameters.adoc[]
+
+=== 응답 상태
+
+HTTP 상태 코드 204 No Content
+
+== 도서 조회수 증가
+
+=== 요청
+
+include::{snippets}/increment-book-view/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/increment-book-view/path-parameters.adoc[]
+
+=== 응답 상태
+
+HTTP 상태 코드 204 No Content
+
+== 도서 판매량 증가
+
+=== 요청
+
+include::{snippets}/increment-book-sell-count/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/increment-book-sell-count/path-parameters.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/increment-book-sell-count/query-parameters.adoc[]
+
+=== 응답 상태
+
+HTTP 상태 코드 204 No Content

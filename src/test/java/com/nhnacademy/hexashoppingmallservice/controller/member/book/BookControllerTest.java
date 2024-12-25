@@ -1,12 +1,11 @@
 package com.nhnacademy.hexashoppingmallservice.controller.member.book;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -16,7 +15,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,18 +23,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nhnacademy.hexashoppingmallservice.controller.book.BookController;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
-import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import com.nhnacademy.hexashoppingmallservice.service.book.BookService;
-import com.nhnacademy.hexashoppingmallservice.service.book.BookStatusService;
-import com.nhnacademy.hexashoppingmallservice.service.book.PublisherService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +44,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -61,200 +58,336 @@ class BookControllerTest {
 
     @MockBean
     private BookService bookService;
-    
-    @MockBean
-    private PublisherService publisherService;
 
     @MockBean
-    private BookStatusService bookStatusService;
-
-    @MockBean
-    private PublisherRepository publisherRepository;
-
-    @MockBean
-    private BookStatusRepository bookStatusRepository;
-
-    @MockBean
-    private BookRepository bookRepository;
+    private JwtUtils jwtUtils;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
+
     private Publisher publisher;
     private BookStatus bookStatus;
+    private Book book;
+    private Author author;
 
     @BeforeEach
-    void setUp() {
-        publisher = Publisher.of("publisher1");
-        bookStatus = BookStatus.of("available");
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
 
-        given(publisherRepository.findById(anyLong())).willReturn(Optional.of(publisher));
-        given(bookStatusRepository.findById(anyLong())).willReturn(Optional.of(bookStatus));
+        publisher = Publisher.of("Test Publisher");
+        bookStatus = BookStatus.of("Test Book Status");
+        author = Author.of("Test Author");
+
+        Field publisherIdField = publisher.getClass().getDeclaredField("publisherId");
+        publisherIdField.setAccessible(true);
+        publisherIdField.set(publisher, 1L);
+
+        Field bookStatusIdField = bookStatus.getClass().getDeclaredField("bookStatusId");
+        bookStatusIdField.setAccessible(true);
+        bookStatusIdField.set(bookStatus, 1L);
+
+        Field authorIdField = author.getClass().getDeclaredField("authorId");
+        authorIdField.setAccessible(true);
+        authorIdField.set(author, 1L);
+
+        book = Book.of(
+                "Test Book",
+                "Test Description",
+                LocalDate.now(),
+                1234567890123L,
+                20000,
+                18000,
+                publisher,
+                bookStatus
+        );
+
+        Field bookIdField = book.getClass().getDeclaredField("bookId");
+        bookIdField.setAccessible(true);
+        bookIdField.set(book, 1L);
+    }
+
+
+    @Test
+    void getBooks() throws Exception {
+
+        List<Book> books = Collections.singletonList(book);
+
+        given(bookService.getBooksByBookTitle(anyString(), any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByPublisherName(anyString(), any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByCategory(anyList(), any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByAuthorName(anyString(), any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByBookView(any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByBookSellCount(any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByLikeCount(any(Pageable.class))).willReturn(books);
+        given(bookService.getBooksByBookPubDate(any(Pageable.class))).willReturn(books);
+        given(bookService.getBooks(any(Pageable.class))).willReturn(books);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books")
+                        .param("page", "0")
+                        .param("search", "Test Book")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(books.size()))
+                .andExpect(jsonPath("$[0].bookTitle").value("Test Book"))
+                .andDo(document("get-books",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호"),
+                                parameterWithName("search").description("검색어")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].bookId").description("도서 ID"),
+                                fieldWithPath("[].bookTitle").description("도서 제목"),
+                                fieldWithPath("[].bookDescription").description("도서 설명"),
+                                fieldWithPath("[].bookPubDate").description("도서 출간일"),
+                                fieldWithPath("[].bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("[].bookView").description("도서 페이지 조회수"),
+                                fieldWithPath("[].bookAmount").description("도서 재고"),
+                                fieldWithPath("[].bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("[].bookSellCount").description("도서 판매량"),
+                                fieldWithPath("[].bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("[].bookPrice").description("도서 판매가"),
+                                fieldWithPath("[].publisher.publisherId").description("출판사 ID"),
+                                fieldWithPath("[].publisher.publisherName").description("출판사 이름"),
+                                fieldWithPath("[].bookStatus.bookStatusId").description("도서 상태 ID"),
+                                fieldWithPath("[].bookStatus.bookStatus").description("도서 상태")
+                        )
+                ));
     }
 
     @Test
     void createBook() throws Exception {
         BookRequestDTO requestDTO = new BookRequestDTO(
-                "Book Title",
-                "This is a description of the book.",
-                LocalDate.of(2020, 1, 1),
+                "New Book",
+                "Description of the new book",
+                LocalDate.now(),
                 1234567890123L,
-                2000,
-                1500,
+                20000,
+                18000,
                 true,
-                "Publisher1",
-                "Available"
+                String.valueOf(publisher.getPublisherId()),
+                String.valueOf(bookStatus.getBookStatusId())
         );
 
-        Book createdBook =
-                Book.of("Book Title", "This is a description of the book.", LocalDate.of(2020, 1, 1), 1234567890123L,
-                        2000, 1500, publisher, bookStatus);
+        Book createBook = Book.of(
+                requestDTO.getBookTitle(),
+                requestDTO.getBookDescription(),
+                requestDTO.getBookPubDate(),
+                requestDTO.getBookIsbn(),
+                requestDTO.getBookOriginPrice(),
+                requestDTO.getBookPrice(),
+                publisher,
+                bookStatus
+        );
 
-        given(bookService.createBook(any(BookRequestDTO.class))).willReturn(createdBook);
+        Field bookIdField = createBook.getClass().getDeclaredField("bookId");
+        bookIdField.setAccessible(true);
+        bookIdField.set(createBook, 1L);
 
-        mockMvc.perform(post("/api/books")
+        given(bookService.createBook(any(BookRequestDTO.class))).willReturn(createBook);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.bookTitle").value("Book Title"))
-                .andExpect(jsonPath("$.bookDescription").value("This is a description of the book."))
-                .andExpect(jsonPath("$.bookPubDate").value("2020-01-01"))
+                .andExpect(jsonPath("$.bookTitle").value("New Book"))
                 .andDo(document("create-book",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("bookTitle").description("책 제목"),
-                                fieldWithPath("bookDescription").description("책 설명"),
-                                fieldWithPath("bookPubDate").description("책 출판일"),
-                                fieldWithPath("bookIsbn").description("책 ISBN"),
-                                fieldWithPath("bookOriginPrice").description("책 원가"),
-                                fieldWithPath("bookPrice").description("책 판매가"),
-                                fieldWithPath("bookWrappable").description("책 포장 가능 여부"),
-                                fieldWithPath("publisherId").description("출판사 ID"),
-                                fieldWithPath("bookStatusId").description("책 상태 ID")
+                                fieldWithPath("bookTitle").description("도서 제목"),
+                                fieldWithPath("bookDescription").description("도서 설명"),
+                                fieldWithPath("bookPubDate").description("도서 출간일"),
+                                fieldWithPath("bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("bookPrice").description("도서 판매가"),
+                                fieldWithPath("publisherId").description("출판사 아이디"),
+                                fieldWithPath("bookStatusId").description("도서 상태 아이디")
+
                         ),
                         responseFields(
-                                fieldWithPath("bookId").description("책 ID"),
-                                fieldWithPath("bookTitle").description("책 제목"),
-                                fieldWithPath("bookDescription").description("책 설명"),
-                                fieldWithPath("bookPubDate").description("책 출판일"),
-                                fieldWithPath("bookIsbn").description("책 ISBN"),
-                                fieldWithPath("bookPrice").description("책 판매가"),
+                                fieldWithPath("bookId").description("도서 ID"),
+                                fieldWithPath("bookTitle").description("도서 제목"),
+                                fieldWithPath("bookDescription").description("도서 설명"),
+                                fieldWithPath("bookPubDate").description("도서 출간일"),
+                                fieldWithPath("bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("bookView").description("도서 페이지 조회수"),
+                                fieldWithPath("bookAmount").description("도서 재고"),
+                                fieldWithPath("bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("bookSellCount").description("도서 판매량"),
+                                fieldWithPath("bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("bookPrice").description("도서 판매가"),
+                                fieldWithPath("publisher.publisherId").description("출판사 ID"),
                                 fieldWithPath("publisher.publisherName").description("출판사 이름"),
-                                fieldWithPath("bookStatus.statusName").description("책 상태 이름")
+                                fieldWithPath("bookStatus.bookStatusId").description("도서 상태 ID"),
+                                fieldWithPath("bookStatus.bookStatus").description("도서 상태")
                         )
                 ));
     }
 
     @Test
     void getBook() throws Exception {
-        Book book =
-                Book.of("Book Title", "This is a description of the book.", LocalDate.of(2020, 1, 1), 1234567890123L,
-                        2000, 1500, publisher, bookStatus);
 
-        Long bookdId = book.getBookId();
-        given(bookService.getBook(bookdId)).willReturn(book);
+        given(bookService.getBook(anyLong())).willReturn(book);
 
-        mockMvc.perform(get("/api/books/{bookId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books/{bookId}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookTitle").value("Book Title"))
-                .andExpect(jsonPath("$.bookDescription").value("This is a description of the book."))
+                .andExpect(jsonPath("$.bookTitle").value("Test Book"))
                 .andDo(document("get-book",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         pathParameters(
-                                parameterWithName("bookId").description("조회할 책 ID")
+                                parameterWithName("bookId").description("도서 ID")
                         ),
                         responseFields(
-                                fieldWithPath("bookId").description("책 ID"),
-                                fieldWithPath("bookTitle").description("책 제목"),
-                                fieldWithPath("bookDescription").description("책 설명"),
-                                fieldWithPath("bookPubDate").description("책 출판일"),
-                                fieldWithPath("bookIsbn").description("책 ISBN"),
-                                fieldWithPath("bookPrice").description("책 판매가"),
+                                fieldWithPath("bookId").description("도서 ID"),
+                                fieldWithPath("bookTitle").description("도서 제목"),
+                                fieldWithPath("bookDescription").description("도서 설명"),
+                                fieldWithPath("bookPubDate").description("도서 출간일"),
+                                fieldWithPath("bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("bookView").description("도서 페이지 조회수"),
+                                fieldWithPath("bookAmount").description("도서 재고"),
+                                fieldWithPath("bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("bookSellCount").description("도서 판매량"),
+                                fieldWithPath("bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("bookPrice").description("도서 판매가"),
+                                fieldWithPath("publisher.publisherId").description("출판사 ID"),
                                 fieldWithPath("publisher.publisherName").description("출판사 이름"),
-                                fieldWithPath("bookStatus.statusName").description("책 상태 이름")
+                                fieldWithPath("bookStatus.bookStatusId").description("도서 상태 ID"),
+                                fieldWithPath("bookStatus.bookStatus").description("도서 상태")
                         )
                 ));
     }
 
-    @Test
-    void getBooks() throws Exception {
-        List<Book> mockBooks = List.of(
-                Book.of("Book 1", "Description 1", LocalDate.of(2020, 1, 1), 1234567890123L, 1500,
-                        1500, publisher, bookStatus),
-                Book.of("Book 2", "Description 2", LocalDate.of(2021, 1, 1), 1234567890124L, 1600,
-                        1600, publisher, bookStatus)
-        );
-
-        given(bookService.getBooks(any(Pageable.class))).willReturn(mockBooks);
-
-        mockMvc.perform(get("/api/books")
-                        .param("page", "0")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(mockBooks.size()))
-                .andExpect(jsonPath("$[0].bookId").value(1))
-                .andExpect(jsonPath("$[0].bookTitle").value("Book 1"))
-                .andDo(document("get-books",
-                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
-                        queryParameters(
-                                parameterWithName("page").description("페이지 번호")
-                        ),
-                        responseFields(
-                                fieldWithPath("[].bookId").description("책 ID"),
-                                fieldWithPath("[].bookTitle").description("책 제목"),
-                                fieldWithPath("[].bookDescription").description("책 설명"),
-                                fieldWithPath("[].bookPubDate").description("책 출판일"),
-                                fieldWithPath("[].bookIsbn").description("책 ISBN"),
-                                fieldWithPath("[].bookPrice").description("책 판매가")
-                        )
-                ));
-
-        verify(bookService).getBooks(any(Pageable.class));
-    }
 
     @Test
     void updateBook() throws Exception {
-        BookRequestDTO requestDTO = new BookRequestDTO(
+        BookUpdateRequestDTO updateRequestDTO = new BookUpdateRequestDTO(
                 "Updated Book Title",
-                "Updated description.",
-                LocalDate.of(2022, 1, 1),
-                1234567890125L,
-                2200,
-                1700,
+                "Updated description",
+                18000,
                 true,
-                "Publisher1",
-                "Available"
+                String.valueOf(bookStatus.getBookStatusId())
         );
 
-        Book updatedBook =
-                Book.of("Updated Book Title", "Updated description.", LocalDate.of(2022, 1, 1), 1234567890125L, 2200,
-                        1700, publisher, bookStatus);
+        book.setBookTitle(updateRequestDTO.getBookTitle());
+        book.setBookDescription(updateRequestDTO.getBookDescription());
+        book.setBookPrice(updateRequestDTO.getBookPrice());
+        book.setBookWrappable(updateRequestDTO.getBookWrappable());
+        book.setBookStatus(bookStatus);
 
-        given(bookService.updateBook(anyLong(), any(BookUpdateRequestDTO.class))).willReturn(updatedBook);
+        given(bookService.updateBook(anyLong(), any(BookUpdateRequestDTO.class))).willReturn(book);
 
-        mockMvc.perform(patch("/api/books/{bookId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/books/{bookId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
+                        .content(objectMapper.writeValueAsString(updateRequestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookTitle").value("Updated Book Title"))
-                .andExpect(jsonPath("$.bookDescription").value("Updated description."))
-                .andExpect(jsonPath("$.bookPrice").value(1700))
+                .andExpect(jsonPath("$.bookDescription").value("Updated description"))
                 .andDo(document("update-book",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
                         requestFields(
-                                fieldWithPath("bookTitle").description("책 제목"),
-                                fieldWithPath("bookDescription").description("책 설명"),
-                                fieldWithPath("bookPubDate").description("책 출판일"),
-                                fieldWithPath("bookIsbn").description("책 ISBN"),
-                                fieldWithPath("bookPrice").description("책 판매가")
+                                fieldWithPath("bookTitle").description("도서 제목"),
+                                fieldWithPath("bookDescription").description("도서 설명"),
+                                fieldWithPath("bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("bookPrice").description("도서 판매가"),
+                                fieldWithPath("statusId").description("도서 상태 ID")
                         ),
                         responseFields(
-                                fieldWithPath("bookId").description("책 ID"),
-                                fieldWithPath("bookTitle").description("책 제목"),
-                                fieldWithPath("bookDescription").description("책 설명"),
-                                fieldWithPath("bookPubDate").description("책 출판일"),
-                                fieldWithPath("bookIsbn").description("책 ISBN"),
-                                fieldWithPath("bookPrice").description("책 판매가")
+                                fieldWithPath("bookId").description("도서 ID"),
+                                fieldWithPath("bookTitle").description("도서 제목"),
+                                fieldWithPath("bookDescription").description("도서 설명"),
+                                fieldWithPath("bookPubDate").description("도서 출간일"),
+                                fieldWithPath("bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("bookView").description("도서 페이지 조회수"),
+                                fieldWithPath("bookAmount").description("도서 재고"),
+                                fieldWithPath("bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("bookSellCount").description("도서 판매량"),
+                                fieldWithPath("bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("bookPrice").description("도서 판매가"),
+                                fieldWithPath("publisher.publisherId").description("출판사 ID"),
+                                fieldWithPath("publisher.publisherName").description("출판사 이름"),
+                                fieldWithPath("bookStatus.bookStatusId").description("도서 상태 ID"),
+                                fieldWithPath("bookStatus.bookStatus").description("도서 상태")
+                        )
+                ));
+    }
+
+    @Test
+    void deleteBook() throws Exception {
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/books/{bookId}", 1L))
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-book",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        )
+                ));
+    }
+
+    @Test
+    void getAuthors() throws Exception {
+        List<Author> authors = Collections.singletonList(author);
+        given(bookService.getAuthors(anyLong())).willReturn(authors);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books/{bookId}/authors", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].authorName").value("Test Author"))
+                .andDo(document("get-book-authors",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].authorId").description("저자 ID"),
+                                fieldWithPath("[].authorName").description("저자 이름")
+                        )
+                ));
+    }
+
+    @Test
+    void incrementBookAmountIncrease() throws Exception {
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books/{bookId}/amount-increase", 1L)
+                        .param("quantity", "1"))
+                .andExpect(status().isNoContent())
+                .andDo(document("increment-book-amount-increase",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
+                        queryParameters(
+                                parameterWithName("quantity").description("도서 재고 증가 수")
+                        )
+                ));
+    }
+
+    @Test
+    void incrementBookView() throws Exception {
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/books/{bookId}/view", 1L))
+                .andExpect(status().isNoContent())
+                .andDo(document("increment-book-view",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        )
+                ));
+    }
+
+    @Test
+    void incrementBookSellCount() throws Exception {
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/books/{bookId}/sell-count", 1L)
+                        .queryParam("quantity", "1"))
+                .andExpect(status().isNoContent())
+                .andDo(document("increment-book-sell-count",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
+                        queryParameters(
+                                parameterWithName("quantity").description("도서 판매량 증가 수")
                         )
                 ));
     }
