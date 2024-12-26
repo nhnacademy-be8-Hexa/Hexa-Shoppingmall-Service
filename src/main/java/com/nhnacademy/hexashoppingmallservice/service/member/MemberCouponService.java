@@ -6,11 +6,10 @@ import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundExc
 import com.nhnacademy.hexashoppingmallservice.projection.member.MemberCouponProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberCouponRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class MemberCouponService {
         }
         return memberCouponRepository.findByMemberMemberId(memberId);
     }
-
+    
     @Transactional
     public void createMemberCoupon(Long couponId, String memberId) {
         if (!memberRepository.existsById(memberId)) {

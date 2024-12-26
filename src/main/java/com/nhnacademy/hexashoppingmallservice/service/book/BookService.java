@@ -10,16 +10,14 @@ import com.nhnacademy.hexashoppingmallservice.exception.book.BookIsbnAlreadyExis
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.book.PublisherNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,16 +31,20 @@ public class BookService {
     @Transactional
     public Book createBook(BookRequestDTO bookRequestDTO) {
         if (!publisherRepository.existsById(Long.parseLong(bookRequestDTO.getPublisherId()))) {
-            throw new PublisherNotFoundException("publisher id - %s is not found".formatted(bookRequestDTO.getPublisherId()));
+            throw new PublisherNotFoundException(
+                    "publisher id - %s is not found".formatted(bookRequestDTO.getPublisherId()));
         }
 
-        Publisher publisher = publisherRepository.findById(Long.parseLong(bookRequestDTO.getPublisherId())).orElseThrow();
+        Publisher publisher =
+                publisherRepository.findById(Long.parseLong(bookRequestDTO.getPublisherId())).orElseThrow();
 
         if (!bookStatusRepository.existsById(Long.parseLong(bookRequestDTO.getBookStatusId()))) {
-            throw new BookStatusNotFoundException("status id - %s is not found".formatted(bookRequestDTO.getBookStatusId()));
+            throw new BookStatusNotFoundException(
+                    "status id - %s is not found".formatted(bookRequestDTO.getBookStatusId()));
         }
 
-        BookStatus bookStatus = bookStatusRepository.findById(Long.parseLong(bookRequestDTO.getBookStatusId())).orElseThrow();
+        BookStatus bookStatus =
+                bookStatusRepository.findById(Long.parseLong(bookRequestDTO.getBookStatusId())).orElseThrow();
 
         // isbn 중복 체크
         if (bookRepository.existsByBookIsbn(bookRequestDTO.getBookIsbn())) {
@@ -145,7 +147,8 @@ public class BookService {
         if (bookRequestDTO.getStatusId() != null) {
             Long statusId = Long.parseLong(bookRequestDTO.getStatusId());
             BookStatus bookStatus = bookStatusRepository.findById(statusId)
-                    .orElseThrow(() -> new BookStatusNotFoundException("status id - %d cannot found: ".formatted(statusId)));
+                    .orElseThrow(
+                            () -> new BookStatusNotFoundException("status id - %d cannot found: ".formatted(statusId)));
             book.setBookStatus(bookStatus);
         }
 
@@ -182,7 +185,7 @@ public class BookService {
     public void incrementBookSellCount(Long bookId, int quantity) {
         // 판매량 증가와 동시에 재고 감소 처리
         updateBookAmount(bookId, -quantity);
-
+        
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("book not found with id: " + bookId));
 
@@ -204,20 +207,20 @@ public class BookService {
 
     //delete
     @Transactional
-    public void deleteBook(Long bookId){
+    public void deleteBook(Long bookId) {
         bookRepository.deleteById(bookId);
     }
 
     // 도서 아이디로 조회
-    public Book getBook(Long bookId){
+    public Book getBook(Long bookId) {
         return bookRepository.findById(bookId).orElseThrow(
-                ()-> new BookNotFoundException("bookId not found: "+bookId)
+                () -> new BookNotFoundException("bookId not found: " + bookId)
         );
     }
 
     // 도서 작가 목록 조회
     @Transactional(readOnly = true)
-    public List<Author> getAuthors(Long bookId){
+    public List<Author> getAuthors(Long bookId) {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException("book not found with id: " + bookId);
         }

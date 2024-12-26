@@ -1,0 +1,55 @@
+= BookStatus API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 도서 상태 목록 조회
+
+=== 요청
+
+include::{snippets}/get-book-statuses/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-book-statuses/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-book-statuses/response-body.adoc[]
+
+== 도서 상태 등록
+
+=== 요청
+
+include::{snippets}/create-book-status/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-book-status/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-book-status/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-book-status/response-body.adoc[]
+
+== 도서 상태 조회
+
+=== 요청
+
+include::{snippets}/get-book-status/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-book-status/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-book-status/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-book-status/response-body.adoc[]
