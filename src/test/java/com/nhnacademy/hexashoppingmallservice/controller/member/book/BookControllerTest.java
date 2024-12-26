@@ -268,7 +268,7 @@ class BookControllerTest {
                 true,
                 String.valueOf(bookStatus.getBookStatusId())
         );
-
+        
         book.setBookTitle(updateRequestDTO.getBookTitle());
         book.setBookDescription(updateRequestDTO.getBookDescription());
         book.setBookPrice(updateRequestDTO.getBookPrice());
@@ -375,6 +375,7 @@ class BookControllerTest {
                         )
                 ));
     }
+
 
     @Test
     void incrementBookSellCount() throws Exception {
