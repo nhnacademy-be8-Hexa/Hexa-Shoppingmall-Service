@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -185,12 +187,16 @@ class BookControllerTest {
         given(bookService.createBook(any(BookRequestDTO.class))).willReturn(createBook);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/books")
+                        .header("Authorization", "Bearer dummy-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookTitle").value("New Book"))
                 .andDo(document("create-book",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         requestFields(
                                 fieldWithPath("bookTitle").description("도서 제목"),
                                 fieldWithPath("bookDescription").description("도서 설명"),
@@ -277,6 +283,7 @@ class BookControllerTest {
         given(bookService.updateBook(anyLong(), any(BookUpdateRequestDTO.class))).willReturn(book);
 
         mockMvc.perform(RestDocumentationRequestBuilders.put("/api/books/{bookId}", 1L)
+                        .header("Authorization", "Bearer dummy-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequestDTO)))
                 .andExpect(status().isOk())
@@ -284,6 +291,9 @@ class BookControllerTest {
                 .andExpect(jsonPath("$.bookDescription").value("Updated description"))
                 .andDo(document("update-book",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         pathParameters(
                                 parameterWithName("bookId").description("도서 ID")
                         ),
@@ -316,10 +326,14 @@ class BookControllerTest {
 
     @Test
     void deleteBook() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/books/{bookId}", 1L))
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/books/{bookId}", 1L)
+                        .header("Authorization", "Bearer dummy-token"))
                 .andExpect(status().isNoContent())
                 .andDo(document("delete-book",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         pathParameters(
                                 parameterWithName("bookId").description("도서 ID")
                         )
@@ -350,10 +364,14 @@ class BookControllerTest {
     @Test
     void incrementBookAmountIncrease() throws Exception {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books/{bookId}/amount-increase", 1L)
-                        .param("quantity", "1"))
+                        .param("quantity", "1")
+                        .header("Authorization", "Bearer dummy-token"))
                 .andExpect(status().isNoContent())
                 .andDo(document("increment-book-amount-increase",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         pathParameters(
                                 parameterWithName("bookId").description("도서 ID")
                         ),

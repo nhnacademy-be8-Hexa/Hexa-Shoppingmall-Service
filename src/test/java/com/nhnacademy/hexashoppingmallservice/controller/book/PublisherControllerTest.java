@@ -3,6 +3,8 @@ package com.nhnacademy.hexashoppingmallservice.controller.book;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -66,12 +68,16 @@ public class PublisherControllerTest {
         given(publisherService.getAllPublisher(any())).willReturn(List.of(publisher));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/publishers")
+                        .header("Authorization", "Bearer dummy-token")
                         .accept("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].publisherId").value(1L))
                 .andExpect(jsonPath("$[0].publisherName").value("Test Publisher"))
                 .andDo(document("get-publishers",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         responseFields(
                                 fieldWithPath("[].publisherId").description("출판사 ID"),
                                 fieldWithPath("[].publisherName").description("출판사 이름")
@@ -84,6 +90,7 @@ public class PublisherControllerTest {
         given(publisherService.createPublisher(any(Publisher.class))).willReturn(publisher);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/publishers")
+                        .header("Authorization", "Bearer dummy-token")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(publisher)))
                 .andExpect(status().isOk())
@@ -91,6 +98,9 @@ public class PublisherControllerTest {
                 .andExpect(jsonPath("$.publisherName").value("Test Publisher"))
                 .andDo(document("create-publisher",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         requestFields(
                                 fieldWithPath("publisherId").description("출판사 ID"),
                                 fieldWithPath("publisherName").description("출판사 이름")

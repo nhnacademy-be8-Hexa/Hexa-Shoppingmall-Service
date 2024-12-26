@@ -3,6 +3,8 @@ package com.nhnacademy.hexashoppingmallservice.controller.book;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -85,6 +87,7 @@ class BookStatusControllerTest {
         given(bookStatusService.createBookStatus(any(BookStatus.class))).willReturn(bookStatus);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/bookStatuses")
+                        .header("Authorization", "Bearer dummy-token")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(bookStatus)))
                 .andExpect(status().isOk())
@@ -92,6 +95,9 @@ class BookStatusControllerTest {
                 .andExpect(jsonPath("$.bookStatus").value("Test Book Status"))
                 .andDo(document("create-book-status",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
                         requestFields(
                                 fieldWithPath("bookStatusId").description("도서 상태 ID"),
                                 fieldWithPath("bookStatus").description("도서 상태")
