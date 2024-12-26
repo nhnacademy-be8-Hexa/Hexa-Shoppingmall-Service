@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.controller.member.book;
+package com.nhnacademy.hexashoppingmallservice.controller.book;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -17,9 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nhnacademy.hexashoppingmallservice.controller.book.BookStatusController;
-import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
-import com.nhnacademy.hexashoppingmallservice.service.book.BookStatusService;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
+import com.nhnacademy.hexashoppingmallservice.service.book.PublisherService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -36,91 +35,90 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = BookStatusController.class)
+@WebMvcTest(controllers = PublisherController.class)
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
-class BookStatusControllerTest {
+public class PublisherControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private BookStatusService bookStatusService;
+    private PublisherService publisherService;
 
     @MockBean
     private JwtUtils jwtUtils;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-
-    private BookStatus bookStatus;
+    private Publisher publisher;
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        bookStatus = BookStatus.of("Test Book Status");
-        Field bookStatusIdField = bookStatus.getClass().getDeclaredField("bookStatusId");
-        bookStatusIdField.setAccessible(true);
-        bookStatusIdField.set(bookStatus, 1L);
+        publisher = Publisher.of("Test Publisher");
+        Field publisherIdField = publisher.getClass().getDeclaredField("publisherId");
+        publisherIdField.setAccessible(true);
+        publisherIdField.set(publisher, 1L);
     }
 
     @Test
-    void getBookStatuses() throws Exception {
-        given(bookStatusService.getAllBookStatus()).willReturn(List.of(bookStatus));
+    void getPublishers() throws Exception {
+        given(publisherService.getAllPublisher(any())).willReturn(List.of(publisher));
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/bookStatuses")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/publishers")
                         .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookStatusId").value(1L))
-                .andExpect(jsonPath("$[0].bookStatus").value("Available"))
-                .andDo(document("get-book-statuses",
+                .andExpect(jsonPath("$[0].publisherId").value(1L))
+                .andExpect(jsonPath("$[0].publisherName").value("Test Publisher"))
+                .andDo(document("get-publishers",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         responseFields(
-                                fieldWithPath("[].bookStatusId").description("도서 상태 ID"),
-                                fieldWithPath("[].bookStatus").description("도서 상태")
+                                fieldWithPath("[].publisherId").description("출판사 ID"),
+                                fieldWithPath("[].publisherName").description("출판사 이름")
                         )
                 ));
     }
 
     @Test
-    void createBookStatus() throws Exception {
-        given(bookStatusService.createBookStatus(any(BookStatus.class))).willReturn(bookStatus);
+    void createPublisher() throws Exception {
+        given(publisherService.createPublisher(any(Publisher.class))).willReturn(publisher);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/bookStatuses")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/publishers")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(bookStatus)))
+                        .content(objectMapper.writeValueAsString(publisher)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookStatusId").value(1L))
-                .andExpect(jsonPath("$.bookStatus").value("Available"))
-                .andDo(document("create-book-status",
+                .andExpect(jsonPath("$.publisherId").value(1L))
+                .andExpect(jsonPath("$.publisherName").value("Test Publisher"))
+                .andDo(document("create-publisher",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("bookStatusId").description("도서 상태 ID"),
-                                fieldWithPath("bookStatus").description("도서 상태")
+                                fieldWithPath("publisherId").description("출판사 ID"),
+                                fieldWithPath("publisherName").description("출판사 이름")
                         ),
                         responseFields(
-                                fieldWithPath("bookStatusId").description("도서 상태 ID"),
-                                fieldWithPath("bookStatus").description("도서 상태")
+                                fieldWithPath("publisherId").description("출판사 ID"),
+                                fieldWithPath("publisherName").description("출판사 이름")
                         )
                 ));
     }
 
     @Test
-    void getBookStatus() throws Exception {
-        given(bookStatusService.getBookStatus(anyLong())).willReturn(bookStatus);
+    void getPublisher() throws Exception {
+        given(publisherService.getPublisher(anyLong())).willReturn(publisher);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/bookStatuses/{bookStatusId}", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/publishers/{publisherId}", 1L)
                         .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookStatusId").value(1))
-                .andExpect(jsonPath("$.bookStatus").value("Available"))
-                .andDo(document("get-book-status",
+                .andExpect(jsonPath("$.publisherId").value(1L))
+                .andExpect(jsonPath("$.publisherName").value("Test Publisher"))
+                .andDo(document("get-publisher",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         pathParameters(
-                                parameterWithName("bookStatusId").description("도서 상태 ID")
+                                parameterWithName("publisherId").description("출판사 ID")
                         ),
                         responseFields(
-                                fieldWithPath("bookStatusId").description("도서 상태 ID"),
-                                fieldWithPath("bookStatus").description("도서 상태")
+                                fieldWithPath("publisherId").description("출판사 ID"),
+                                fieldWithPath("publisherName").description("출판사 이름")
                         )
                 ));
     }

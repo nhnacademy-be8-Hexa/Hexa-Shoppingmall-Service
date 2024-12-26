@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.controller.member.book;
+package com.nhnacademy.hexashoppingmallservice.controller.book;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nhnacademy.hexashoppingmallservice.controller.book.BookController;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
@@ -268,7 +267,7 @@ class BookControllerTest {
                 true,
                 String.valueOf(bookStatus.getBookStatusId())
         );
-        
+
         book.setBookTitle(updateRequestDTO.getBookTitle());
         book.setBookDescription(updateRequestDTO.getBookDescription());
         book.setBookPrice(updateRequestDTO.getBookPrice());
@@ -366,7 +365,7 @@ class BookControllerTest {
 
     @Test
     void incrementBookView() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/books/{bookId}/view", 1L))
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/books/{bookId}/view", 1L))
                 .andExpect(status().isNoContent())
                 .andDo(document("increment-book-view",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
@@ -379,7 +378,7 @@ class BookControllerTest {
 
     @Test
     void incrementBookSellCount() throws Exception {
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/books/{bookId}/sell-count", 1L)
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/books/{bookId}/sell-count", 1L)
                         .queryParam("quantity", "1"))
                 .andExpect(status().isNoContent())
                 .andDo(document("increment-book-sell-count",
