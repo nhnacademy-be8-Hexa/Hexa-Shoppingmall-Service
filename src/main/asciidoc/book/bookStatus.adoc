@@ -24,6 +24,10 @@ include::{snippets}/get-book-statuses/response-body.adoc[]
 
 include::{snippets}/create-book-status/http-request.adoc[]
 
+=== 헤더
+
+include::{snippets}/create-book-status/request-headers.adoc[]
+
 === 요청 필드
 
 include::{snippets}/create-book-status/request-fields.adoc[]

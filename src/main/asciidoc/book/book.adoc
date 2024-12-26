@@ -46,6 +46,10 @@ include::{snippets}/get-book/response-body.adoc[]
 
 include::{snippets}/create-book/http-request.adoc[]
 
+=== 헤더
+
+include::{snippets}/create-book/request-headers.adoc[]
+
 === 요청 필드
 
 include::{snippets}/create-book/request-fields.adoc[]
@@ -63,6 +67,10 @@ include::{snippets}/create-book/response-body.adoc[]
 === 요청
 
 include::{snippets}/update-book/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/update-book/request-headers.adoc[]
 
 === 경로 파라미터
 
@@ -85,6 +93,10 @@ include::{snippets}/update-book/response-body.adoc[]
 === 요청
 
 include::{snippets}/delete-book/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/delete-book/request-headers.adoc[]
 
 === 경로 파라미터
 
@@ -117,6 +129,10 @@ include::{snippets}/get-book-authors/response-body.adoc[]
 === 요청
 
 include::{snippets}/increment-book-amount-increase/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/increment-book-amount-increase/request-headers.adoc[]
 
 === 경로 파라미터
 
