@@ -27,6 +27,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -50,12 +52,16 @@ class CategoryControllerTest {
     @MockBean
     private JwtUtils jwtUtils;
 
+    private String validToken;
+
     private Category parentCategory;
     private Category subCategory;
     private Book book;
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
+
+        validToken = "Bearer valid.jwt.token";
 
         parentCategory = Category.of("Electronics", null);
         Field parentCategoryField = parentCategory.getClass().getDeclaredField("categoryId");
@@ -100,6 +106,7 @@ class CategoryControllerTest {
         Mockito.when(categoryService.createCategory(any(Category.class))).thenReturn(parentCategory);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/categories")
+                        .header("Authorization", validToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(parentCategory)))
                 .andExpect(status().isCreated())
@@ -110,6 +117,9 @@ class CategoryControllerTest {
                                 fieldWithPath("categoryId").description("카테고리 ID").optional(),
                                 fieldWithPath("categoryName").description("카테고리 이름"),
                                 fieldWithPath("parentCategory").description("상위 카테고리").optional()
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
                         ),
                         responseFields(
                                 fieldWithPath("categoryId").description("생성된 카테고리 ID"),
@@ -138,6 +148,7 @@ class CategoryControllerTest {
         Mockito.when(categoryService.insertCategory(1L, 2L)).thenReturn(parentCategory);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/categories/{categoryId}/subcategories/{subCategoryId}", 1L, 2L)
+                        .header("Authorization", validToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.categoryId").value(1L))
@@ -148,6 +159,9 @@ class CategoryControllerTest {
                         pathParameters(
                                 parameterWithName("categoryId").description("부모 카테고리 ID"),
                                 parameterWithName("subCategoryId").description("삽입할 서브 카테고리 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
                         ),
                         responseFields(
                                 fieldWithPath("categoryId").description("부모 카테고리 ID"),

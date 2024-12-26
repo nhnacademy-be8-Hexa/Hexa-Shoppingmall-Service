@@ -10,6 +10,10 @@
 
 include::{snippets}/create-category/http-request.adoc[]
 
+=== 헤더
+
+include::{snippets}/create-category/request-headers.adoc[]
+
 === 요청 필드
 
 include::{snippets}/create-category/request-fields.adoc[]
@@ -27,6 +31,10 @@ include::{snippets}/create-category/response-body.adoc[]
 === 요청
 
 include::{snippets}/insert-category/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/insert-category/request-headers.adoc[]
 
 === 요청 파라메터
 
