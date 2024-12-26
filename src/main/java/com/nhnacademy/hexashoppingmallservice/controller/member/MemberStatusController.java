@@ -48,7 +48,7 @@ public class MemberStatusController  {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/api/memberStatus/{memberStatusId}")
+    @PutMapping("/api/memberStatus/{memberStatusId}")
     public ResponseEntity<MemberStatus> updateMemberStatus(@PathVariable Long memberStatusId, @RequestBody MemberStatusRequestDTO memberStatusRequestDTO, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(memberStatusService.updateMemberStatus(memberStatusId, memberStatusRequestDTO));

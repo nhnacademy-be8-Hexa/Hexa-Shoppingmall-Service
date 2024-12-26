@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.controller.member;
 
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberCoupon;
+import com.nhnacademy.hexashoppingmallservice.projection.member.MemberCouponProjection;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberCouponService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +27,9 @@ public class MemberCouponController {
      * @return 회원의 쿠폰 목록
      */
     @GetMapping("/members/{memberId}/coupons")
-    public ResponseEntity<List<MemberCoupon>> getMemberCoupons(@PathVariable String memberId, HttpServletRequest request) {
+    public ResponseEntity<List<MemberCouponProjection>> getMemberCoupons(@PathVariable String memberId, HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
-        List<MemberCoupon> memberCoupons = memberCouponService.getMemberCoupon(memberId);
+        List<MemberCouponProjection> memberCoupons = memberCouponService.getMemberCoupon(memberId);
         return ResponseEntity.ok(memberCoupons);
     }
 
@@ -40,12 +41,12 @@ public class MemberCouponController {
      * @return 생성된 MemberCoupon
      */
     @PostMapping("/members/{memberId}/coupons/{couponId}")
-    public ResponseEntity<MemberCoupon> createMemberCoupon(
+    public ResponseEntity<Void> createMemberCoupon(
             @PathVariable String memberId,
             @PathVariable Long couponId, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
-        MemberCoupon memberCoupon = memberCouponService.createMemberCoupon(couponId, memberId);
-        return new ResponseEntity<>(memberCoupon, HttpStatus.CREATED);
+        memberCouponService.createMemberCoupon(couponId, memberId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/members/{memberId}/coupons/{couponId}")

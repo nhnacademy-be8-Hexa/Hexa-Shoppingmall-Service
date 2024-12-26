@@ -1,0 +1,75 @@
+= Address API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 주소 등록
+
+=== 요청
+
+include::{snippets}/add-address/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/add-address/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/add-address/path-parameters.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/add-address/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/add-address/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/add-address/response-body.adoc[]
+
+== 주소 목록 조회
+
+=== 요청
+
+include::{snippets}/get-addresses/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-addresses/query-parameters.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-addresses/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-addresses/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-addresses/response-fields.adoc[]
+
+=== 예재 응답
+
+include::{snippets}/get-addresses/response-body.adoc[]
+
+== 주소 삭제
+
+=== 요청
+
+include::{snippets}/delete-address/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/delete-address/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/delete-address/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-address/http-response.adoc[]

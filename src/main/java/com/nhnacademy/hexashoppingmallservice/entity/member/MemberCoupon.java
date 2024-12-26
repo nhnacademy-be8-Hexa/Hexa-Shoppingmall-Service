@@ -20,6 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Builder
+@Setter
 public class MemberCoupon {
 
     @Id

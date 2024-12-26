@@ -8,20 +8,14 @@ import com.nhnacademy.hexashoppingmallservice.service.book.BookService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,33 +46,33 @@ public class BookController {
             @RequestParam(required = false) Boolean sortByLikeCount,
             //출간일 최신순으로 정렬
             @RequestParam(required = false) Boolean latest
-    ) {
-        if (search != null && !search.isEmpty()) {
+    ){
+        if(search != null && !search.isEmpty()){
             return bookService.getBooksByBookTitle(search, pageable);
         }
-        if (categoryIds != null && !categoryIds.isEmpty()) {
+        if(categoryIds != null && !categoryIds.isEmpty()){
             return bookService.getBooksByCategory(categoryIds, pageable);
         }
-        if (publisherName != null && !publisherName.isEmpty()) {
+        if(publisherName != null && !publisherName.isEmpty()){
             return bookService.getBooksByPublisherName(publisherName, pageable);
         }
-        if (authorName != null && !authorName.isEmpty()) {
+        if(authorName != null && !authorName.isEmpty()){
             return bookService.getBooksByAuthorName(authorName, pageable);
         }
 //        if(tagName != null && !tagName.isEmpty()){
 //            return bookService.getBooksByTag(tagName, pageable);
 //        }
         //가장 많이 열람한 횟수로 정렬
-        if (sortByView != null && sortByView) {
+        if(sortByView != null && sortByView){
             return bookService.getBooksByBookView(pageable);
         }
-        if (sortBySellCount != null && sortBySellCount) {
+        if(sortBySellCount != null && sortBySellCount){
             return bookService.getBooksByBookSellCount(pageable);
         }
-        if (sortByLikeCount != null && sortByLikeCount) {
+        if(sortByLikeCount != null && sortByLikeCount){
             return bookService.getBooksByLikeCount(pageable);
         }
-        if (latest != null && latest) {
+        if(latest != null && latest){
             return bookService.getBooksByBookPubDate(pageable);
         }
         return bookService.getBooks(pageable);
@@ -86,44 +80,41 @@ public class BookController {
 
     // 도서 생성
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody @Valid BookRequestDTO bookRequestDTO,
-                                           HttpServletRequest request) {
+    public ResponseEntity<Book> createBook(@RequestBody @Valid BookRequestDTO bookRequestDTO, HttpServletRequest request){
         jwtUtils.ensureAdmin(request);
         return ResponseEntity.status(201).body(bookService.createBook(bookRequestDTO));
     }
 
     // 도서 아이디로 조회
     @GetMapping("/{bookId}")
-    public Book getBook(@PathVariable Long bookId) {
-        ;
+    public Book getBook(@PathVariable Long bookId){;
         return bookService.getBook(bookId);
     }
 
     // 도서 수정
     @PutMapping("/{bookId}")
-    public Book updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateRequestDTO bookRequestDTO,
-                           HttpServletRequest request) {
+    public Book updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateRequestDTO bookRequestDTO, HttpServletRequest request){
         jwtUtils.ensureAdmin(request);
         return bookService.updateBook(bookId, bookRequestDTO);
     }
 
     // 도서 조회수 증가
-    @PatchMapping("/{bookId}/view")
-    public ResponseEntity<Void> incrementBookView(@PathVariable Long bookId) {
+    @PutMapping("/{bookId}/view")
+    public ResponseEntity<Void> incrementBookView(@PathVariable Long bookId){
         bookService.incrementBookView(bookId);
         return ResponseEntity.noContent().build();
     }
 
     // 도서 판매량 증가
-    @PatchMapping("/{bookId}/sell-count")
-    public ResponseEntity<Void> incrementBookSellCount(@PathVariable Long bookId, @RequestParam int quantity) {
+    @PutMapping("/{bookId}/sell-count")
+    public ResponseEntity<Void> incrementBookSellCount(@PathVariable Long bookId, @RequestParam int quantity){
         bookService.incrementBookSellCount(bookId, quantity);
         return ResponseEntity.noContent().build();
     }
 
     // 도서 삭제
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId, HttpServletRequest request) {
+    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId, HttpServletRequest request){
         jwtUtils.ensureAdmin(request);
         bookService.deleteBook(bookId);
         return ResponseEntity.noContent().build();
@@ -131,14 +122,13 @@ public class BookController {
 
     // 도서 작가 목록 조회
     @GetMapping("/{bookId}/authors")
-    public List<Author> getAuthors(@PathVariable Long bookId) {
+    public List<Author> getAuthors(@PathVariable Long bookId){
         return bookService.getAuthors(bookId);
     }
 
     // 책 수량 증가
     @GetMapping("/{bookId}/amount-increase")
-    public ResponseEntity<Void> incrementBookAmountIncrease(@PathVariable Long bookId, @RequestParam int quantity,
-                                                            HttpServletRequest request) {
+    public ResponseEntity<Void> incrementBookAmountIncrease(@PathVariable Long bookId, @RequestParam int quantity, HttpServletRequest request){
         jwtUtils.ensureAdmin(request);
         bookService.incrementBookAmount(bookId, quantity);
         return ResponseEntity.noContent().build();
