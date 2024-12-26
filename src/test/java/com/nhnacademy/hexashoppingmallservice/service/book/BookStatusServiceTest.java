@@ -53,7 +53,7 @@ class BookStatusServiceTest {
         List<BookStatus> bookStatuses = bookStatusService.getAllBookStatus();
 
         assertThat(bookStatuses).hasSize(1);
-        assertThat(bookStatuses.get(0).getBookStatus()).isEqualTo("판매중");
+        assertThat(bookStatuses.getFirst().getBookStatus()).isEqualTo("판매중");
         verify(bookStatusRepository, times(1)).findAll();
     }
 
@@ -85,19 +85,18 @@ class BookStatusServiceTest {
         verify(bookStatusRepository, times(1)).deleteById(1L);
     }
 
-//    @Test
-//    void testUpdateBookStatus_Success() {
-//        BookStatusRequestDTO requestDTO = new BookStatusRequestDTO("판매종료");
-//
-//        when(bookStatusRepository.findById(1L)).thenReturn(Optional.of(bookStatus));
-//        when(bookStatusRepository.save(any(BookStatus.class))).thenReturn(BookStatus.of("판매종료"));
-//
-//        BookStatus updatedStatus = bookStatusService.updateBookStatus(1L, requestDTO);
-//
-//        assertThat(updatedStatus.getBookStatus()).isEqualTo("판매종료");
-//        verify(bookStatusRepository, times(1)).findById(1L);
-//        verify(bookStatusRepository, times(1)).save(any(BookStatus.class));
-//    }
+    // 수정
+    @Test
+    void testUpdateBookStatus_Success() {
+        BookStatusRequestDTO requestDTO = new BookStatusRequestDTO("판매종료");
+
+        when(bookStatusRepository.findById(1L)).thenReturn(Optional.of(bookStatus));
+
+        BookStatus updatedStatus = bookStatusService.updateBookStatus(1L, requestDTO);
+
+        assertThat(updatedStatus.getBookStatus()).isEqualTo("판매종료");
+        verify(bookStatusRepository, times(1)).findById(1L);
+    }
 
     @Test
     void testUpdateBookStatus_NotFound() {

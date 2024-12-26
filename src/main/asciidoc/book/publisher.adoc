@@ -1,0 +1,64 @@
+= Publisher API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 출판사 목록 조회
+
+=== 요청
+
+include::{snippets}/get-publishers/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-publishers/request-headers.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-publishers/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-publishers/response-body.adoc[]
+
+== 출판사 등록
+
+=== 요청
+
+include::{snippets}/create-publisher/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/create-publisher/request-headers.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-publisher/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-publisher/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-publisher/response-body.adoc[]
+
+== 출판사 단일 조회
+
+=== 요청
+
+include::{snippets}/get-publisher/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-publisher/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-publisher/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-publisher/response-body.adoc[]
+
