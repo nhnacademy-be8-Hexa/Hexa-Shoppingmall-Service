@@ -77,7 +77,7 @@ public class BookService {
 
     // 도서 목록 - 베스트셀러 (내림차순)
     public List<Book> getBooksByBookSellCount(Pageable pageable) {
-        return bookRepository.findByOrderByBookSellCount(pageable).getContent();
+        return bookRepository.findByOrderByBookSellCountDesc(pageable).getContent();
     }
 
     // 도서 목록 - 카테고리 별
