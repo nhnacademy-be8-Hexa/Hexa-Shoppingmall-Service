@@ -170,7 +170,7 @@ public class BookService {
 
     public void updateBookAmount(Long bookId, int quantity) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("book not found with id: " + bookId));
+                .orElseThrow(() -> new BookNotFoundException("book not found with id: " + bookId));
 
         int updateAmount = book.getBookAmount() + quantity;
         if (updateAmount < 0) {
@@ -185,9 +185,8 @@ public class BookService {
     public void incrementBookSellCount(Long bookId, int quantity) {
         // 판매량 증가와 동시에 재고 감소 처리
         updateBookAmount(bookId, -quantity);
-        
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("book not found with id: " + bookId));
+
+        Book book = bookRepository.findById(bookId).get();
 
         book.setBookSellCount(book.getBookSellCount() + quantity);
         bookRepository.save(book);
@@ -197,11 +196,6 @@ public class BookService {
     // 재고 증가 처리
     public void incrementBookAmount(Long bookId, int quantity) {
         updateBookAmount(bookId, quantity);
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("book not found with id: " + bookId));
-
-        book.setBookSellCount(book.getBookSellCount() + quantity);
-        bookRepository.save(book);
     }
 
 

@@ -22,12 +22,14 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusReposito
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import java.time.LocalDate;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@Slf4j
 class BookServiceTest {
 
     @Mock
@@ -136,7 +138,7 @@ class BookServiceTest {
         assertThrows(BookNotFoundException.class, () ->
                 bookService.updateBook(1L, bookUpdateRequestDTO));
     }
-    
+
 
     @Test
     void updateBook_StatusNotFound() {
@@ -168,7 +170,6 @@ class BookServiceTest {
         assertThrows(BookNotFoundException.class, () ->
                 bookService.incrementBookView(1L));
     }
-
 
     @Test
     void updateBookAmount_Success() {
@@ -220,7 +221,7 @@ class BookServiceTest {
         verify(bookRepository, times(1)).findById(1L);
         verify(bookRepository, never()).save(book);
     }
-
+    
     @Test
     void deleteBook_Success() {
         doNothing().when(bookRepository).deleteById(1L);
