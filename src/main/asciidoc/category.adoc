@@ -1,0 +1,69 @@
+= Category API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 카테고리 등록
+
+=== 요청
+
+include::{snippets}/create-category/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-category/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-category/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-category/response-body.adoc[]
+
+== 서브 카테고리 삽입
+
+=== 요청
+
+include::{snippets}/insert-category/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/insert-category/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/insert-category/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/insert-category/response-body.adoc[]
+
+== 카테고리 조회
+
+=== 요청
+
+include::{snippets}/get-all-categories/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-categories/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-categories/response-body.adoc[]
+
+== 카테고리 도서 등록
+
+=== 요청
+
+include::{snippets}/add-book-to-category/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/add-book-to-category/path-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/add-book-to-category/http-response.adoc[]
