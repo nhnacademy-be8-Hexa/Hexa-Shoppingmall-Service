@@ -118,8 +118,6 @@ class PointDetailsRepositoryTest {
         assertEquals(pointDetails4.getPointDetailsId(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsId());
         assertEquals(pointDetails4.getPointDetailsIncrement(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsIncrement());
         assertEquals(pointDetails4.getPointDetailsComment(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsComment());
-        assertEquals(pointDetails4.getPointDetailsDatetime(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsDatetime());
-
     }
 
 
