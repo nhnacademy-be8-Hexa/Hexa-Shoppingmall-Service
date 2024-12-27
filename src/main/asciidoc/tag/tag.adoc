@@ -1,0 +1,71 @@
+= Tag API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 태그 등록
+
+=== 요청
+
+include::{snippets}/create-tag/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-tag/request-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-tag/response-body.adoc[]
+
+
+== 태그 조회
+
+=== 요청
+
+include::{snippets}/get-all-tags/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-tags/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-tags/response-body.adoc[]
+
+
+
+== 태그 수정
+
+=== 요청
+
+include::{snippets}/update-tag/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/update-tag/path-parameters.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/update-tag/request-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-tag/response-body.adoc[]
+
+
+== 태그 삭제
+
+=== 요청
+
+include::{snippets}/delete-tag/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/delete-tag/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-tag/response-body.adoc[]
+
+

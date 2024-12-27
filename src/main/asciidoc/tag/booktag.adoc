@@ -1,0 +1,75 @@
+= BookTag API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 북태그 등록
+
+=== 요청
+
+include::{snippets}/add-book-tag/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/add-book-tag/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/add-book-tag/response-body.adoc[]
+
+
+== 북으로 태그 조회
+
+=== 요청
+
+include::{snippets}/get-tags-by-book/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/get-tags-by-book/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-tags-by-book/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-tags-by-book/response-body.adoc[]
+
+
+
+== 태그로 북 조회
+
+=== 요청
+
+include::{snippets}/get-books-by-tag/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/get-books-by-tag/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-books-by-tag/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-books-by-tag/response-body.adoc[]
+
+
+== 북태그 삭제
+
+=== 요청
+
+include::{snippets}/delete-book-tag/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/delete-book-tag/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-book-tag/response-body.adoc[]
+
+
