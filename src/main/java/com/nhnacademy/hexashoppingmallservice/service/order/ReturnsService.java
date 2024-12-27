@@ -80,7 +80,7 @@ public class ReturnsService {
        Member member = memberRepository.findById(memberId).orElseThrow(
                () -> new MemberNotFoundException("Member with id '%s' not found" .formatted(memberId)));
                return returnsRepository.findByOrder_Member(member).orElseThrow(
-                ()-> new MemberNotFoundException("Member with id '%s' not found" .formatted(memberId))
+                ()-> new OrderNotFoundException("Order with id '%s' not found" .formatted(memberId))
 
        );
     }
@@ -96,6 +96,8 @@ public class ReturnsService {
 
     @Transactional
     public void deleteReturns(Long orderId) {
+        Returns returns = returnsRepository.findById(orderId)
+                .orElseThrow(() -> new ReturnsNotFoundException("Returns not found for orderId: " + orderId));
         returnsRepository.deleteById(orderId);
     }
 }

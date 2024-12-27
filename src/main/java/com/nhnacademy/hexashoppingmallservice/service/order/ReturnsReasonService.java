@@ -66,6 +66,9 @@ public class ReturnsReasonService {
 
     @Transactional
     public void deleteReturnsReason(Long returnsReasonId) {
+        returnsReasonRepository.findById(returnsReasonId).orElseThrow(
+                () -> new ReturnsReasonNotFoundException("ReturnsReason ID: %s not found".formatted(returnsReasonId))
+        );
         returnsReasonRepository.deleteById(returnsReasonId);
     }
 }
