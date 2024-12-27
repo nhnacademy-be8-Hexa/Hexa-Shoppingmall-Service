@@ -1,0 +1,102 @@
+= Order API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 주문 생성
+
+=== 요청
+
+include::{snippets}/create-order/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/create-order/query-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-order/http-response.adoc[]
+
+== 모든 주문 조회
+
+=== 요청
+
+include::{snippets}/get-all-orders/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-all-orders/request-headers.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-all-orders/query-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-orders/response-body.adoc[]
+
+== 특정 멤버의 주문 조회
+
+=== 요청
+
+include::{snippets}/get-orders-by-memberId/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-orders-by-memberId/path-parameters.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-orders-by-memberId/query-parameters.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-orders-by-memberId/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-orders-by-memberId/response-body.adoc[]
+
+== 특정 주문 조회
+
+=== 요청
+
+include::{snippets}/get-order-by-id/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-order-by-id/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-order-by-id/response-body.adoc[]
+
+== 주문 정보 업데이트
+
+=== 요청
+
+include::{snippets}/update-order/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/update-order/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-order/http-response.adoc[]
+
+== 특정 주문의 책 수량 조회
+
+=== 요청
+
+include::{snippets}/get-order-amount/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-order-amount/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-order-amount/http-response.adoc[]
+
