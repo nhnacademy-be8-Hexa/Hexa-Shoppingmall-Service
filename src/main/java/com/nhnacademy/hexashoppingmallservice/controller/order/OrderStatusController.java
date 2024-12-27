@@ -51,7 +51,15 @@ public class OrderStatusController {
     @DeleteMapping("/{orderStatusId}")
     public ResponseEntity<OrderStatus> deleteOrderStatus(@PathVariable Long orderStatusId, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
-        orderStatusService.deleteOrderStatus(orderStatusId);
+        OrderStatus orderStatus = orderStatusService.getOrderStatus(orderStatusId);
+        if (Objects.isNull(orderStatus)) {
+            throw new OrderStatusNotFoundException(Long.toString(orderStatusId));
+        }
+        try {
+            orderStatusService.deleteOrderStatus(orderStatusId);
+        } catch (RuntimeException e) {
+            throw new SqlQueryExecuteFailException(e.getMessage());
+        }
         return ResponseEntity.noContent().build();
     }
 }
