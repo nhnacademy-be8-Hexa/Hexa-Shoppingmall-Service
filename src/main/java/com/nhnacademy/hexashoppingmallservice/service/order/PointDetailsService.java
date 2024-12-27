@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.service.order;
 
+import com.nhnacademy.hexashoppingmallservice.dto.order.CreatePointDetailDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
@@ -21,13 +22,18 @@ public class PointDetailsService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public PointDetails createPointDetails(PointDetails pointDetails, String memberId) {
+    public PointDetails createPointDetails(CreatePointDetailDTO createPointDetailDTO, String memberId) {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException(memberId);
         }
         Member member = memberRepository.findById(memberId).get();
-        pointDetails.setMember(member);
-        pointDetails.setPointDetailsDatetime(LocalDateTime.now());
+        PointDetails pointDetails = PointDetails.builder()
+                .pointDetailsId(null)
+                .member(member)
+                .pointDetailsIncrement(createPointDetailDTO.getPointDetailsIncrement())
+                .pointDetailsComment(createPointDetailDTO.getPointDetailsComment())
+                .pointDetailsDatetime(LocalDateTime.now())
+                .build();
         return pointDetailsRepository.save(pointDetails);
     }
 
