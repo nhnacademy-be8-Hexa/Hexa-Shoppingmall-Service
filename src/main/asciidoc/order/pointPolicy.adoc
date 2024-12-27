@@ -1,0 +1,72 @@
+= 포인트 정책 관리 API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 포인트 정책 생성
+
+=== 요청
+
+include::{snippets}/create-point-policy/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-point-policy/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-point-policy/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-point-policy/response-body.adoc[]
+
+== 포인트 정책 수정
+
+=== 요청
+
+include::{snippets}/update-point-policy/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/update-point-policy/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/update-point-policy/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-point-policy/response-body.adoc[]
+
+== 포인트 정책 삭제
+
+=== 요청
+
+include::{snippets}/delete-point-policy/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/delete-point-policy/path-parameters.adoc[]
+
+=== 응답
+
+HTTP 상태 코드 204 No Content
+
+== 포인트 모두 가져오기
+
+=== 요청
+
+include::{snippets}/get-all-point-policies/http-request.adoc[]
+
+
+=== 예제 응답
+
+include::{snippets}/get-all-point-policies/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-point-policies/response-fields.adoc[]
+
+

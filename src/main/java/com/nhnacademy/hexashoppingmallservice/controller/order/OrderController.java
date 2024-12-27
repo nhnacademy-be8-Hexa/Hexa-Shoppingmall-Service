@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/orders")
 public class OrderController {
     private final Integer SIZE = 10;
     private final OrderService orderService;
     private final JwtUtils jwtUtils;
 
-    @PostMapping
+    @PostMapping("/api/orders")
     public ResponseEntity<Void> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO,
                                              @RequestParam List<Long> bookIds,
                                              @RequestParam List<Integer> amounts,
@@ -31,14 +30,14 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
+    @GetMapping("/api/orders")
     public ResponseEntity<List<OrderProjection>> getAllOrders(@RequestParam(defaultValue = "0") int page, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         Pageable pageable = PageRequest.of(page, SIZE);
         return ResponseEntity.ok(orderService.getAllOrders(pageable));
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/api/members/{memberId}/orders")
     public ResponseEntity<List<OrderProjection>> getOrdersByMemberId(@Valid @RequestParam(defaultValue = "0") int page,
                                            @PathVariable String memberId, HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
@@ -46,12 +45,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrdersByMemberId(memberId, pageable));
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/api/orders/{orderId}")
     public ResponseEntity<OrderProjection> getOrderById(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.getOrder(orderId));
     }
 
-    @PutMapping("/{orderId}")
+    @PutMapping("/api/orders/{orderId}")
     public ResponseEntity<Void> updateOrder(@PathVariable Long orderId,
                                              @Valid @RequestBody OrderRequestDTO orderRequestDTO) {
         orderService.updateOrder(orderId, orderRequestDTO);
@@ -59,7 +58,7 @@ public class OrderController {
     }
 
     // 특정 주문의 주문한 책 수량
-    @GetMapping("/{orderId}/books/{bookId}")
+    @GetMapping("api/orders/{orderId}/books/{bookId}")
     public ResponseEntity<Long> getOrderAmount(@PathVariable Long orderId, @PathVariable Long bookId) {
         return ResponseEntity.ok(orderService.getAmount(orderId, bookId));
     }
