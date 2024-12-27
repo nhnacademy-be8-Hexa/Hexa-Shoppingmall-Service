@@ -1,0 +1,57 @@
+= Rating API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 멤버 등급 목록 조회
+
+=== 요청
+
+include::{snippets}/get-ratings/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-ratings/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-ratings/response-body.adoc[]
+
+== 멤버 등급 등록
+
+=== 요청
+
+include::{snippets}/add-rating/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/add-rating/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/add-rating/response-body.adoc[]
+
+== 멤버 등급 삭제
+
+=== 경로 파라미터
+
+include::{snippets}/delete-rating/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-rating/http-response.adoc[]
+
+== 멤버 등급 업데이트
+
+=== 요청
+
+include::{snippets}/update-rating/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/update-rating/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-rating/response-body.adoc[]
