@@ -142,7 +142,7 @@ public class OrderService {
         updateIfNotNull(orderRequestDTO.getZoneCode(), order::setZoneCode);
         updateIfNotNull(orderRequestDTO.getAddressDetail(), order::setAddressDetail);
 
-        order.setAddress(orderRequestDTO.getAddress());
+        updateIfNotNull(orderRequestDTO.getAddress(), order::setAddress);
 
         OrderStatus orderStatus = orderStatusRepository.findById(orderRequestDTO.getOrderStatusId()).orElse(null);
         if (Objects.isNull(orderStatus)) {
@@ -150,6 +150,7 @@ public class OrderService {
                     "OrderStatus ID %s is not found".formatted(orderRequestDTO.getOrderStatusId()));
         }
         order.setOrderStatus(orderStatus);
+
 
         Long wrappingPaperId = orderRequestDTO.getWrappingPaperId();
         WrappingPaper wrappingPaper = null;
@@ -160,9 +161,8 @@ public class OrderService {
                         "WrappingPaper ID %s not found".formatted(wrappingPaperId));
             }
             wrappingPaper = wrappingPaperRepository.findById(wrappingPaperId).orElseThrow();
+            order.setWrappingPaper(wrappingPaper);
         }
-
-        order.setWrappingPaper(wrappingPaper);
     }
 
     private <T> void updateIfNotNull(T value, Consumer<T> updater) {
