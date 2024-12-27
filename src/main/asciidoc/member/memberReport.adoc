@@ -1,0 +1,59 @@
+= Member Report API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 신고 생성
+
+=== 요청
+
+include::{snippets}/save-member-report/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/save-member-report/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/save-member-report/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/save-member-report/http-response.adoc[]
+
+== 특정 리뷰의 신고 총계 조회
+
+=== 요청
+
+include::{snippets}/get-total-report/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-total-report/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-total-report/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-total-report/http-response.adoc[]
+
+== 특정 리뷰의 모든 신고 삭제
+
+=== 요청
+
+include::{snippets}/delete-all-reports/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/delete-all-reports/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/delete-all-reports/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-all-reports/http-response.adoc[]
