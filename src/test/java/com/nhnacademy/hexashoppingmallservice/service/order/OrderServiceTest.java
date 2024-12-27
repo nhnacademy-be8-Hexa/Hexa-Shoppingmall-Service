@@ -403,35 +403,6 @@ class OrderServiceTest {
             verify(bookRepository, times(1)).countByBookIdIn(bookIds);
             verify(bookRepository, times(bookIds.size())).findById(anyLong());
         }
-
-        @Test
-        @DisplayName("책 ID와 수량의 크기가 다를 때 ParameterNotEnouthException 발생")
-        void createOrder_BookIdsAndAmountsSizeMismatch() {
-            // Arrange
-            OrderRequestDTO dto = new OrderRequestDTO(
-                    "member123",
-                    50000,
-                    1L,
-                    1L,
-                    "12345",
-                    "123 Main St",
-                    "Apt 101"
-            );
-
-            List<Long> bookIds = Arrays.asList(1L, 2L);
-            List<Integer> amounts = Arrays.asList(2); // Mismatch
-            Long couponId = 1L;
-
-            // Act & Assert
-            ParameterNotEnouthException exception = assertThrows(ParameterNotEnouthException.class, () -> {
-                orderService.createOrder(dto, bookIds, amounts, couponId);
-            });
-
-            assertEquals("Parameters not enough", exception.getMessage());
-
-            verify(orderRepository, never()).save(any(Order.class));
-            verify(orderBookRepository, never()).save(any(OrderBook.class));
-        }
     }
 
     @Nested

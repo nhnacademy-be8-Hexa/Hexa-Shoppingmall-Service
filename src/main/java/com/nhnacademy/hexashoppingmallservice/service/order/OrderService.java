@@ -142,7 +142,7 @@ public class OrderService {
         updateIfNotNull(orderRequestDTO.getZoneCode(), order::setZoneCode);
         updateIfNotNull(orderRequestDTO.getAddressDetail(), order::setAddressDetail);
 
-        order.setAddress(orderRequestDTO.getAddress());
+        updateIfNotNull(orderRequestDTO.getAddress(), order::setAddress);
 
         OrderStatus orderStatus = orderStatusRepository.findById(orderRequestDTO.getOrderStatusId()).orElse(null);
         if (Objects.isNull(orderStatus)) {
