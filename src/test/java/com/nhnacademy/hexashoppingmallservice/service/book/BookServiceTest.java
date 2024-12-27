@@ -14,6 +14,9 @@ import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.book.BookStatusNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.exception.book.PublisherNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
@@ -29,7 +32,6 @@ class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
-
     @Mock
     private PublisherRepository publisherRepository;
 
@@ -102,15 +104,13 @@ class BookServiceTest {
         verify(bookRepository, times(1)).save(any(Book.class));
     }
 
-//    @Test
-//    void createBook_PublisherNotFound() {
-//        when(publisherRepository.existsById(1L)).thenReturn(false);
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-//                bookService.createBook(bookRequestDTO));
-//
-//        assertThat(exception.getMessage()).isEqualTo("publisher id is not found 1");
-//    }
+    @Test
+    void createBook_PublisherNotFound() {
+        when(publisherRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(PublisherNotFoundException.class, () ->
+                bookService.createBook(bookRequestDTO));
+    }
 
     @Test
     void updateBook_Success() {
@@ -130,28 +130,24 @@ class BookServiceTest {
     }
 
 
-//    @Test
-//    void updateBook_BookNotFound() {
-//        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-//                bookService.updateBook(1L, bookUpdateRequestDTO));
-//
-//        assertThat(exception.getMessage()).isEqualTo("bookId cannot found: 1");
-//    }
+    @Test
+    void updateBook_BookNotFound() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(BookNotFoundException.class, () ->
+                bookService.updateBook(1L, bookUpdateRequestDTO));
+    }
+    
 
-//    @Test
-//    void updateBook_StatusNotFound() {
-//        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-//        when(bookStatusRepository.findById(1L)).thenReturn(Optional.empty());
-//
-//        bookUpdateRequestDTO = new BookUpdateRequestDTO("Updated Title", "Updated Description", 15000, false, "1");
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-//                bookService.updateBook(1L, bookUpdateRequestDTO));
-//
-//        assertThat(exception.getMessage()).isEqualTo("status id cannot found: 1");
-//    }
+    @Test
+    void updateBook_StatusNotFound() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(bookStatusRepository.findById(1L)).thenReturn(Optional.empty());
+
+        bookUpdateRequestDTO = new BookUpdateRequestDTO("Updated Title", "Updated Description", 15000, false, "1");
+        assertThrows(BookStatusNotFoundException.class, () ->
+                bookService.updateBook(1L, bookUpdateRequestDTO));
+    }
+
 
     @Test
     void incrementBookView_Success() {
@@ -164,15 +160,14 @@ class BookServiceTest {
         verify(bookRepository, times(1)).save(book);
     }
 
-//    @Test
-//    void incrementBookView_BookNotFound() {
-//        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
-//
-//        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-//                bookService.incrementBookView(1L));
-//
-//        assertThat(exception.getMessage()).isEqualTo("book not found with id: 1");
-//    }
+
+    @Test
+    void incrementBookView_BookNotFound() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundException.class, () ->
+                bookService.incrementBookView(1L));
+    }
 
 
     @Test
