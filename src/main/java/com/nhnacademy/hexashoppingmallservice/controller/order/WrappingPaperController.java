@@ -52,15 +52,7 @@ public class WrappingPaperController {
     @DeleteMapping("/{wrappingPaperId}")
     public ResponseEntity<WrappingPaper> deleteWrappingPaper(@PathVariable Long wrappingPaperId, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
-        WrappingPaper wrappingPaper = wrappingPaperService.getWrappingPaper(wrappingPaperId);
-        if (Objects.isNull(wrappingPaper)) {
-            throw new WrappingPaperNotFoundException(Long.toString(wrappingPaperId));
-        }
-        try {
-            wrappingPaperService.deleteWrappingPaper(wrappingPaperId);
-        } catch (RuntimeException e) {
-            throw new SqlQueryExecuteFailException(e.getMessage());
-        }
+        wrappingPaperService.deleteWrappingPaper(wrappingPaperId);
         return ResponseEntity.noContent().build();
     }
 }

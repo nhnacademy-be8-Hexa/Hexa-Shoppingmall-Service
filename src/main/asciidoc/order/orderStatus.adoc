@@ -1,0 +1,103 @@
+= 주문 상태 API 문서 (Order Status API)
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 주문 상태 목록 조회 (getAllOrderStatuses)
+
+=== 요청
+
+include::{snippets}/get-all-order-statuses/http-request.adoc[]
+
+=== 응답
+
+include::{snippets}/get-all-order-statuses/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-order-statuses/response-fields.adoc[]
+
+
+
+
+== 주문 상태 조회 (getOrderStatus)
+
+=== 요청
+
+include::{snippets}/get-order-status/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-order-status/path-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/get-order-status/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-order-status/response-fields.adoc[]
+
+
+
+
+== 주문 상태 생성 (createOrderStatus)
+
+=== 요청
+
+include::{snippets}/create-order-status/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-order-status/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/create-order-status/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-order-status/response-fields.adoc[]
+
+
+
+
+== 주문 상태 수정 (updateOrderStatus)
+
+=== 요청
+
+include::{snippets}/update-order-status/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/update-order-status/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/update-order-status/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/update-order-status/response-fields.adoc[]
+
+
+
+
+== 주문 상태 삭제 (deleteOrderStatus)
+
+=== 요청
+
+include::{snippets}/delete-order-status/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/delete-order-status/path-parameters.adoc[]
+
+=== 응답
+
+HTTP 상태 코드 204 No Content
+
+
+
+
