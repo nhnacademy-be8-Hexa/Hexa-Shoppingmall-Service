@@ -31,12 +31,6 @@ public class OrderStatusService {
 
     @Transactional
     public OrderStatus createOrderStatus(OrderStatusRequestDTO orderStatusRequestDTO) {
-
-        boolean existOrderStatus = orderStatusRepository.existsByOrderStatus(orderStatusRequestDTO.getOrderStatus());
-        if (!existOrderStatus) {
-            throw new OrderStatusNotFoundException("order status %s already exists".formatted(orderStatusRequestDTO.getOrderStatus()));
-        }
-
         OrderStatus orderStatus = OrderStatus.of(
                 orderStatusRequestDTO.getOrderStatus()
         );
@@ -57,12 +51,7 @@ public class OrderStatusService {
 
     @Transactional
     public void deleteOrderStatus(Long orderStatusId) {
-        boolean orderStatusExist = orderStatusRepository.existsById(orderStatusId);
-        if (!orderStatusExist) {
-            throw new OrderStatusNotFoundException("order status %d not found.".formatted(orderStatusId));
-        }
         orderStatusRepository.deleteById(orderStatusId);
     }
 
 }
-

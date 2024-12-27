@@ -47,8 +47,7 @@ public class ReturnsController {
     }
 
     @DeleteMapping("/api/returns/order/{orderId}")
-    public ResponseEntity<Void> deleteReturns(@PathVariable Long orderId) {
+    public void deleteReturns(@PathVariable Long orderId) {
         returnsService.deleteReturns(orderId);
-        return ResponseEntity.noContent().build();
     }
 }
