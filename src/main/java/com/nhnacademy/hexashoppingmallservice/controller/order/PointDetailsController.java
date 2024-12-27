@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/members/{memberId}/pointDetails")
 public class PointDetailsController {
     private final PointDetailsService pointDetailsService;
+    private final JwtUtils jwtUtils;
 
     /**
      * 포인트 상세 정보 생성 엔드포인트
@@ -31,7 +32,8 @@ public class PointDetailsController {
     @PostMapping
     public ResponseEntity<PointDetails> createPointDetails(
             @PathVariable String memberId,
-            @RequestBody @Valid CreatePointDetailDTO pointDetails) {
+            @RequestBody @Valid CreatePointDetailDTO pointDetails , HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         PointDetails createdPointDetails = pointDetailsService.createPointDetails(pointDetails, memberId);
         return new ResponseEntity<>(createdPointDetails, HttpStatus.CREATED);
     }
@@ -44,7 +46,8 @@ public class PointDetailsController {
      */
     @GetMapping("/sum")
     public ResponseEntity<Long> sumPoint(
-            @PathVariable String memberId) {
+            @PathVariable String memberId , HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         Long sum = pointDetailsService.sumPoint(memberId);
         return ResponseEntity.ok(sum);
     }
@@ -59,7 +62,8 @@ public class PointDetailsController {
     @GetMapping
     public ResponseEntity<List<PointDetailsProjection>> getPointDetails(
             @PathVariable String memberId,
-            Pageable pageable) {
+            Pageable pageable , HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
         List<PointDetailsProjection> pointDetails = pointDetailsService.getPointDetails(pageable, memberId);
         return ResponseEntity.ok(pointDetails);
     }

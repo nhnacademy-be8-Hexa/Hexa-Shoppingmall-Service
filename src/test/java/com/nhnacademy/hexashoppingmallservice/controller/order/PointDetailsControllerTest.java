@@ -8,6 +8,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Role;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.service.order.PointDetailsService;
+import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,6 +89,9 @@ class PointDetailsControllerTest {
             return pointDetailsDatetime;
         }
     }
+
+    @MockBean
+    private JwtUtils jwtUtils;
 
     @Autowired
     private MockMvc mockMvc;
