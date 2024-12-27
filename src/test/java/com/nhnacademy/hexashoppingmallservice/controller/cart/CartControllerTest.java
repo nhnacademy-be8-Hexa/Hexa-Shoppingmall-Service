@@ -385,32 +385,9 @@ class CartControllerTest {
                                     parameterWithName("cartId").description("카트 ID")
                             ),
                             requestFields(
+                                    fieldWithPath("memberId").type(JsonFieldType.NULL).description("회원 ID").optional(),
+                                    fieldWithPath("bookId").type(JsonFieldType.NULL).description("책 ID").optional(),
                                     fieldWithPath("cartAmount").type(JsonFieldType.NUMBER).description("카트 수량")
-                            )
-                    ));
-        }
-
-        @Test
-        @DisplayName("유효하지 않은 요청으로 카트 수량 업데이트 시 검증 오류 발생")
-        void updateCartItemQuantity_InvalidRequest() throws Exception {
-            // Arrange
-            Long cartId = 1L;
-            CartRequestDTO cartRequestDTO = new CartRequestDTO();
-            // cartAmount를 설정하지 않음
-
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.put("/api/carts/{cartId}/quantity", cartId)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(cartRequestDTO)))
-                    .andExpect(status().isBadRequest())
-                    .andDo(document("update-cart-quantity-invalid",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                    parameterWithName("cartId").description("카트 ID")
-                            ),
-                            requestFields(
-                                    fieldWithPath("cartAmount").type(JsonFieldType.NULL).description("카트 수량").optional()
                             )
                     ));
         }

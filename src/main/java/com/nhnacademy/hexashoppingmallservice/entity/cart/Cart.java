@@ -13,6 +13,7 @@ import lombok.*;
 @Getter
 public class Cart {
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
 
