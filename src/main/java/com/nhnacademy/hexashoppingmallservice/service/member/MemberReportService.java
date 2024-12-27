@@ -24,10 +24,10 @@ public class MemberReportService {
     @Transactional
     public void saveMemberReport(String memberId, Long reviewId) {
         if (!memberRepository.existsById(memberId)) {
-            throw new MemberNotFoundException("Member ID %d is Not Exist!");
+            throw new MemberNotFoundException("Member ID %s does Not Exist!".formatted(memberId));
         }
         if (!reviewRepository.existsById(reviewId)) {
-            throw new ReviewNotFoundException("Review ID %d is Not Exist!");
+            throw new ReviewNotFoundException("Review ID %d does Not Exist!".formatted(reviewId));
         }
         if (memberReportRepository.countByReviewReviewId(reviewId) > 0) {
             throw new MemberReportAlreadyExist("Member report already exist!");
@@ -42,7 +42,7 @@ public class MemberReportService {
     @Transactional
     public Long totalReport(Long reviewId) {
         if (!reviewRepository.existsById(reviewId)) {
-            throw new ReviewNotFoundException("Review ID %d is Not Exist!");
+            throw new ReviewNotFoundException("Review ID %d does Not Exist!".formatted(reviewId));
         }
         return memberReportRepository.countByReviewReviewId(reviewId);
     }
@@ -51,7 +51,7 @@ public class MemberReportService {
     @Transactional
     public void allDelete(Long reviewId) {
         if (!reviewRepository.existsById(reviewId)) {
-            throw new ReviewNotFoundException("Review ID %d is Not Exist!");
+            throw new ReviewNotFoundException("Review ID %d does Not Exist!".formatted(reviewId));
         }
         memberReportRepository.deleteAllByReviewReviewId(reviewId);
     }
