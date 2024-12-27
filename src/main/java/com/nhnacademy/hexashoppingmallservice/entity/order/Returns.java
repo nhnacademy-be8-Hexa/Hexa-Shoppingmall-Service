@@ -29,7 +29,7 @@ public class Returns {
 
     @Setter
     @Column
-    @Length(min = 100)
+    @Length(max = 100)
     private String returnsDetail;
 
     public static Returns of(Order order, ReturnsReason returnsReason, String returnsDetail) {

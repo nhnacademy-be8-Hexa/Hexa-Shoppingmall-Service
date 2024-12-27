@@ -88,7 +88,9 @@ public class ReviewService {
 
     @Transactional
     public void updateBlocked(Long reviewId, Boolean blocked) {
-        Review review = reviewRepository.findById(reviewId).get();
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new ReviewNotFoundException("Review ID %d is not Found!".formatted(reviewId))
+        );
         review.setReviewIsblocked(blocked);
     }
 }

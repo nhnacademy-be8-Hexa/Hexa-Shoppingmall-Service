@@ -22,4 +22,38 @@ include::{snippets}/create-member-coupon/path-parameters.adoc[]
 
 include::{snippets}/create-member-coupon/http-response.adoc[]
 
-==
+== 멤버 쿠폰 목록 조회
+
+=== 요청
+
+include::{snippets}/get-member-coupons/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-member-coupons/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-member-coupons/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-member-coupons/http-response.adoc[]
+
+== 회원 쿠폰 삭제
+
+=== 요청
+
+include::{snippets}/delete-member-coupon/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/delete-member-coupon/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/delete-member-coupon/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/delete-member-coupon/http-response.adoc[]

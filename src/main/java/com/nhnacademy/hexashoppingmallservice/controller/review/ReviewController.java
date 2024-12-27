@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.DocFlavor;
 import java.util.List;
 
 @RestController
@@ -97,7 +98,8 @@ public class ReviewController {
     }
 
     @GetMapping("/reviews")
-    public ResponseEntity<List<ReviewProjection>> getReviewsFromAdmin(Pageable pageable) {
+    public ResponseEntity<List<ReviewProjection>> getReviewsFromAdmin(Pageable pageable, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(reviewService.getReviewsIsBlocked(pageable));
     }
 
