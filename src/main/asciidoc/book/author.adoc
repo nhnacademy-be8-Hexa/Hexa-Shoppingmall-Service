@@ -1,0 +1,21 @@
+== 저자 등록
+
+=== 요청
+
+include::{snippets}/create-author/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/create-author/request-headers.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-author/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-author/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-author/response-body.adoc[]

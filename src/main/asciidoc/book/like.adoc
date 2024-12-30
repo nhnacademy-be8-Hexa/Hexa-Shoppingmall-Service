@@ -1,0 +1,28 @@
+== 좋아요 등록
+
+== 요청
+
+include::{snippets}/create-like/http-request.adoc[]
+
+== 헤더
+
+include::{snippets}/create-like/request-headers.adoc[]
+
+== 경로 파라미터
+
+include::{snippets}/get-like-count/path-parameters.adoc[]
+
+== 좋아요 수 조회
+
+== 요청
+
+include::{snippets}/get-like-count/http-request.adoc[]
+
+== 경로 파라미터
+
+include::{snippets}/get-like-count/path-parameters.adoc[]
+
+== 예제 응답
+
+include::{snippets}/get-like-count/response-body.adoc[]
+

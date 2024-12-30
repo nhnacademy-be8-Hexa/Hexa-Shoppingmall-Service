@@ -1,0 +1,111 @@
+= GuestOrder API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 주문 생성 (createGuestOrder)
+
+=== 요청
+
+include::{snippets}/create-guest-order/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-guest-order/request-fields.adoc[]
+
+
+=== 응답
+
+include::{snippets}/create-guest-order/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-guest-order/response-fields.adoc[]
+
+
+== 주문 생성 실패 (Validation Error)
+
+=== 요청
+
+include::{snippets}/create-guest-order-validation-error/http-request.adoc[]
+
+// === 요청 필드
+//
+// include::{snippets}/create-guest-order-validation-error/request-fields.adoc[]
+
+=== 응답
+
+HTTP 상태 코드 400 Bad Request
+
+
+
+== 주문 목록 조회 (getAllGuestOrders)
+
+=== 요청
+
+include::{snippets}/get-all-guest-orders/http-request.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/get-all-guest-orders/query-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-guest-orders/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-guest-orders/response-body.adoc[]
+
+
+
+== 주문 조회 (getGuestOrder)
+
+=== 요청
+
+include::{snippets}/get-guest-order/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-guest-order/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-guest-order/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-guest-order/response-body.adoc[]
+
+
+
+== 주문 수정 (updateGuestOrder)
+
+=== 요청
+
+include::{snippets}/update-guest-order/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/update-guest-order/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/update-guest-order/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/update-guest-order/response-body.adoc[]
+
+
+
+== 주문 수정 실패 (Validation Error)
+
+=== 요청
+
+include::{snippets}/update-guest-order-validation-error/http-request.adoc[]
+
+=== 응답
+
+HTTP 상태 코드 400 Bad Request

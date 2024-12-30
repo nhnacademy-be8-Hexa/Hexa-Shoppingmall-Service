@@ -75,6 +75,7 @@ public class CategoryController {
 //        categoryService.deleteCategory(categoryId);
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
+
     @PostMapping("/{categoryId}/books/{bookId}")
     public ResponseEntity<Void> getAllBooksByCategoryId(@PathVariable Long categoryId, @PathVariable Long bookId) {
         categoryService.insertBook(categoryId, bookId);

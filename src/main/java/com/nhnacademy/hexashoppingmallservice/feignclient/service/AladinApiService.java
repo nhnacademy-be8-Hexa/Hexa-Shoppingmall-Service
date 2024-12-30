@@ -1,7 +1,11 @@
 package com.nhnacademy.hexashoppingmallservice.feignclient.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookIsbnAlreadyExistException;
@@ -19,6 +23,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AladinApiService {
@@ -27,21 +32,25 @@ public class AladinApiService {
     private final String ttbkey = "ttb30decade2030001";
     private final String output = "JS";
     private final String version = "20131101";
-    private final ObjectMapper objectMapper;
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
     private final BookStatusRepository bookStatusRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public AladinApiService(AladinApi aladinApi, ObjectMapper objectMapper,
+    public AladinApiService(AladinApi aladinApi,
                             BookRepository bookRepository,
                             PublisherRepository publisherRepository,
                             BookStatusRepository bookStatusRepository) {
         this.aladinApi = aladinApi;
-        this.objectMapper = objectMapper;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
         this.bookStatusRepository = bookStatusRepository;
+        this.objectMapper = new ObjectMapper()
+                .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     public List<Book> searchBooks(String query) {
@@ -54,6 +63,7 @@ public class AladinApiService {
         }
     }
 
+    @Transactional
     public List<Book> createBooks(String query, Long bookStatusId, Long publisherId) {
         try {
             ResponseEntity<String> response = aladinApi.searchBooks(ttbkey, query, output, version);

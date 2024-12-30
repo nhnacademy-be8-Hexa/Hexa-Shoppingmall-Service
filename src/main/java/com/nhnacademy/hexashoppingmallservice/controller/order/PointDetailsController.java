@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.controller.order;
 
+import com.nhnacademy.hexashoppingmallservice.dto.order.CreatePointDetailDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.projection.order.PointDetailsProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.PointDetailsService;
@@ -31,8 +32,7 @@ public class PointDetailsController {
     @PostMapping
     public ResponseEntity<PointDetails> createPointDetails(
             @PathVariable String memberId,
-            @RequestBody @Valid PointDetails pointDetails,
-            HttpServletRequest request) {
+            @RequestBody @Valid CreatePointDetailDTO pointDetails , HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         PointDetails createdPointDetails = pointDetailsService.createPointDetails(pointDetails, memberId);
         return new ResponseEntity<>(createdPointDetails, HttpStatus.CREATED);
@@ -46,8 +46,7 @@ public class PointDetailsController {
      */
     @GetMapping("/sum")
     public ResponseEntity<Long> sumPoint(
-            @PathVariable String memberId,
-            HttpServletRequest request) {
+            @PathVariable String memberId , HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         Long sum = pointDetailsService.sumPoint(memberId);
         return ResponseEntity.ok(sum);
@@ -63,8 +62,7 @@ public class PointDetailsController {
     @GetMapping
     public ResponseEntity<List<PointDetailsProjection>> getPointDetails(
             @PathVariable String memberId,
-            Pageable pageable,
-            HttpServletRequest request) {
+            Pageable pageable , HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         List<PointDetailsProjection> pointDetails = pointDetailsService.getPointDetails(pageable, memberId);
         return ResponseEntity.ok(pointDetails);

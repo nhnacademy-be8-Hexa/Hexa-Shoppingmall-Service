@@ -46,11 +46,12 @@ public class ElasticSearchService {
                                                     .query(search)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authors^3",
+                                                            "authors.authorName^3",
                                                             "bookDescription^3",
-                                                            "tagName^2"
+                                                            "tag.tagName^2"
                                                     ))
                                             )
+
                                     )
                                     .should(shouldQuery -> shouldQuery
                                             .term(t -> t

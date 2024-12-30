@@ -1,0 +1,95 @@
+= Delivery API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== 배송 목록 조회
+
+=== 요청
+
+include::{snippets}/get-all-deliveries/http-request.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/get-all-deliveries/request-headers.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-deliveries/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-deliveries/response-body.adoc[]
+
+== 주문 ID로 배송 조회
+
+=== 요청
+
+include::{snippets}/get-delivery-by-order-id/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-delivery-by-order-id/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-delivery-by-order-id/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-delivery-by-order-id/response-body.adoc[]
+
+== 회원 ID로 배송 조회
+
+=== 요청
+
+include::{snippets}/get-deliveries-by-member-id/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-deliveries-by-member-id/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-deliveries-by-member-id/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-deliveries-by-member-id/response-body.adoc[]
+
+== 배송 생성
+
+=== 요청
+
+include::{snippets}/create-delivery/http-request.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/create-delivery/request-headers.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-delivery/request-fields.adoc[]
+
+=== 응답 상태
+
+HTTP 상태 코드 204 No Content
+
+== 배송 정보 수정
+
+=== 요청
+
+include::{snippets}/update-delivery/http-request.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/update-delivery/request-headers.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/update-delivery/path-parameters.adoc[]
+
+=== 응답 상태
+
+HTTP 상태 코드 204 No Content
