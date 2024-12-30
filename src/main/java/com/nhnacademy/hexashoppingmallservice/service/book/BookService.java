@@ -176,7 +176,7 @@ public class BookService {
         if (updateAmount < 0) {
             throw new BookNotFoundException("not enough bookAmount");
         }
-
+        
         book.setBookAmount(updateAmount);
         bookRepository.save(book);
     }

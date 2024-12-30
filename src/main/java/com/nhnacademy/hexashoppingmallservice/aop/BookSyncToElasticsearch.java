@@ -18,6 +18,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Aspect
 @Component
 public class BookSyncToElasticsearch {
@@ -40,9 +41,42 @@ public class BookSyncToElasticsearch {
     public void syncBookToElasticsearchAfterSave(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0 && args[0] instanceof Book book) {
-            com.nhnacademy.hexashoppingmallservice.document.Book document =
-                    com.nhnacademy.hexashoppingmallservice.document.Book.of(book);
-            elasticsearchRepository.save(document);
+            com.nhnacademy.hexashoppingmallservice.document.Book existingDocument =
+                    elasticsearchRepository.findById(book.getBookId()).orElse(null);
+            if (Objects.isNull(existingDocument)) {
+                com.nhnacademy.hexashoppingmallservice.document.Book document =
+                        com.nhnacademy.hexashoppingmallservice.document.Book.of(book);
+                elasticsearchRepository.save(document);
+            } else {
+                existingDocument.setBookTitle(book.getBookTitle());
+                existingDocument.setBookDescription(book.getBookDescription());
+                existingDocument.setBookPrice(book.getBookPrice());
+                existingDocument.setBookWrappable(book.getBookWrappable());
+                com.nhnacademy.hexashoppingmallservice.document.BookStatus bookStatus =
+                        com.nhnacademy.hexashoppingmallservice.document.BookStatus.of(
+                                book.getBookStatus().getBookStatusId(),
+                                book.getBookStatus().getBookStatus());
+                existingDocument.setBookView(book.getBookView());
+                existingDocument.setBookSellCount(book.getBookSellCount());
+                existingDocument.setBookAmount(book.getBookAmount());
+                existingDocument.setBookStatus(bookStatus);
+                elasticsearchRepository.save(existingDocument);
+            }
+        }
+    }
+
+    @After("execution(* com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository.deleteById(..))")
+    public void syncBookToElasticsearchAfterDelete(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        if (args.length > 0) {
+            if (args[0] instanceof Long bookId) {
+                com.nhnacademy.hexashoppingmallservice.document.Book existingDocument =
+                        elasticsearchRepository.findById(bookId).orElse(null);
+
+                if (Objects.nonNull(existingDocument)) {
+                    elasticsearchRepository.deleteById(bookId);
+                }
+            }
         }
     }
 
@@ -59,6 +93,11 @@ public class BookSyncToElasticsearch {
             com.nhnacademy.hexashoppingmallservice.document.Book book =
                     elasticsearchRepository.findById(bookTag.getBook().getBookId()).orElseThrow();
             List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+
+            if (Objects.isNull(currentTags)) {
+                currentTags = new ArrayList<>();
+            }
+
             if (currentTags.stream()
                     .noneMatch(existingTag -> existingTag.getTagName().equals(documentTag.getTagName()))) {
                 currentTags.add(documentTag);

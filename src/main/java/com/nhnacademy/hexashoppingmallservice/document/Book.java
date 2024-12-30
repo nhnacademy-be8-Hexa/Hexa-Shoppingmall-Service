@@ -15,23 +15,27 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(indexName = "book31")
+@Document(indexName = "hexa")
 public class Book {
     @Id
     private Long bookId;
+    @Setter
     private String bookTitle;
+    @Setter
     private String bookDescription;
     @Setter
     private List<Author> authors;
     private Publisher publisher;
+    @Setter
     private BookStatus bookStatus;
     @Setter
     private List<Tag> tags;
     private long bookIsbn;
-
     private String bookPubDate;
     private int bookOriginPrice;
+    @Setter
     private int bookPrice;
+    @Setter
     private boolean bookWrappable;
     @Setter
     private int bookView;
@@ -54,7 +58,7 @@ public class Book {
         this.bookPrice = bookPrice;
         this.publisher = publisher;
         this.bookStatus = bookStatus;
-        
+
         this.bookWrappable = false;
         this.bookView = 0;
         this.bookAmount = 0;
@@ -86,8 +90,7 @@ public class Book {
             com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus entityBookStatus) {
         return BookStatus.of(entityBookStatus.getBookStatusId(), entityBookStatus.getBookStatus());
     }
-
-
+    
 }
 
 

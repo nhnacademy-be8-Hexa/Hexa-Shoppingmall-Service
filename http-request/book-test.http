@@ -142,13 +142,13 @@ Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb
 ###
 
 ### 도서 조회수 증가 (ID 1)
-PATCH http://localhost:8081/api/books/1/view
+PUT http://localhost:8081/api/books/1/view
 Accept: application/json
 
 ###
 
 ### 도서 판매량 증가 (ID 1, Quantity 3)
-PATCH http://localhost:8081/api/books/1/sell-count?quantity=3
+PUT http://localhost:8081/api/books/1/sell-count?quantity=3
 Accept: application/json
 Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
@@ -157,6 +157,7 @@ Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb
 #### 도서 삭제 (ID 1)
 #DELETE http://localhost:8081/api/books/1
 #Accept: application/json
+#Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
 
 ###
 

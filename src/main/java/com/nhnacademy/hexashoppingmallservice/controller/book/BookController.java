@@ -81,7 +81,7 @@ public class BookController {
             return bookService.getBooksByBookPubDate(pageable);
         }
         return bookService.getBooks(pageable);
-
+    
     }
 
     // 도서 생성
