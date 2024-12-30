@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberRequestDTO {
-    @Length(min = 3, max = 20)
+    @Length(min = 3, max = 50)
     @NotNull
     private String memberId;
     @Length(min = 8, max = 60)
