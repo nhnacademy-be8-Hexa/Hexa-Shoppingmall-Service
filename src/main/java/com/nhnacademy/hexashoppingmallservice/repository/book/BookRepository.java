@@ -84,4 +84,36 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Author> findAuthorsByBookId(@Param("bookId") Long bookId);
 
     long countByBookIdIn(List<Long> bookIds);
+
+    // 도서 제목으로 검색할 때의 도서 수
+    long countByBookTitleContaining(String search);
+
+    // 다중 카테고리 ID에 속한 도서 수를 세는 메서드가 필요할 경우:
+    @Query("""
+            SELECT COUNT(DISTINCT bc.book)
+            FROM BookCategory bc
+            WHERE bc.category.categoryId IN :categoryIds
+            """)
+    long countByCategoryIds(@Param("categoryIds") List<Long> categoryIds);
+
+    // 출판사명으로 도서 수를 세는 메서드
+    @Query("""
+            SELECT COUNT(b)
+            FROM Book b
+            WHERE b.publisher.publisherName = :publisherName
+            """)
+    long countByPublisherName(@Param("publisherName") String publisherName);
+
+    /**
+     * 작가명으로 도서 수를 세는 커스텀 쿼리 메서드
+     *
+     * @param authorName 검색할 작가명
+     * @return 해당 작가가 참여한 도서의 수
+     */
+    @Query("""
+            SELECT COUNT(DISTINCT ba.book)
+            FROM BookAuthor ba
+            WHERE ba.author.authorName = :authorName
+            """)
+    long countByAuthorName(@Param("authorName") String authorName);
 }

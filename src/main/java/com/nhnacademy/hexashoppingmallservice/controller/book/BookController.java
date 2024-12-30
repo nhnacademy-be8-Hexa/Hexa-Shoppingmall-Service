@@ -146,7 +146,12 @@ public class BookController {
 
     // 도서 총계 조회(페이징용)
     @GetMapping("total")
-    public ResponseEntity<Long> getTotalBooks() {
-        return ResponseEntity.ok(bookService.getTotal());
+    public ResponseEntity<Long> getTotalBooks(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds,
+            @RequestParam(value = "publisherName", required = false) String publisherName,
+            @RequestParam(value = "authorName", required = false) String authorName
+    ) {
+        return ResponseEntity.ok(bookService.getTotal(search, categoryIds, publisherName, authorName));
     }
 }
