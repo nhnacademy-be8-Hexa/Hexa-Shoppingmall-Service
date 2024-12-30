@@ -160,9 +160,8 @@ public class OrderService {
                         "WrappingPaper ID %s not found".formatted(wrappingPaperId));
             }
             wrappingPaper = wrappingPaperRepository.findById(wrappingPaperId).orElseThrow();
+            order.setWrappingPaper(wrappingPaper);
         }
-
-        order.setWrappingPaper(wrappingPaper);
     }
 
     private <T> void updateIfNotNull(T value, Consumer<T> updater) {
