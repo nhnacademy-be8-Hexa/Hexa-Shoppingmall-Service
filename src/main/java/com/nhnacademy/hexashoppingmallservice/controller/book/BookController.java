@@ -143,4 +143,10 @@ public class BookController {
         bookService.incrementBookAmount(bookId, quantity);
         return ResponseEntity.noContent().build();
     }
+
+    // 도서 총계 조회(페이징용)
+    @GetMapping("total")
+    public ResponseEntity<Long> getTotalBooks() {
+        return ResponseEntity.ok(bookService.getTotal());
+    }
 }

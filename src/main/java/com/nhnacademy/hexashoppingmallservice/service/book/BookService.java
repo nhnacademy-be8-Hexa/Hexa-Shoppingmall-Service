@@ -222,4 +222,9 @@ public class BookService {
         return bookRepository.findAuthorsByBookId(bookId);
     }
 
+    @Transactional(readOnly = true)
+    public Long getTotal() {
+        return bookRepository.count();
+    }
+
 }
