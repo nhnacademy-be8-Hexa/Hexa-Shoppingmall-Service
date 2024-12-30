@@ -59,7 +59,7 @@ Content-Type: application/json
 }
 
 ### 통합 검색
-GET localhost:8081/api/search?search=ea
+GET localhost:8081/api/search?search=John Doe
 Accept: application/json
 
 ### 제목으로 검색

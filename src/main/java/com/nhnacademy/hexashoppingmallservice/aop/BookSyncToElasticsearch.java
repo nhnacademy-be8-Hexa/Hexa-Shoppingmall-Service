@@ -1,0 +1,101 @@
+package com.nhnacademy.hexashoppingmallservice.aop;
+
+
+import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
+import com.nhnacademy.hexashoppingmallservice.entity.book.BookAuthor;
+import com.nhnacademy.hexashoppingmallservice.entity.book.BookTag;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
+import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.tag.TagRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class BookSyncToElasticsearch {
+
+    private final ElasticSearchRepository elasticsearchRepository;
+    private final TagRepository tagRepository;
+    private final AuthorRepository authorRepository;
+
+    @Autowired
+    public BookSyncToElasticsearch(ElasticSearchRepository elasticsearchRepository,
+                                   TagRepository tagRepository,
+                                   AuthorRepository authorRepository) {
+        this.elasticsearchRepository = elasticsearchRepository;
+        this.tagRepository = tagRepository;
+        this.authorRepository = authorRepository;
+    }
+
+
+    @After("execution(* com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository.save(..))")
+    public void syncBookToElasticsearchAfterSave(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        if (args.length > 0 && args[0] instanceof Book book) {
+            com.nhnacademy.hexashoppingmallservice.document.Book document =
+                    com.nhnacademy.hexashoppingmallservice.document.Book.of(book);
+            elasticsearchRepository.save(document);
+        }
+    }
+
+
+    @After("execution(* com.nhnacademy.hexashoppingmallservice.repository.tag.BookTagRepository.save(..))")
+    public void snycTagToElasticsearchAfterSave(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        if (args.length > 0 && args[0] instanceof BookTag bookTag) {
+            Tag tag = tagRepository.findById(bookTag.getBookTagId()).orElseThrow();
+            com.nhnacademy.hexashoppingmallservice.document.Tag documentTag =
+                    com.nhnacademy.hexashoppingmallservice.document.Tag.of(tag.getTagId(),
+                            tag.getTagName());
+
+            com.nhnacademy.hexashoppingmallservice.document.Book book =
+                    elasticsearchRepository.findById(bookTag.getBook().getBookId()).orElseThrow();
+            List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+            if (currentTags.stream()
+                    .noneMatch(existingTag -> existingTag.getTagName().equals(documentTag.getTagName()))) {
+                currentTags.add(documentTag);
+            }
+            book.setTags(currentTags);
+            elasticsearchRepository.save(book);
+        }
+    }
+
+    @After("execution(* com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorRepository.save(..))")
+    public void syncAuthorToElasticsearchAfterSave(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        if (args.length > 0 && args[0] instanceof BookAuthor bookAuthor) {
+            Author author = authorRepository.findById(bookAuthor.getAuthor().getAuthorId()).orElseThrow();
+            com.nhnacademy.hexashoppingmallservice.document.Author documentAuthor =
+                    com.nhnacademy.hexashoppingmallservice.document.Author.of(author.getAuthorId(),
+                            author.getAuthorName());
+
+            com.nhnacademy.hexashoppingmallservice.document.Book book =
+                    elasticsearchRepository.findById(bookAuthor.getBook().getBookId()).orElseThrow();
+            List<com.nhnacademy.hexashoppingmallservice.document.Author> currentAuthors = book.getAuthors();
+
+
+            if (Objects.isNull(currentAuthors)) {
+                currentAuthors = new ArrayList<>();
+            }
+
+
+            if (currentAuthors.stream()
+                    .noneMatch(
+                            existingAuthor -> existingAuthor.getAuthorName().equals(documentAuthor.getAuthorName()))) {
+                currentAuthors.add(documentAuthor);
+            }
+            book.setAuthors(currentAuthors);
+            elasticsearchRepository.save(book);
+        }
+    }
+
+}
+

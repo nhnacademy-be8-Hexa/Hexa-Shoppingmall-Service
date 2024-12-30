@@ -32,6 +32,7 @@ public class ElasticSearchService {
         return elasticSearchRepository.findAllByOrderByBookSellCountDesc(pageable);
     }
 
+
     public List<Book> searchBooks(String search, Pageable pageable) {
         try {
             int from = pageable.getPageNumber() * pageable.getPageSize();

@@ -6,20 +6,25 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
+import com.nhnacademy.hexashoppingmallservice.entity.book.BookAuthor;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookIsbnAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookStatusNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.exception.book.PublisherNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.feignclient.AladinApi;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.Book;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.ListBook;
+import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,17 +40,26 @@ public class AladinApiService {
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
     private final BookStatusRepository bookStatusRepository;
+    private final AuthorRepository authorRepository;
+    private final BookAuthorRepository bookAuthorRepository;
+    private final ElasticSearchRepository elasticSearchRepository;
     private final ObjectMapper objectMapper;
 
     @Autowired
     public AladinApiService(AladinApi aladinApi,
                             BookRepository bookRepository,
                             PublisherRepository publisherRepository,
-                            BookStatusRepository bookStatusRepository) {
+                            BookStatusRepository bookStatusRepository,
+                            AuthorRepository authorRepository,
+                            BookAuthorRepository bookAuthorRepository,
+                            ElasticSearchRepository elasticSearchRepository) {
         this.aladinApi = aladinApi;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
         this.bookStatusRepository = bookStatusRepository;
+        this.authorRepository = authorRepository;
+        this.bookAuthorRepository = bookAuthorRepository;
+        this.elasticSearchRepository = elasticSearchRepository;
         this.objectMapper = new ObjectMapper()
                 .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -64,22 +78,27 @@ public class AladinApiService {
     }
 
     @Transactional
-    public List<Book> createBooks(String query, Long bookStatusId, Long publisherId) {
+    public List<Book> createBooks(String query, Long bookStatusId) {
         try {
             ResponseEntity<String> response = aladinApi.searchBooks(ttbkey, query, output, version);
             ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
             List<Book> items = books.getItem();
 
             for (Book item : items) {
+                String description = item.getDescription();
+                
 
                 if (bookRepository.existsByBookIsbn(Long.valueOf(item.getIsbn13()))) {
                     throw new BookIsbnAlreadyExistException("isbn - %s already exist ".formatted(item.getIsbn13()));
                 }
 
-                if (!publisherRepository.existsById(publisherId)) {
-                    throw new PublisherNotFoundException("publisher - %s not found".formatted(publisherId));
+                Publisher publisher = publisherRepository.findByPublisherName(item.getPublisher().trim());
+
+                if (Objects.isNull(publisher)) {
+                    publisher = Publisher.of(item.getPublisher());
+                    publisherRepository.save(publisher);
                 }
-                Publisher publisher = publisherRepository.findById(publisherId).orElseThrow();
+
 
                 if (!bookStatusRepository.existsById(bookStatusId)) {
                     throw new BookStatusNotFoundException("bookStatusId - %s not found".formatted(bookStatusId));
@@ -87,6 +106,7 @@ public class AladinApiService {
 
                 BookStatus bookStatus = bookStatusRepository.findById(bookStatusId).orElseThrow();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
 
                 com.nhnacademy.hexashoppingmallservice.entity.book.Book book =
                         com.nhnacademy.hexashoppingmallservice.entity.book.Book.of(
@@ -100,15 +120,35 @@ public class AladinApiService {
                                 bookStatus
                         );
                 book.setBookSellCount(Long.valueOf(item.getSalesPoint()));
+
+
                 bookRepository.save(book);
+
+                String line = item.getAuthor();
+                String cleanedLine = line.replaceAll("\\(.*?\\)", "").trim();
+                String[] authorNames = cleanedLine.split(",");
+                Author author;
+
+                for (String authorName : authorNames) {
+                    if (Objects.nonNull(authorName) && !authorName.isBlank()) {
+                        author = authorRepository.findByAuthorName(authorName.trim());
+                        if (Objects.isNull(author)) {
+                            author = Author.of(authorName.trim());
+                            authorRepository.save(author);
+                        }
+                        System.out.println(author.getAuthorId());
+                        BookAuthor bookAuthor = BookAuthor.of(book, author);
+                        bookAuthorRepository.save(bookAuthor);
+                    }
+                }
             }
 
             return items;
-
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
 }
