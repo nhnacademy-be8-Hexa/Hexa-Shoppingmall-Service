@@ -22,13 +22,6 @@ public class CartController {
     private final CartService cartService;
     private final JwtUtils jwtUtils;
 
-    // 전체 카트 목록 가져올 이유가 없음
-//    @GetMapping("/api/carts")
-//    public List<Cart> getCarts() {
-//        return cartService.getCarts();
-//    }
-
-    //
     @GetMapping("/api/members/{memberId}/carts/{cartId}")
     public CartProjection getCart(@PathVariable String memberId, @PathVariable Long cartId, HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
@@ -61,10 +54,10 @@ public class CartController {
     }
 
     @PutMapping("/api/carts/{cartId}/quantity")
-    public ResponseEntity<Cart> updateCartItemQuantity(
+    public ResponseEntity<Void> updateCartItemQuantity(
             @PathVariable Long cartId,
             @RequestBody CartRequestDTO cartRequestDto) {
-        Cart updatedCart = cartService.updateCartItemQuantity(cartId, cartRequestDto);
-        return new ResponseEntity<>(updatedCart, HttpStatus.OK);
+        cartService.updateCartItemQuantity(cartId, cartRequestDto);
+        return ResponseEntity.noContent().build();
     }
 }

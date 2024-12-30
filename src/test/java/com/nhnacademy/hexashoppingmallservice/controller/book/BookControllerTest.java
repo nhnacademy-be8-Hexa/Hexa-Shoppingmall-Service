@@ -124,8 +124,7 @@ class BookControllerTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books")
                         .param("page", "0")
-                        .param("search", "Test Book")
-                        .accept(MediaType.APPLICATION_JSON))
+                        .param("search", "Test Book"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(books.size()))
                 .andExpect(jsonPath("$[0].bookTitle").value("Test Book"))
@@ -133,7 +132,14 @@ class BookControllerTest {
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         queryParameters(
                                 parameterWithName("page").description("페이지 번호"),
-                                parameterWithName("search").description("검색어")
+                                parameterWithName("search").description("도서 제목으로 검색"),
+                                parameterWithName("categoryIds").description("카테고리(아이디)로 검색").optional(),
+                                parameterWithName("publisherName").description("출판사명으로 검색").optional(),
+                                parameterWithName("authorName").description("작가명으로 검색").optional(),
+                                parameterWithName("sortByView").description("조회수에 의한 정렬").optional(),
+                                parameterWithName("sortBySellCount").description("판매수에 의한 정렬").optional(),
+                                parameterWithName("sortByLikeCount").description("좋아요수에 의한 정렬").optional(),
+                                parameterWithName("latest").description("출간일 최신순으로 정렬").optional()
                         ),
                         responseFields(
                                 fieldWithPath("[].bookId").description("도서 ID"),

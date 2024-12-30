@@ -11,14 +11,12 @@ import com.nhnacademy.hexashoppingmallservice.projection.order.DeliveryProjectio
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.DeliveryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
-import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
+import java.util.Formatter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Formatter;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +29,11 @@ public class DeliveryService {
     public Delivery createDelivery(DeliveryRequestDTO deliveryRequestDTO) {
         Order order = orderRepository.findById(deliveryRequestDTO.getOrderId()).orElseThrow(
                 () -> {
-            String errorMessage = new Formatter().format("Order ID: %s not found", deliveryRequestDTO.getOrderId().toString()).toString();
-            return new OrderNotFoundException(errorMessage);
-        });
+                    String errorMessage =
+                            new Formatter().format("Order ID: %s not found", deliveryRequestDTO.getOrderId().toString())
+                                    .toString();
+                    return new OrderNotFoundException(errorMessage);
+                });
 
         Delivery delivery = Delivery.of(
                 order,
@@ -44,12 +44,14 @@ public class DeliveryService {
     }
 
     @Transactional
-    public List<DeliveryProjection> getDeliveries(Pageable pageable) { return deliveryRepository.findAllBy(pageable).getContent();}
+    public List<DeliveryProjection> getDeliveries(Pageable pageable) {
+        return deliveryRepository.findAllBy(pageable).getContent();
+    }
 
     @Transactional
     public DeliveryProjection getDeliveryByOrderId(Long orderId) {
         return deliveryRepository.findByOrderId(orderId).orElseThrow(
-                () -> new DeliveryNotFoundException("Delivery ID: %s not found". formatted(orderId))
+                () -> new DeliveryNotFoundException("Delivery ID: %s not found".formatted(orderId))
         );
     }
 
@@ -73,7 +75,6 @@ public class DeliveryService {
         }
         deliveryRepository.save(delivery);
     }
-
 
 
 }
