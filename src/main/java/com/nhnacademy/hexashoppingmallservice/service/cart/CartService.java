@@ -103,7 +103,7 @@ public class CartService {
     }
 
     @Transactional
-    public Cart updateCartItemQuantity(Long cartId, CartRequestDTO cartRequestDto) {
+    public void updateCartItemQuantity(Long cartId, CartRequestDTO cartRequestDto) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new CartNotFoundException("Cart ID: %s not found".formatted(cartId))
         );
@@ -111,10 +111,6 @@ public class CartService {
         cart.setCartAmount(cartRequestDto.getCartAmount());
 
         cartRepository.save(cart);
-
-        return cart;
-
-
     }
 
 

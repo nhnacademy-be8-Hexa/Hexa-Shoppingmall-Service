@@ -56,12 +56,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = MemberController.class)
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class MemberControllerTest {
     @Getter
     @AllArgsConstructor
