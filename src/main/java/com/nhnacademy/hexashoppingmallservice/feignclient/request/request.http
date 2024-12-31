@@ -21,10 +21,16 @@ Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb
 GET http://localhost:8081/api/naverApi?query=한강
 
 ### 알라딘
-GET http://localhost:8081/api/aladinApi?query=한강
+GET http://localhost:8081/api/aladinApi?query=김훈
 
 ### 알라딘 (elasticsearch 저장), 저장전에 도서 상태 확인
 POST http://localhost:8081/api/aladinApi?query=한강&bookStatusId=1
+
+###
+POST http://localhost:8081/api/aladinApi?query=김영하&bookStatusId=1
+
+###
+POST http://localhost:8081/api/aladinApi?query=박경리&bookStatusId=1
 
 ### 전체 도서 목록 조회
 GET http://localhost:8081/api/books?page=0

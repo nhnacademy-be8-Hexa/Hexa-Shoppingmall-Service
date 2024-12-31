@@ -39,7 +39,7 @@ public class ElasticSearchService {
             int size = pageable.getPageSize();
 
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(query -> query
                             .bool(boolQuery -> boolQuery
                                     .should(shouldQuery -> shouldQuery
@@ -47,9 +47,9 @@ public class ElasticSearchService {
                                                     .query(search)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authors.authorName^3",
+                                                            "authorsName^3",
                                                             "bookDescription^3",
-                                                            "tag.tagName^2"
+                                                            "tagsName^2"
                                                     ))
                                             )
 
@@ -90,7 +90,7 @@ public class ElasticSearchService {
             int size = pageable.getPageSize();
 
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .bool(b -> b
                                     .should(shouldQuery -> shouldQuery
@@ -129,7 +129,7 @@ public class ElasticSearchService {
 
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .match(m -> m
                                     .field("authors")
@@ -164,7 +164,7 @@ public class ElasticSearchService {
 
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .bool(b -> b
                                     .should(s -> s
@@ -202,7 +202,7 @@ public class ElasticSearchService {
 
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .bool(b -> b
                                     .should(s -> s
@@ -238,7 +238,7 @@ public class ElasticSearchService {
     public List<Book> searchBooksByIsbn(String isbn) {
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .term(t -> t
                                     .field("isbn.keyword")

@@ -24,12 +24,13 @@ public class Book {
     @Setter
     private String bookDescription;
     @Setter
-    private List<Author> authors;
-    private Publisher publisher;
+    private List<String> authorsName;
     @Setter
-    private BookStatus bookStatus;
+    private List<String> tagsName;
     @Setter
-    private List<Tag> tags;
+    private String publisherName;
+    @Setter
+    private String bookStatus;
     private long bookIsbn;
     private String bookPubDate;
     private int bookOriginPrice;
@@ -47,8 +48,8 @@ public class Book {
     @Builder
     private Book(Long bookId, String bookTitle, String bookDescription, String bookPubDate, Long bookIsbn,
                  int bookOriginPrice, int bookPrice,
-                 Publisher publisher,
-                 BookStatus bookStatus) {
+                 String publisherName,
+                 String bookStatus) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookDescription = bookDescription;
@@ -56,7 +57,7 @@ public class Book {
         this.bookIsbn = bookIsbn;
         this.bookOriginPrice = bookOriginPrice;
         this.bookPrice = bookPrice;
-        this.publisher = publisher;
+        this.publisherName = publisherName;
         this.bookStatus = bookStatus;
 
         this.bookWrappable = false;
@@ -76,21 +77,11 @@ public class Book {
                 .bookOriginPrice(book.getBookOriginPrice())
                 .bookPrice(book.getBookPrice())
                 .bookSellCount(book.getBookSellCount())
-                .publisher(convertToDocumentPublisher(book.getPublisher()))
-                .bookStatus(convertToDocumentBookStatus(book.getBookStatus()))
+                .publisherName(book.getPublisher().getPublisherName())
+                .bookStatus(book.getBookStatus().getBookStatus())
                 .build();
     }
 
-    private static Publisher convertToDocumentPublisher(
-            com.nhnacademy.hexashoppingmallservice.entity.book.Publisher entityPublisher) {
-        return Publisher.of(entityPublisher.getPublisherId(), entityPublisher.getPublisherName());
-    }
-
-    private static BookStatus convertToDocumentBookStatus(
-            com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus entityBookStatus) {
-        return BookStatus.of(entityBookStatus.getBookStatusId(), entityBookStatus.getBookStatus());
-    }
-    
 }
 
 

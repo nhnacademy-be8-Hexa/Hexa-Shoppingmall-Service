@@ -20,11 +20,13 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorReposito
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,7 @@ public class AladinApiService {
     private final BookAuthorRepository bookAuthorRepository;
     private final ElasticSearchRepository elasticSearchRepository;
     private final ObjectMapper objectMapper;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public AladinApiService(AladinApi aladinApi,
@@ -52,7 +55,7 @@ public class AladinApiService {
                             BookStatusRepository bookStatusRepository,
                             AuthorRepository authorRepository,
                             BookAuthorRepository bookAuthorRepository,
-                            ElasticSearchRepository elasticSearchRepository) {
+                            ElasticSearchRepository elasticSearchRepository, CategoryRepository categoryRepository) {
         this.aladinApi = aladinApi;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
@@ -65,6 +68,7 @@ public class AladinApiService {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.categoryRepository = categoryRepository;
     }
 
     public List<Book> searchBooks(String query) {
@@ -85,8 +89,13 @@ public class AladinApiService {
             List<Book> items = books.getItem();
 
             for (Book item : items) {
+                String title = item.getTitle();
                 String description = item.getDescription();
-                
+                String decodedTitle = Jsoup.parse(title).text();
+                String decodedDescription = Jsoup.parse(description).text();
+                item.setTitle(decodedTitle);
+                item.setDescription(decodedDescription);
+
 
                 if (bookRepository.existsByBookIsbn(Long.valueOf(item.getIsbn13()))) {
                     throw new BookIsbnAlreadyExistException("isbn - %s already exist ".formatted(item.getIsbn13()));
@@ -141,6 +150,7 @@ public class AladinApiService {
                         bookAuthorRepository.save(bookAuthor);
                     }
                 }
+
             }
 
             return items;

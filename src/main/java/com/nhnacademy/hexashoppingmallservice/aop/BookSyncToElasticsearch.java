@@ -52,14 +52,10 @@ public class BookSyncToElasticsearch {
                 existingDocument.setBookDescription(book.getBookDescription());
                 existingDocument.setBookPrice(book.getBookPrice());
                 existingDocument.setBookWrappable(book.getBookWrappable());
-                com.nhnacademy.hexashoppingmallservice.document.BookStatus bookStatus =
-                        com.nhnacademy.hexashoppingmallservice.document.BookStatus.of(
-                                book.getBookStatus().getBookStatusId(),
-                                book.getBookStatus().getBookStatus());
                 existingDocument.setBookView(book.getBookView());
                 existingDocument.setBookSellCount(book.getBookSellCount());
                 existingDocument.setBookAmount(book.getBookAmount());
-                existingDocument.setBookStatus(bookStatus);
+                existingDocument.setBookStatus(book.getBookStatus().getBookStatus());
                 elasticsearchRepository.save(existingDocument);
             }
         }
@@ -86,23 +82,22 @@ public class BookSyncToElasticsearch {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0 && args[0] instanceof BookTag bookTag) {
             Tag tag = tagRepository.findById(bookTag.getBookTagId()).orElseThrow();
-            com.nhnacademy.hexashoppingmallservice.document.Tag documentTag =
-                    com.nhnacademy.hexashoppingmallservice.document.Tag.of(tag.getTagId(),
-                            tag.getTagName());
 
             com.nhnacademy.hexashoppingmallservice.document.Book book =
                     elasticsearchRepository.findById(bookTag.getBook().getBookId()).orElseThrow();
-            List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+
+            List<String> currentTags = book.getTagsName();
 
             if (Objects.isNull(currentTags)) {
                 currentTags = new ArrayList<>();
             }
 
             if (currentTags.stream()
-                    .noneMatch(existingTag -> existingTag.getTagName().equals(documentTag.getTagName()))) {
-                currentTags.add(documentTag);
+                    .noneMatch(existingTag -> existingTag.equals(tag.getTagName()))) {
+                currentTags.add(tag.getTagName());
             }
-            book.setTags(currentTags);
+
+            book.setTagsName(currentTags);
             elasticsearchRepository.save(book);
         }
     }
@@ -112,26 +107,22 @@ public class BookSyncToElasticsearch {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0 && args[0] instanceof BookAuthor bookAuthor) {
             Author author = authorRepository.findById(bookAuthor.getAuthor().getAuthorId()).orElseThrow();
-            com.nhnacademy.hexashoppingmallservice.document.Author documentAuthor =
-                    com.nhnacademy.hexashoppingmallservice.document.Author.of(author.getAuthorId(),
-                            author.getAuthorName());
 
             com.nhnacademy.hexashoppingmallservice.document.Book book =
                     elasticsearchRepository.findById(bookAuthor.getBook().getBookId()).orElseThrow();
-            List<com.nhnacademy.hexashoppingmallservice.document.Author> currentAuthors = book.getAuthors();
-
+            List<String> currentAuthors = book.getAuthorsName();
 
             if (Objects.isNull(currentAuthors)) {
                 currentAuthors = new ArrayList<>();
             }
-
-
+            
             if (currentAuthors.stream()
                     .noneMatch(
-                            existingAuthor -> existingAuthor.getAuthorName().equals(documentAuthor.getAuthorName()))) {
-                currentAuthors.add(documentAuthor);
+                            existingAuthor -> existingAuthor.equals(author.getAuthorName()))) {
+                currentAuthors.add(author.getAuthorName());
             }
-            book.setAuthors(currentAuthors);
+
+            book.setAuthorsName(currentAuthors);
             elasticsearchRepository.save(book);
         }
     }
