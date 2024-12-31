@@ -7,6 +7,7 @@ public interface ReviewProjection {
     String getReviewContent();
     BigDecimal getReviewRating();
     MemberProjection getMember();
+    Boolean isReviewIsblocked();
 
     interface MemberProjection {
         String getMemberId();

@@ -103,6 +103,11 @@ class ReviewControllerTest {
             public MemberProjection getMember() {
                 return memberProjection;
             }
+
+            @Override
+            public Boolean isReviewIsblocked() {
+                return false;
+            }
         };
     }
 
@@ -180,6 +185,7 @@ class ReviewControllerTest {
                                 fieldWithPath("[].reviewContent").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("[].reviewRating").type(JsonFieldType.NUMBER).description("리뷰 평점"),
                                 fieldWithPath("[].member").type(JsonFieldType.OBJECT).description("리뷰를 작성한 회원 정보"),
+                                fieldWithPath("[].reviewIsblocked").type(JsonFieldType.BOOLEAN).description("리뷰의 차단 여부"),
                                 fieldWithPath("[].member.memberId").type(JsonFieldType.STRING).description("회원의 ID")
                         )
                 ));
@@ -259,6 +265,7 @@ class ReviewControllerTest {
                                 fieldWithPath("[].reviewContent").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("[].reviewRating").type(JsonFieldType.NUMBER).description("리뷰 평점"),
                                 fieldWithPath("[].member").type(JsonFieldType.OBJECT).description("리뷰를 작성한 회원 정보"),
+                                fieldWithPath("[].reviewIsblocked").type(JsonFieldType.BOOLEAN).description("리뷰의 차단 여부"),
                                 fieldWithPath("[].member.memberId").type(JsonFieldType.STRING).description("회원의 ID")
                         )
                 ));
@@ -329,6 +336,7 @@ class ReviewControllerTest {
                                 fieldWithPath("[].reviewContent").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("[].reviewRating").type(JsonFieldType.NUMBER).description("리뷰 평점"),
                                 fieldWithPath("[].member").type(JsonFieldType.OBJECT).description("리뷰를 작성한 회원 정보"),
+                                fieldWithPath("[].reviewIsblocked").type(JsonFieldType.BOOLEAN).description("리뷰의 차단 여부"),
                                 fieldWithPath("[].member.memberId").type(JsonFieldType.STRING).description("회원의 ID")
                         ),
                         requestHeaders(
