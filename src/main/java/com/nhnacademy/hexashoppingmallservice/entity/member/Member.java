@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Member {
     @Id
-    @Length(max = 20)
+    @Length(max = 50)
     private String memberId;
     @Column(nullable = false)
     @Length(max = 60)

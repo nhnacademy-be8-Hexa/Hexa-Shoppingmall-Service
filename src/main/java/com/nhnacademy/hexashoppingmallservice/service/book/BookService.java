@@ -222,4 +222,19 @@ public class BookService {
         return bookRepository.findAuthorsByBookId(bookId);
     }
 
+    // 도서 총계 조회 (페이징용)
+    @Transactional(readOnly = true)
+    public Long getTotal(String search, List<Long> categoryIds, String publisherName, String authorName) {
+        if (search != null && !search.isEmpty()) {
+            return bookRepository.countByBookTitleContaining(search);
+        } else if (categoryIds != null && !categoryIds.isEmpty()) {
+            return bookRepository.countByCategoryIds(categoryIds);
+        } else if (publisherName != null && !publisherName.isEmpty()) {
+            return bookRepository.countByPublisherName(publisherName);
+        } else if (authorName != null && !authorName.isEmpty()) {
+            return bookRepository.countByAuthorName(authorName);
+        } else {
+            return bookRepository.count();
+        }
+    }
 }
