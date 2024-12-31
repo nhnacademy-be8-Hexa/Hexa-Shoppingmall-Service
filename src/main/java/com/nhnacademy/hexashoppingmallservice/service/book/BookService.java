@@ -212,8 +212,12 @@ public class BookService {
         );
     }
 
+    // 도서 아이디 리스트로 조회
+    public List<Book> getBooksByIds(List<Long> bookIds) {
+        return bookRepository.findAllById(bookIds);
+    }
+
     // 도서 작가 목록 조회
-    @Transactional(readOnly = true)
     public List<Author> getAuthors(Long bookId) {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException("book not found with id: " + bookId);
