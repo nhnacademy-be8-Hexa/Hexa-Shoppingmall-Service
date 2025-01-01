@@ -58,6 +58,13 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    // 특정 회원의 리뷰 총계를 조회
+    @GetMapping("/members/{memberId}/reviews/total")
+    public ResponseEntity<Long> getTotalReviews(@PathVariable String memberId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
+        return ResponseEntity.ok(reviewService.getReviewsFromMemberTotal(memberId));
+    }
+
     /**
      * 특정 리뷰를 수정하는 엔드포인트
      *
@@ -80,6 +87,12 @@ public class ReviewController {
     public ResponseEntity<List<ReviewProjection>> getReviewsFromBook(@PathVariable Long bookId, Pageable pageable) {
         List<ReviewProjection> reviews = reviewService.getReviewsFromBook(pageable, bookId);
         return ResponseEntity.ok(reviews);
+    }
+
+    // 특정 도서의 리뷰 총계
+    @GetMapping("/books/{bookId}/reviews/total")
+    public ResponseEntity<Long> getTotalReviewsFromBook(@PathVariable Long bookId, Pageable pageable) {
+        return ResponseEntity.ok(reviewService.getReviewsFromBookTotal(bookId));
     }
 
     /**
@@ -111,4 +124,22 @@ public class ReviewController {
         reviewService.updateBlocked(reviewId, block);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    /**
+     * 신고 5회 이상의 리뷰 목록 조회
+     *
+     *
+     */
+    @GetMapping("/reviews/highReport")
+    public ResponseEntity<List<ReviewProjection>> getReviewsFromHighReport(Pageable pageable, HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
+        return ResponseEntity.ok(reviewService.getHighlyReportedReviews(pageable));
+    }
+
+    // 신고 5회 이상의 리뷰 목록 조회 페이징을 위한 총계
+    @GetMapping("/reviews/highReport/total")
+    public ResponseEntity<Long> getReviewsFromHighReportTotal() {
+        return ResponseEntity.ok(reviewService.getTotalHighlyReportedReviews());
+    }
+
 }

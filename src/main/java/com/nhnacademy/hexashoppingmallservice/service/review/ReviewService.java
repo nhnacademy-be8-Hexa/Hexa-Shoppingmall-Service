@@ -14,6 +14,7 @@ import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -48,6 +49,7 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    // 멤버에 대한 리뷰 목록 조회
     @Transactional(readOnly = true)
     public List<ReviewProjection> getReviewsFromMember(Pageable pageable, String memberId) {
         if (!memberRepository.existsById(memberId)) {
@@ -57,6 +59,16 @@ public class ReviewService {
         return reviewRepository.findByMemberMemberIdAndReviewIsblockedFalse(memberId, pageable).getContent();
     }
 
+    // 멤버에 대한 리뷰 목록 페이징을 위한 총계
+    @Transactional(readOnly = true)
+    public Long getReviewsFromMemberTotal(String memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException("Member ID %s is not Found!".formatted(memberId));
+        }
+        return reviewRepository.countByMemberMemberIdAndReviewIsblockedFalse(memberId);
+    }
+
+    // 특정 도서에 대한 리뷰 목록
     @Transactional(readOnly = true)
     public List<ReviewProjection> getReviewsFromBook(Pageable pageable, Long bookId) {
         if (!bookRepository.existsById(bookId)) {
@@ -64,6 +76,15 @@ public class ReviewService {
         }
 
         return reviewRepository.findByBookBookIdAndReviewIsblockedFalse(bookId, pageable).getContent();
+    }
+
+    // 특정 도서에 대한 리뷰 페이징을 위한 총계
+    @Transactional(readOnly = true)
+    public Long getReviewsFromBookTotal(Long bookId) {
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException("Book ID %d is not Found!".formatted(bookId));
+        }
+        return reviewRepository.countByBookBookIdAndReviewIsblockedFalse(bookId);
     }
 
     @Transactional
@@ -92,5 +113,22 @@ public class ReviewService {
                 () -> new ReviewNotFoundException("Review ID %d is not Found!".formatted(reviewId))
         );
         review.setReviewIsblocked(blocked);
+    }
+
+
+    // 신고 5회 이상인 리뷰들 반환
+    public List<ReviewProjection> getHighlyReportedReviews(Pageable pageable) {
+        long minimumReportCount = 5;
+        return reviewRepository.findReviewsWithMinReports(minimumReportCount, pageable).getContent();
+    }
+
+    /**
+     * 신고가 5회 이상인 리뷰의 총 개수를 조회합니다.
+     *
+     * @return 신고가 5회 이상인 리뷰의 총 개수
+     */
+    public long getTotalHighlyReportedReviews() {
+        long minimumReportCount = 5;
+        return reviewRepository.countReviewsWithMinReports(minimumReportCount);
     }
 }

@@ -24,11 +24,10 @@ public class Member {
     @Column(nullable = false)
     @Length(max = 20)
     private String memberName;
-    @Column(nullable = false, name = "member_phonenumber", unique = true)
+    @Column(nullable = false, name = "member_phonenumber")
     @Length(max = 11)
     @Setter
     private String memberNumber;
-    @Column(unique = true)
     @Length(max = 320)
     private String memberEmail;
     @Column

@@ -84,6 +84,14 @@ public class BookController {
 
     }
 
+    // 도서 아이디리스트를 이용한 도서 목록 조회
+    @GetMapping("/ids")
+    public List<Book> getBooksByIds(
+            @RequestParam List<Long> bookIds
+    ){
+        return bookService.getBooksByIds(bookIds);
+    }
+
     // 도서 생성
     @PostMapping
     public ResponseEntity<Book> createBook(@RequestBody @Valid BookRequestDTO bookRequestDTO,
