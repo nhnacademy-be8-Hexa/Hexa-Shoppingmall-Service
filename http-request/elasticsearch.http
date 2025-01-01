@@ -1,5 +1,5 @@
 ### 통합 검색
-GET localhost:8081/api/search?search=준비
+GET localhost:8081/api/search?search=
 Accept: application/json
 
 ### 제목으로 검색

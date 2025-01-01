@@ -10,14 +10,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class CustomPageableResolver implements HandlerMethodArgumentResolver {
 
     private static final int DEFAULT_PAGE = 0;
-    private static final int DEFAULT_SIZE = 10;
-    private static final int MAX_SIZE = 10;
+    private static final int DEFAULT_SIZE = 18;
+    private static final int MAX_SIZE = 18;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return Pageable.class.isAssignableFrom(parameter.getParameterType());
     }
-    
+
     @Override
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,

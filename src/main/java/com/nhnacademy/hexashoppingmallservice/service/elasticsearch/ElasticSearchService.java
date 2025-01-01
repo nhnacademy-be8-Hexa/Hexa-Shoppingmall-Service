@@ -56,7 +56,7 @@ public class ElasticSearchService {
                                     )
                                     .should(shouldQuery -> shouldQuery
                                             .term(t -> t
-                                                    .field("isbn.keyword")
+                                                    .field("bookIsbn")
                                                     .value(search)
                                             )
                                     )
@@ -78,6 +78,42 @@ public class ElasticSearchService {
                     .map(Hit::source)
                     .collect(Collectors.toList());
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public long getTotal(String search) {
+        try {
+            SearchRequest searchRequest = new SearchRequest.Builder()
+                    .index("hexa")
+                    .query(query -> query
+                            .bool(boolQuery -> boolQuery
+                                    .should(shouldQuery -> shouldQuery
+                                            .multiMatch(mm -> mm
+                                                    .query(search)
+                                                    .fields(Lists.newArrayList(
+                                                            "bookTitle^10",
+                                                            "authorsName^3",
+                                                            "bookDescription^3",
+                                                            "tagsName^2"
+                                                    ))
+                                            )
+                                    )
+                                    .should(shouldQuery -> shouldQuery
+                                            .term(t -> t
+                                                    .field("bookIsbn")
+                                                    .value(search)
+                                            )
+                                    )
+                            )
+                    )
+                    .size(0)
+                    .build();
+
+            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+
+            return searchResponse.hits().total() != null ? searchResponse.hits().total().value() : 0;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -132,7 +168,7 @@ public class ElasticSearchService {
                     .index("hexa")
                     .query(q -> q
                             .match(m -> m
-                                    .field("authors")
+                                    .field("authorsName")
                                     .query(author)
                             )
                     )
@@ -207,7 +243,7 @@ public class ElasticSearchService {
                             .bool(b -> b
                                     .should(s -> s
                                             .match(m -> m
-                                                    .field("tagName")
+                                                    .field("tagsName")
                                                     .query(tag)
                                             )
                                     )
@@ -257,5 +293,6 @@ public class ElasticSearchService {
             throw new RuntimeException(e);
         }
     }
+
 }
 

@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookAuthor;
+import com.nhnacademy.hexashoppingmallservice.entity.book.BookCategory;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookIsbnAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookStatusNotFoundException;
@@ -20,6 +22,7 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorReposito
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.time.LocalDate;
@@ -47,6 +50,7 @@ public class AladinApiService {
     private final ElasticSearchRepository elasticSearchRepository;
     private final ObjectMapper objectMapper;
     private final CategoryRepository categoryRepository;
+    private final BookCategoryRepository bookCategoryRepository;
 
     @Autowired
     public AladinApiService(AladinApi aladinApi,
@@ -55,7 +59,9 @@ public class AladinApiService {
                             BookStatusRepository bookStatusRepository,
                             AuthorRepository authorRepository,
                             BookAuthorRepository bookAuthorRepository,
-                            ElasticSearchRepository elasticSearchRepository, CategoryRepository categoryRepository) {
+                            ElasticSearchRepository elasticSearchRepository,
+                            CategoryRepository categoryRepository,
+                            BookCategoryRepository bookCategoryRepository) {
         this.aladinApi = aladinApi;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
@@ -69,6 +75,7 @@ public class AladinApiService {
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         this.categoryRepository = categoryRepository;
+        this.bookCategoryRepository = bookCategoryRepository;
     }
 
     public List<Book> searchBooks(String query) {
@@ -87,6 +94,7 @@ public class AladinApiService {
             ResponseEntity<String> response = aladinApi.searchBooks(ttbkey, query, output, version);
             ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
             List<Book> items = books.getItem();
+
 
             for (Book item : items) {
                 String title = item.getTitle();
@@ -139,17 +147,42 @@ public class AladinApiService {
                 Author author;
 
                 for (String authorName : authorNames) {
-                    if (Objects.nonNull(authorName) && !authorName.isBlank()) {
-                        author = authorRepository.findByAuthorName(authorName.trim());
+                    String trimmedAuthorName = authorName.trim();
+                    if (!authorName.isBlank()) {
+                        author = authorRepository.findByAuthorName(trimmedAuthorName);
                         if (Objects.isNull(author)) {
-                            author = Author.of(authorName.trim());
+                            author = Author.of(trimmedAuthorName);
                             authorRepository.save(author);
                         }
-                        System.out.println(author.getAuthorId());
                         BookAuthor bookAuthor = BookAuthor.of(book, author);
                         bookAuthorRepository.save(bookAuthor);
                     }
                 }
+
+                String categoryNames = item.getCategoryName();
+                String[] categories = categoryNames.split(">");
+
+                int maxLevel = Math.min(2, categories.length);
+
+                Category parentCategory = null;
+
+                for (int i = 0; i < maxLevel; i++) {
+                    String categoryName = categories[i].trim();
+                    if (categoryName.isBlank()) {
+                        continue;
+                    }
+                    Category category = categoryRepository.findByCategoryName(categoryName);
+                    if (Objects.isNull(category)) {
+                        category = Category.of(categoryName, parentCategory);
+                        categoryRepository.save(category);
+                    }
+                    BookCategory bookCategory = BookCategory.of(category, book);
+                    bookCategoryRepository.save(bookCategory);
+                    
+                    parentCategory = category;
+
+                }
+
 
             }
 

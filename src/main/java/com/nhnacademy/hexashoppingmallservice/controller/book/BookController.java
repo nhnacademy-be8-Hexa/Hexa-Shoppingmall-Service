@@ -81,7 +81,7 @@ public class BookController {
             return bookService.getBooksByBookPubDate(pageable);
         }
         return bookService.getBooks(pageable);
-    
+
     }
 
     // 도서 생성
@@ -95,7 +95,6 @@ public class BookController {
     // 도서 아이디로 조회
     @GetMapping("/{bookId}")
     public Book getBook(@PathVariable Long bookId) {
-        ;
         return bookService.getBook(bookId);
     }
 

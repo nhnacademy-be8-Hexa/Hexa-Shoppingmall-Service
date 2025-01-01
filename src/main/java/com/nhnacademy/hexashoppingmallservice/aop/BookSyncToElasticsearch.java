@@ -115,7 +115,7 @@ public class BookSyncToElasticsearch {
             if (Objects.isNull(currentAuthors)) {
                 currentAuthors = new ArrayList<>();
             }
-            
+
             if (currentAuthors.stream()
                     .noneMatch(
                             existingAuthor -> existingAuthor.equals(author.getAuthorName()))) {
