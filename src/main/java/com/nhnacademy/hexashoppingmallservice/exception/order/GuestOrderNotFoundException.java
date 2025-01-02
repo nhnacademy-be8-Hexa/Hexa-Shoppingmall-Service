@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.order;
 
-public class GuestOrderNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class GuestOrderNotFoundException extends ResourceNotFoundException {
     public GuestOrderNotFoundException(String message) {
         super(message);
     }

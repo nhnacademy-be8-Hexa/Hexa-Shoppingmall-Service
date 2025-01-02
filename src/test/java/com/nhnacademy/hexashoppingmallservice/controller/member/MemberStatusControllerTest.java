@@ -120,7 +120,7 @@ class MemberStatusControllerTest {
         doThrow(new MemberStatusNotFoundException("1")).when(memberStatusService).deleteMemberStatus(1L);
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/memberStatus/{memberStatusId}", 1L))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test

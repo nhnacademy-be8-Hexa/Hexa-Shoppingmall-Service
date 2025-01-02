@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.address;
 
-public class AddressNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class AddressNotFoundException extends ResourceNotFoundException {
     public AddressNotFoundException(String message) {
         super(message);
     }

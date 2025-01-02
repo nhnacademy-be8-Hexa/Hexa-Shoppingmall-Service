@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.order;
 
-public class ReturnsReasonNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class ReturnsReasonNotFoundException extends ResourceNotFoundException {
     public ReturnsReasonNotFoundException(String message) {
         super(message);
     }
