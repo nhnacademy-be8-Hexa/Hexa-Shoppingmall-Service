@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.address;
 
-public class AddressFullException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceConflictException;
+
+public class AddressFullException extends ResourceConflictException {
     public AddressFullException(String message) {
         super(message);
     }
