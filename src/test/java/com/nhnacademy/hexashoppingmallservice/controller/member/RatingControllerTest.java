@@ -125,7 +125,7 @@ class RatingControllerTest {
         doThrow(new RatingNotFoundException("1")).when(ratingService).deleteRating(1L);
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/ratings/{ratingId}", 1L))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -179,6 +179,6 @@ class RatingControllerTest {
         mockMvc.perform(RestDocumentationRequestBuilders.put("/api/ratings/{ratingId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

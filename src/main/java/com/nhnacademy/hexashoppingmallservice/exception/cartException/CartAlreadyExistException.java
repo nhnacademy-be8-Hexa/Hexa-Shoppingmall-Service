@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.cartException;
 
-public class CartAlreadyExistException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceConflictException;
+
+public class CartAlreadyExistException extends ResourceConflictException {
     public CartAlreadyExistException(String message) {
         super(message);
     }
