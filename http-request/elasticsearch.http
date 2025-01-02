@@ -3,63 +3,32 @@ POST localhost:8081/api/search
 Content-Type: application/json
 
 {
-  "bookId": 1,
-  "bookTitle": "Elasticsearch Basics",
-  "bookDescription": "Learn Elasticsearch from scratch.",
-  "authors": [
-    {
-      "authorId": 101,
-      "authorName": "John Doe"
-    },
-    {
-      "authorId": 102,
-      "authorName": "Jane Smith"
-    }
+  "bookId": 12345,
+  "bookTitle": "Effective Java",
+  "bookDescription": "A comprehensive guide to best practices in Java programming.",
+  "authorsName": [
+    "Joshua Bloch"
   ],
-  "publisher": {
-    "publisherId": 201,
-    "publisherName": "Tech Books Publishing"
-  },
-  "bookStatus": {
-    "statusId": 301,
-    "statusName": "AVAILABLE"
-  },
-  "tags": [
-    {
-      "tagId": 401,
-      "tagName": "search"
-    },
-    {
-      "tagId": 402,
-      "tagName": "elasticsearch"
-    },
-    {
-      "tagId": 403,
-      "tagName": "technology"
-    }
+  "tagsName": [
+    "Java",
+    "Programming",
+    "Best Practices"
   ],
-  "isbn": 9780134438422,
-  "bookPubDate": "2024-01-01",
-  "bookOriginPrice": 30000,
-  "bookPrice": 25000,
-  "bookWrappable": true,
-  "bookView": 120,
-  "bookAmount": 100,
-  "bookSellCount": 50,
-  "categories": [
-    {
-      "categoryId": 501,
-      "categoryName": "Technology"
-    },
-    {
-      "categoryId": 502,
-      "categoryName": "Programming"
-    }
-  ]
+  "publisherName": "Addison-Wesley",
+  "bookStatus": "AVAILABLE",
+  "bookIsbn": 9780134685991,
+  "bookPubDate": "2018-01-01",
+  "bookOriginPrice": 45000,
+  "bookPrice": 40000,
+  "bookWrappable": false,
+  "bookView": 1200,
+  "bookAmount": 50,
+  "bookSellCount": 3000
 }
 
+
 ### 통합 검색
-GET localhost:8081/api/search?search=ea
+GET localhost:8081/api/search?search=한강
 Accept: application/json
 
 ### 제목으로 검색
