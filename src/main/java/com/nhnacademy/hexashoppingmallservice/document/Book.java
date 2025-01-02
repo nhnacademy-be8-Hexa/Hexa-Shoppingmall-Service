@@ -31,17 +31,25 @@ public class Book {
     private String publisherName;
     @Setter
     private String bookStatus;
+
     private long bookIsbn;
+
     private String bookPubDate;
+
     private int bookOriginPrice;
+
     @Setter
     private int bookPrice;
+
     @Setter
     private boolean bookWrappable;
+
     @Setter
     private int bookView;
+
     @Setter
     private int bookAmount;
+
     @Setter
     private long bookSellCount;
 
