@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.member;
 
-public class MemberNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class MemberNotFoundException extends ResourceNotFoundException {
     public MemberNotFoundException(String message) {
         super(message);
     }

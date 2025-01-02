@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.cartException;
 
-public class CartNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class CartNotFoundException extends ResourceNotFoundException {
     public CartNotFoundException(String message) {
         super(message);
     }

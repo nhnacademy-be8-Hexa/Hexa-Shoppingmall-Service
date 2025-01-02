@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.member;
 
-public class MemberAlreadyExistException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceConflictException;
+
+public class MemberAlreadyExistException extends ResourceConflictException {
     public MemberAlreadyExistException(String message) {
         super(message);
     }

@@ -3,6 +3,7 @@ package com.nhnacademy.hexashoppingmallservice.service.address;
 import com.nhnacademy.hexashoppingmallservice.dto.address.AddressRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.address.Address;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
+import com.nhnacademy.hexashoppingmallservice.exception.address.AddressFullException;
 import com.nhnacademy.hexashoppingmallservice.exception.address.AddressNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.address.AddressProjection;
@@ -25,6 +26,9 @@ public class AddressService {
     public void addAddress(AddressRequestDTO addressRequestDTO, String memberId) {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException(memberId);
+        }
+        if (addressRepository.countByMemberMemberId(memberId) >= 10) {
+            throw new AddressFullException("Address is Full!");
         }
         Member member = memberRepository.findById(memberId).get();
         Address address = Address.of(
