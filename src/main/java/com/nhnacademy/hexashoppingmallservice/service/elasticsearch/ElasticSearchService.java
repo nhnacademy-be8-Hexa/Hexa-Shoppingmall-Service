@@ -2,11 +2,13 @@ package com.nhnacademy.hexashoppingmallservice.service.elasticsearch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.google.common.collect.Lists;
 import com.nhnacademy.hexashoppingmallservice.document.Book;
+import com.nhnacademy.hexashoppingmallservice.dto.book.SearchBookDTO;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.io.IOException;
 import java.util.List;
@@ -28,34 +30,30 @@ public class ElasticSearchService {
         return elasticSearchRepository.save(book);
     }
 
-    public List<Book> searchBooksBySellCount(Pageable pageable) {
-        return elasticSearchRepository.findAllByOrderByBookSellCountDesc(pageable);
-    }
-
-    public List<Book> searchBooks(String search, Pageable pageable) {
+    public List<SearchBookDTO> searchBooks(String search, Pageable pageable) {
         try {
             int from = pageable.getPageNumber() * pageable.getPageSize();
             int size = pageable.getPageSize();
 
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(query -> query
                             .bool(boolQuery -> boolQuery
                                     .should(shouldQuery -> shouldQuery
                                             .multiMatch(mm -> mm
                                                     .query(search)
+                                                    .operator(Operator.And)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authors.authorName^3",
-                                                            "bookDescription^3",
-                                                            "tag.tagName^2"
+                                                            "authorsName^3",
+                                                            "tagsName^2"
                                                     ))
                                             )
 
                                     )
                                     .should(shouldQuery -> shouldQuery
                                             .term(t -> t
-                                                    .field("isbn.keyword")
+                                                    .field("bookIsbn")
                                                     .value(search)
                                             )
                                     )
@@ -71,7 +69,8 @@ public class ElasticSearchService {
                     )
                     .build();
 
-            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
 
             return searchResponse.hits().hits().stream()
                     .map(Hit::source)
@@ -82,14 +81,50 @@ public class ElasticSearchService {
         }
     }
 
+    public long getTotal(String search) {
+        try {
+            SearchRequest searchRequest = new SearchRequest.Builder()
+                    .index("hexa")
+                    .query(query -> query
+                            .bool(boolQuery -> boolQuery
+                                    .should(shouldQuery -> shouldQuery
+                                            .multiMatch(mm -> mm
+                                                    .query(search)
+                                                    .fields(Lists.newArrayList(
+                                                            "bookTitle^10",
+                                                            "authorsName^3",
+                                                            "tagsName^2"
+                                                    ))
+                                            )
+                                    )
+                                    .should(shouldQuery -> shouldQuery
+                                            .term(t -> t
+                                                    .field("bookIsbn")
+                                                    .value(search)
+                                            )
+                                    )
+                            )
+                    )
+                    .size(0)
+                    .build();
 
-    public List<Book> searchBooksByTitle(String title, Pageable pageable) {
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
+
+            return searchResponse.hits().total() != null ? searchResponse.hits().total().value() : 0;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public List<SearchBookDTO> searchBooksByTitle(String title, Pageable pageable) {
         try {
             int from = pageable.getPageNumber() * pageable.getPageSize();
             int size = pageable.getPageSize();
 
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .bool(b -> b
                                     .should(shouldQuery -> shouldQuery
@@ -110,7 +145,8 @@ public class ElasticSearchService {
                     )
                     .build();
 
-            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
 
             return searchResponse.hits().hits().stream()
                     .map(Hit::source)
@@ -122,16 +158,16 @@ public class ElasticSearchService {
     }
 
 
-    public List<Book> searchBooksByAuthor(String author, Pageable pageable) {
+    public List<SearchBookDTO> searchBooksByAuthor(String author, Pageable pageable) {
         int from = pageable.getPageNumber() * pageable.getPageSize();
         int size = pageable.getPageSize();
 
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .match(m -> m
-                                    .field("authors")
+                                    .field("authorsName")
                                     .query(author)
                             )
                     )
@@ -146,7 +182,8 @@ public class ElasticSearchService {
                     .build();
 
 
-            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
 
             return searchResponse.hits().hits().stream()
                     .map(Hit::source)
@@ -157,13 +194,13 @@ public class ElasticSearchService {
         }
     }
 
-    public List<Book> searchBooksByDescription(String description, Pageable pageable) {
+    public List<SearchBookDTO> searchBooksByDescription(String description, Pageable pageable) {
         int from = pageable.getPageNumber() * pageable.getPageSize();
         int size = pageable.getPageSize();
 
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .bool(b -> b
                                     .should(s -> s
@@ -184,7 +221,8 @@ public class ElasticSearchService {
                     )
                     .build();
 
-            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
 
             return searchResponse.hits().hits().stream()
                     .map(Hit::source)
@@ -195,18 +233,18 @@ public class ElasticSearchService {
         }
     }
 
-    public List<Book> searchBooksByTag(String tag, Pageable pageable) {
+    public List<SearchBookDTO> searchBooksByTag(String tag, Pageable pageable) {
         int from = pageable.getPageNumber() * pageable.getPageSize();
         int size = pageable.getPageSize();
 
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .bool(b -> b
                                     .should(s -> s
                                             .match(m -> m
-                                                    .field("tagName")
+                                                    .field("tagsName")
                                                     .query(tag)
                                             )
                                     )
@@ -222,7 +260,8 @@ public class ElasticSearchService {
                     )
                     .build();
 
-            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
 
 
             return searchResponse.hits().hits().stream()
@@ -234,19 +273,20 @@ public class ElasticSearchService {
         }
     }
 
-    public List<Book> searchBooksByIsbn(String isbn) {
+    public List<SearchBookDTO> searchBooksByIsbn(String isbn) {
         try {
             SearchRequest searchRequest = new SearchRequest.Builder()
-                    .index("book31")
+                    .index("hexa")
                     .query(q -> q
                             .term(t -> t
-                                    .field("isbn.keyword")
+                                    .field("bookIsbn")
                                     .value(isbn)
                             )
                     )
                     .build();
 
-            SearchResponse<Book> searchResponse = elasticsearchClient.search(searchRequest, Book.class);
+            SearchResponse<SearchBookDTO> searchResponse =
+                    elasticsearchClient.search(searchRequest, SearchBookDTO.class);
 
             return searchResponse.hits().hits().stream()
                     .map(Hit::source)
@@ -256,5 +296,6 @@ public class ElasticSearchService {
             throw new RuntimeException(e);
         }
     }
+
 }
 
