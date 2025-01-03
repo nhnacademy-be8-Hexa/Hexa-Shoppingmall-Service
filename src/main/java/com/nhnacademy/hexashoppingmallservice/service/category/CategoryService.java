@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,7 @@ public class CategoryService {
         Category subCategory = categoryRepository.findById(subCategoryId)
                 .orElseThrow(
                         () -> new CategoryNotFoundException("Category Not Found. ID: %d".formatted(subCategoryId)));
-        
+
         // 2차 카테고리에 부모 설정
         subCategory.setParentCategory(parentCategory);
 
@@ -81,4 +82,15 @@ public class CategoryService {
         );
         bookCategoryRepository.save(bookCategory);
     }
+
+    @Transactional
+    public List<Category> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).getContent();
+    }
+
+    @Transactional
+    public Long getTotal() {
+        return categoryRepository.count();
+    }
+
 }

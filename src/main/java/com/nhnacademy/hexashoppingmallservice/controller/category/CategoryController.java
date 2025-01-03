@@ -1,17 +1,21 @@
 package com.nhnacademy.hexashoppingmallservice.controller.category;
 
 import com.nhnacademy.hexashoppingmallservice.dto.category.CategoryDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.service.category.CategoryService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -38,7 +42,7 @@ public class CategoryController {
     /**
      * 특정 1차 카테고리에 2차 카테고리 삽입 엔드포인트
      *
-     * @param categoryId 부모 1차 카테고리의 ID
+     * @param categoryId    부모 1차 카테고리의 ID
      * @param subCategoryId 2차 카테고리의 ID
      * @return 생성된 2차 카테고리 정보
      */
@@ -64,6 +68,12 @@ public class CategoryController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    @GetMapping("/paged")
+    public ResponseEntity<List<Category>> getAllCategories(Pageable pageable) {
+        List<Category> categories = categoryService.getAllCategories(pageable);
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
     /**
      * 카테고리 삭제 엔드포인트
      *
@@ -75,10 +85,14 @@ public class CategoryController {
 //        categoryService.deleteCategory(categoryId);
 //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-
     @PostMapping("/{categoryId}/books/{bookId}")
     public ResponseEntity<Void> getAllBooksByCategoryId(@PathVariable Long categoryId, @PathVariable Long bookId) {
         categoryService.insertBook(categoryId, bookId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalCategories() {
+        return ResponseEntity.ok(categoryService.getTotal());
     }
 }
