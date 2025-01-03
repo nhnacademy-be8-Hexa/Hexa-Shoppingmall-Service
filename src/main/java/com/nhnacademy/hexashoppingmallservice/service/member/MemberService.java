@@ -5,6 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
+import com.nhnacademy.hexashoppingmallservice.exception.MemberDeletedException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
@@ -108,7 +109,7 @@ public class MemberService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<MemberProjection> searchMembersById(Pageable pageable, String memberId) {
         return memberRepository.findByMemberIdContaining(memberId, pageable).getContent();
     }
@@ -118,7 +119,9 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberNotFoundException(String.format("%s", memberId))
         );
-
+        if(member.getMemberStatus().getStatusId() == 3) {
+            throw new MemberDeletedException(String.format("%s", memberId));
+        }
         member.login();
     }
 
