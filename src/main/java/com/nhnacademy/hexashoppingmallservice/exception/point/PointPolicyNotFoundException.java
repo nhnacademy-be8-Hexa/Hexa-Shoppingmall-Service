@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.point;
 
-public class PointPolicyNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class PointPolicyNotFoundException extends ResourceNotFoundException {
     public PointPolicyNotFoundException(String message) {
         super(message);
     }

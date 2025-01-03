@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.order;
 
-public class OrderNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class OrderNotFoundException extends ResourceNotFoundException {
     public OrderNotFoundException(String message) {
         super(String.valueOf(message));
     }

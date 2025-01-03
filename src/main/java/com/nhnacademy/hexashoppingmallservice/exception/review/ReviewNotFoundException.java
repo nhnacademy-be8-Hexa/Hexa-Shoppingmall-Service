@@ -1,6 +1,8 @@
 package com.nhnacademy.hexashoppingmallservice.exception.review;
 
-public class ReviewNotFoundException extends RuntimeException {
+import com.nhnacademy.hexashoppingmallservice.exception.ResourceNotFoundException;
+
+public class ReviewNotFoundException extends ResourceNotFoundException {
     public ReviewNotFoundException(String message) {
         super(message);
     }

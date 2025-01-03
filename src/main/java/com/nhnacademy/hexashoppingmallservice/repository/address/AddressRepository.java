@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
     Page<AddressProjection> findAllByMemberMemberId(String memberId, Pageable pageable);
+    Long countByMemberMemberId(String memberId);
 }
