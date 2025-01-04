@@ -93,7 +93,9 @@ public class CategoryController {
      * @return 삭제 성공 메시지
      */
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId,
+                                               HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
         categoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
