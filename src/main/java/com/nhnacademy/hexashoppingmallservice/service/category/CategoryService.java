@@ -53,8 +53,13 @@ public class CategoryService {
     @Transactional
     public Category insertCategory(Long categoryId, Long subCategoryId) {
         // 1차 카테고리 조회
-        Category parentCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("Category Not Found. ID: %d".formatted(categoryId)));
+        Category parentCategory = null;
+        if (!categoryId.equals(0L)) {
+            parentCategory = categoryRepository.findById(categoryId)
+                    .orElseThrow(
+                            () -> new CategoryNotFoundException("Category Not Found. ID: %d".formatted(categoryId)));
+        }
+
         Category subCategory = categoryRepository.findById(subCategoryId)
                 .orElseThrow(
                         () -> new CategoryNotFoundException("Category Not Found. ID: %d".formatted(subCategoryId)));
