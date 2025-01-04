@@ -84,13 +84,31 @@ public class CategoryService {
     }
 
     @Transactional
-    public List<Category> getAllCategories(Pageable pageable) {
+    public List<Category> getAllPagedCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).getContent();
+    }
+
+    @Transactional
+    public List<Category> getAllUnPagedCategories() {
+        return categoryRepository.findAll();
     }
 
     @Transactional
     public Long getTotal() {
         return categoryRepository.count();
+    }
+
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("Category Not Found. ID: " + categoryId));
+        List<Category> childCategories = categoryRepository.findByParentCategory(category);
+
+        for (Category childCategory : childCategories) {
+            childCategory.setParentCategory(null);
+        }
+
+        categoryRepository.delete(category);
     }
 
 }

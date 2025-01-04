@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,9 +70,20 @@ public class CategoryController {
     }
 
     @GetMapping("/paged")
-    public ResponseEntity<List<Category>> getAllCategories(Pageable pageable) {
-        List<Category> categories = categoryService.getAllCategories(pageable);
+    public ResponseEntity<List<Category>> getAllPagedCategories(Pageable pageable) {
+        List<Category> categories = categoryService.getAllPagedCategories(pageable);
         return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @GetMapping("/unPaged")
+    public ResponseEntity<List<Category>> getAllUnPagedCategories() {
+        List<Category> categories = categoryService.getAllUnPagedCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotal() {
+        return ResponseEntity.ok(categoryService.getTotal());
     }
 
     /**
@@ -80,19 +92,16 @@ public class CategoryController {
      * @param categoryId 삭제할 카테고리의 ID
      * @return 삭제 성공 메시지
      */
-//    @DeleteMapping("/{categoryId}")
-//    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-//        categoryService.deleteCategory(categoryId);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping("/{categoryId}/books/{bookId}")
     public ResponseEntity<Void> getAllBooksByCategoryId(@PathVariable Long categoryId, @PathVariable Long bookId) {
         categoryService.insertBook(categoryId, bookId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/total")
-    public ResponseEntity<Long> getTotalCategories() {
-        return ResponseEntity.ok(categoryService.getTotal());
-    }
 }
