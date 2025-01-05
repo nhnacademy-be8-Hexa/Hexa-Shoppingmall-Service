@@ -52,8 +52,7 @@ public class MemberController {
     }
 
     @PutMapping("/api/members/{memberId}")
-    public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberUpdateDTO memberUpdateDTO, HttpServletRequest request) {
-        jwtUtils.ensureUserAccess(request, memberId);
+    public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberUpdateDTO memberUpdateDTO) {
         return ResponseEntity.ok(memberService.updateMember(memberId, memberUpdateDTO));
     }
 
