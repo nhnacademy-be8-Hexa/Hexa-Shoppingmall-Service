@@ -125,4 +125,9 @@ public class MemberService {
         member.login();
     }
 
+    @Transactional
+    public void saveAll(List<? extends Member> members) {
+        memberRepository.saveAll(members);
+    }
+
 }
