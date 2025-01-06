@@ -30,6 +30,39 @@ public class ElasticSearchService {
         return elasticSearchRepository.save(book);
     }
 
+
+//    public void removeCategoriesFromBooksByCategoryName(String categoryName) {
+//        try {
+//            Map<String, JsonData> params = new HashMap<>();
+//            params.put("categoryName", JsonData.of(categoryName));
+//
+//            UpdateByQueryRequest updateByQueryRequest = new UpdateByQueryRequest.Builder()
+//                    .index("book31")
+//                    .query(q -> q
+//                            .term(t -> t
+//                                    .field("categoryNames.keyword")
+//                                    .value(v -> v.stringValue(categoryName))
+//                            )
+//                    )
+//                    .script(s -> s
+//                            .inline(i -> i
+//                                    .source("""
+//                                                if (ctx._source.categoryNames != null) {
+//                                                    ctx._source.categoryNames.removeIf(category -> category == params.categoryName);
+//                                                }
+//                                            """)
+//                                    .params(params)
+//                            )
+//                    )
+//                    .build();
+//
+//            elasticsearchClient.updateByQuery(updateByQueryRequest);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     public List<SearchBookDTO> searchBooks(String search, Pageable pageable) {
         try {
             int from = pageable.getPageNumber() * pageable.getPageSize();
@@ -45,8 +78,8 @@ public class ElasticSearchService {
                                                     .operator(Operator.And)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authorsName^3",
-                                                            "tagsName^2"
+                                                            "authors.authorName^3",
+                                                            "tags.tagName^2"
                                                     ))
                                             )
 
@@ -92,8 +125,8 @@ public class ElasticSearchService {
                                                     .query(search)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authorsName^3",
-                                                            "tagsName^2"
+                                                            "authors.authorName^3",
+                                                            "tags.tagName^2"
                                                     ))
                                             )
                                     )
@@ -167,7 +200,7 @@ public class ElasticSearchService {
                     .index("hexa")
                     .query(q -> q
                             .match(m -> m
-                                    .field("authorsName")
+                                    .field("authors.authorName")
                                     .query(author)
                             )
                     )
@@ -244,7 +277,7 @@ public class ElasticSearchService {
                             .bool(b -> b
                                     .should(s -> s
                                             .match(m -> m
-                                                    .field("tagsName")
+                                                    .field("tags.tagName")
                                                     .query(tag)
                                             )
                                     )

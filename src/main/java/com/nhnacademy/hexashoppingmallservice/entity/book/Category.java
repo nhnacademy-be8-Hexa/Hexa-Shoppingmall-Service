@@ -27,7 +27,7 @@ public class Category {
     @Size(max = 20)
     @Column(nullable = false, length = 20)
     private String categoryName;
-    
+
     @ManyToOne
     @JoinColumn(name = "parent_id")
     @Setter

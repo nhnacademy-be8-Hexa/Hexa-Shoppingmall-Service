@@ -4,23 +4,24 @@ import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
-import com.nhnacademy.hexashoppingmallservice.exception.TokenPermissionDenied;
-import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.member.MemberProjection;
-import com.nhnacademy.hexashoppingmallservice.service.book.BookService;
 import com.nhnacademy.hexashoppingmallservice.service.book.LikeService;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,10 +33,11 @@ public class MemberController {
 
     @GetMapping("/api/members")
     public List<MemberProjection> getMembers(
-            @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search, HttpServletRequest request) {
+            @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search,
+            HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         Pageable pageable = PageRequest.of(page, SIZE);
-        if(search != null && !search.isEmpty()) {
+        if (search != null && !search.isEmpty()) {
             return memberService.searchMembersById(pageable, search);
         }
         return memberService.getMembers(pageable);
@@ -52,7 +54,9 @@ public class MemberController {
     }
 
     @PutMapping("/api/members/{memberId}")
-    public ResponseEntity<Member> updateMember(@PathVariable String memberId, @RequestBody @Valid MemberUpdateDTO memberUpdateDTO, HttpServletRequest request) {
+    public ResponseEntity<Member> updateMember(@PathVariable String memberId,
+                                               @RequestBody @Valid MemberUpdateDTO memberUpdateDTO,
+                                               HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         return ResponseEntity.ok(memberService.updateMember(memberId, memberUpdateDTO));
     }
@@ -63,11 +67,11 @@ public class MemberController {
         List<Book> likedBooks = likeService.getBooksLikedByMember(memberId);
         return ResponseEntity.ok(likedBooks); // 200 OK
     }
-  
+
     @PutMapping("/api/members/{memberId}/login")
     public ResponseEntity<Void> loginMember(
             @PathVariable String memberId
-    ){
+    ) {
         memberService.login(memberId);
         return ResponseEntity.ok().build();
     }
