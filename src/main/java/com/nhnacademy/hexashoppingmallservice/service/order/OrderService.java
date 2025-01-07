@@ -39,7 +39,7 @@ public class OrderService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public void createOrder(OrderRequestDTO orderRequestDTO, List<Long> bookIds, List<Integer> amounts, Long couponId) {
+    public Long createOrder(OrderRequestDTO orderRequestDTO, List<Long> bookIds, List<Integer> amounts, Long couponId) {
         String memberId = orderRequestDTO.getMemberId();
         Member member = null;
 
@@ -84,7 +84,7 @@ public class OrderService {
                 orderRequestDTO.getAddressDetail()
         );
 
-        orderRepository.save(order);
+        Long savedId = orderRepository.save(order).getOrderId();
 
         if (bookIds.size() != amounts.size()) {
             throw new ParameterNotEnouthException("Parameters not enough");
@@ -101,6 +101,8 @@ public class OrderService {
             orderBookRepository.save(orderBook);
             index++;
         }
+
+        return savedId;
     }
 
     @Transactional(readOnly = true)

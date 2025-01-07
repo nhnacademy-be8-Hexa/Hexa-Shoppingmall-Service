@@ -106,7 +106,7 @@ class OrderControllerTest {
                             .param("bookIds", "1", "2")
                             .param("amounts", "2", "3")
                             .param("couponId", "1"))
-                    .andExpect(status().isNoContent())
+                    .andExpect(status().isOk())
                     .andDo(document("create-order",
                             preprocessRequest(prettyPrint()),
                             preprocessResponse(prettyPrint()),
