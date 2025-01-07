@@ -37,8 +37,9 @@ public class DeliveryService {
 
         Delivery delivery = Delivery.of(
                 order,
-                deliveryRequestDTO.getDeliveryAmount()
-
+                deliveryRequestDTO.getDeliveryAmount(),
+                deliveryRequestDTO.getDeliveryDate(),
+                deliveryRequestDTO.getDeliveryReleaseDate()
         );
         return deliveryRepository.save(delivery);
     }

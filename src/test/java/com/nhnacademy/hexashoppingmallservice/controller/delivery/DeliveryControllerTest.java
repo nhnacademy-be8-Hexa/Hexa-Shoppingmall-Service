@@ -106,7 +106,7 @@ class DeliveryControllerTest {
         orderIdField.set(order, 1L);
 
         deliveryRequestDTO = new DeliveryRequestDTO(1L, 1000, LocalDateTime.now(), LocalDateTime.now().plusDays(3));
-        Delivery delivery = Delivery.of(order, deliveryRequestDTO.getDeliveryAmount());
+        Delivery delivery = Delivery.of(order, deliveryRequestDTO.getDeliveryAmount(), deliveryRequestDTO.getDeliveryDate(), deliveryRequestDTO.getDeliveryReleaseDate());
         Field deliveryIdField = delivery.getClass().getDeclaredField("orderId");
         deliveryIdField.setAccessible(true);
         deliveryIdField.set(delivery, order.getOrderId());

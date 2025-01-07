@@ -32,8 +32,7 @@ public class PointDetailsController {
     @PostMapping
     public ResponseEntity<PointDetails> createPointDetails(
             @PathVariable String memberId,
-            @RequestBody @Valid CreatePointDetailDTO pointDetails , HttpServletRequest request) {
-        jwtUtils.ensureUserAccess(request, memberId);
+            @RequestBody @Valid CreatePointDetailDTO pointDetails) {
         PointDetails createdPointDetails = pointDetailsService.createPointDetails(pointDetails, memberId);
         return new ResponseEntity<>(createdPointDetails, HttpStatus.CREATED);
     }
