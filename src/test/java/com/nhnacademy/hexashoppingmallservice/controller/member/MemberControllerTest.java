@@ -139,7 +139,8 @@ class MemberControllerTest {
                         LocalDateTime.of(2024, 12, 15, 12, 30), Role.ADMIN, rating, memberStatus)
         );
 
-        given(memberService.searchMembersById(any(Pageable.class), eq(search))).willReturn(mockMembers);
+        // Mock 설정
+        given(memberService.getMembers(any(Pageable.class), eq(search))).willReturn(mockMembers);
 
         mockMvc.perform(get("/api/members")
                         .param("page", "0")
@@ -148,7 +149,7 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(mockMembers.size()))
                 .andExpect(jsonPath("$[0].memberId").value("test1"))
-                .andExpect(jsonPath("$[0].memberName").value("John Doe"))
+                .andExpect(jsonPath("$[1].memberId").value("test2"))
                 .andDo(document("get-members-with-search",
                         preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                         queryParameters(
@@ -174,8 +175,9 @@ class MemberControllerTest {
                         )
                 ));
 
-        verify(memberService).searchMembersById(any(Pageable.class), eq(search));
+        verify(memberService).getMembers(any(Pageable.class), eq(search));
     }
+
 
 
     @Test
