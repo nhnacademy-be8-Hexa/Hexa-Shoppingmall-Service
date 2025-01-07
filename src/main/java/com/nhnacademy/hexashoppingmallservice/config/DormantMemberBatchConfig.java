@@ -71,7 +71,7 @@ public class DormantMemberBatchConfig {
         return new JpaPagingItemReaderBuilder<Member>()
                 .name("memberItemReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("SELECT m FROM Member m WHERE m.memberLastLoginAt <= :cutoffDate AND m.memberStatus.statusId = :statusId")
+                .queryString("SELECT m FROM Member m JOIN FETCH m.memberStatus WHERE m.memberLastLoginAt <= :cutoffDate AND m.memberStatus.statusId = :statusId")
                 .parameterValues(parameters)
                 .pageSize(100)
                 .build();
@@ -85,7 +85,7 @@ public class DormantMemberBatchConfig {
                     .orElseThrow(() -> new IllegalStateException("DORMANT status not found"));
 
             member.setMemberStatus(dormantStatus);
-            log.info("Member " + member.getMemberId() + " status updated to DORMANT");
+            log.info("Member {} status updated to DORMANT", member.getMemberId());
             return member;
         };
     }
