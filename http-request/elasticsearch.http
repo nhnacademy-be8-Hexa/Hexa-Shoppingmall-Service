@@ -1,34 +1,6 @@
-###
-POST localhost:8081/api/search
-Content-Type: application/json
-
-{
-  "bookId": 12345,
-  "bookTitle": "Effective Java",
-  "bookDescription": "A comprehensive guide to best practices in Java programming.",
-  "authorsName": [
-    "Joshua Bloch"
-  ],
-  "tagsName": [
-    "Java",
-    "Programming",
-    "Best Practices"
-  ],
-  "publisherName": "Addison-Wesley",
-  "bookStatus": "AVAILABLE",
-  "bookIsbn": 9780134685991,
-  "bookPubDate": "2018-01-01",
-  "bookOriginPrice": 45000,
-  "bookPrice": 40000,
-  "bookWrappable": false,
-  "bookView": 1200,
-  "bookAmount": 50,
-  "bookSellCount": 3000
-}
-
 
 ### 통합 검색
-GET localhost:8081/api/search?search=한강
+GET localhost:8081/api/search?search=남주인공
 Accept: application/json
 
 ### 제목으로 검색
