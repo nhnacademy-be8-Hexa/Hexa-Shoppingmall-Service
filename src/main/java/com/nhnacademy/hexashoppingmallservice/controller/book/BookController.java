@@ -122,7 +122,6 @@ public class BookController {
     @PutMapping("/{bookId}")
     public Book updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateRequestDTO bookRequestDTO,
                            HttpServletRequest request) {
-        jwtUtils.ensureAdmin(request);
         return bookService.updateBook(bookId, bookRequestDTO);
     }
 
