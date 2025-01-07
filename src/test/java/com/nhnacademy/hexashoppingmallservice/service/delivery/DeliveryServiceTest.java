@@ -73,7 +73,7 @@ class DeliveryServiceTest {
         authorIdField.set(order, 1L);
 
         deliveryRequestDTO = new DeliveryRequestDTO(1L, 2, LocalDateTime.now(), LocalDateTime.now().plusDays(3));
-        delivery = Delivery.of(order, deliveryRequestDTO.getDeliveryAmount());
+        delivery = Delivery.of(order, deliveryRequestDTO.getDeliveryAmount(), deliveryRequestDTO.getDeliveryDate(), deliveryRequestDTO.getDeliveryReleaseDate() );
         pageable = PageRequest.of(0, 10);
     }
 
