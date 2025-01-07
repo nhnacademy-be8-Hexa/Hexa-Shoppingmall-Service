@@ -31,38 +31,6 @@ public class ElasticSearchService {
     }
 
 
-//    public void removeCategoriesFromBooksByCategoryName(String categoryName) {
-//        try {
-//            Map<String, JsonData> params = new HashMap<>();
-//            params.put("categoryName", JsonData.of(categoryName));
-//
-//            UpdateByQueryRequest updateByQueryRequest = new UpdateByQueryRequest.Builder()
-//                    .index("book31")
-//                    .query(q -> q
-//                            .term(t -> t
-//                                    .field("categoryNames.keyword")
-//                                    .value(v -> v.stringValue(categoryName))
-//                            )
-//                    )
-//                    .script(s -> s
-//                            .inline(i -> i
-//                                    .source("""
-//                                                if (ctx._source.categoryNames != null) {
-//                                                    ctx._source.categoryNames.removeIf(category -> category == params.categoryName);
-//                                                }
-//                                            """)
-//                                    .params(params)
-//                            )
-//                    )
-//                    .build();
-//
-//            elasticsearchClient.updateByQuery(updateByQueryRequest);
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     public List<SearchBookDTO> searchBooks(String search, Pageable pageable) {
         try {
             int from = pageable.getPageNumber() * pageable.getPageSize();

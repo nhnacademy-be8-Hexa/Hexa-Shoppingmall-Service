@@ -58,7 +58,7 @@ public class BookSyncToElasticsearch {
                 Publisher publisher = publisherRepository.findById(book.getPublisher().getPublisherId()).orElseThrow();
                 BookStatus bookStatus =
                         bookStatusRepository.findById(book.getBookStatus().getBookStatusId()).orElseThrow();
-
+                
                 com.nhnacademy.hexashoppingmallservice.document.Publisher documentPublisher =
                         com.nhnacademy.hexashoppingmallservice.document.Publisher.of(
                                 publisher.getPublisherId(), publisher.getPublisherName()
