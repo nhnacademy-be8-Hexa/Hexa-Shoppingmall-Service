@@ -29,10 +29,12 @@ public class Delivery {
     @Setter
     private LocalDateTime deliveryReleaseDate;
 
-    public static Delivery of(Order order, Integer deliveryAmount) {
+    public static Delivery of(Order order, Integer deliveryAmount, LocalDateTime deliveryDate, LocalDateTime deliveryReleaseDate) {
         return Delivery.builder()
                 .order(order)
                 .deliveryAmount(deliveryAmount)
+                .deliveryDate(deliveryDate)
+                .deliveryReleaseDate(deliveryReleaseDate)
                 .build();
     }
 }
