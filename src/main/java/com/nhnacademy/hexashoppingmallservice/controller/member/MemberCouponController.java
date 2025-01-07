@@ -44,7 +44,7 @@ public class MemberCouponController {
     public ResponseEntity<Void> createMemberCoupon(
             @PathVariable String memberId,
             @PathVariable Long couponId, HttpServletRequest request) {
-        jwtUtils.ensureAdmin(request);
+        //jwtUtils.ensureAdmin(request);
         memberCouponService.createMemberCoupon(couponId, memberId);
         return ResponseEntity.noContent().build();
     }
