@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 ### 태그 삭제
-DELETE localhost:8081/api/admin/tags/3
+DELETE localhost:8081/api/admin/tags/1
 
 
 
@@ -45,7 +45,7 @@ GET localhost:8081/api/books/1/tags
 GET localhost:8081/api/tags/1/books
 
 ### 1번 도서에 1번 태그 추가
-POST localhost:8081/api/admin/books/1/tags/1
+POST localhost:8081/api/admin/books/2/tags/3
 
 ### 1번 도서에 1번 태그 삭제
 DELETE localhost:8081/api/admin/books/1/tags/1

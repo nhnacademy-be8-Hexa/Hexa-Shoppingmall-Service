@@ -24,16 +24,16 @@ public class Book {
     @Setter
     private String bookDescription;
     @Setter
-    private List<String> authorsName;
+    private List<Tag> tags;
     @Setter
-    private List<String> tagsName;
+    private List<Author> authors;
     @Setter
-    private String publisherName;
+    private Publisher publisher;
     @Setter
-    private String bookStatus;
+    private BookStatus bookStatus;
 
     private long bookIsbn;
-
+    
     private String bookPubDate;
 
     private int bookOriginPrice;
@@ -56,8 +56,8 @@ public class Book {
     @Builder
     private Book(Long bookId, String bookTitle, String bookDescription, String bookPubDate, Long bookIsbn,
                  int bookOriginPrice, int bookPrice,
-                 String publisherName,
-                 String bookStatus) {
+                 Publisher publihser,
+                 BookStatus bookstatus) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookDescription = bookDescription;
@@ -65,8 +65,8 @@ public class Book {
         this.bookIsbn = bookIsbn;
         this.bookOriginPrice = bookOriginPrice;
         this.bookPrice = bookPrice;
-        this.publisherName = publisherName;
-        this.bookStatus = bookStatus;
+        this.publisher = publihser;
+        this.bookStatus = bookstatus;
 
         this.bookWrappable = false;
         this.bookView = 0;
@@ -75,7 +75,9 @@ public class Book {
     }
 
 
-    public static Book of(com.nhnacademy.hexashoppingmallservice.entity.book.Book book) {
+    public static Book of(com.nhnacademy.hexashoppingmallservice.entity.book.Book book,
+                          BookStatus bookStatus,
+                          Publisher publisher) {
         return Book.builder()
                 .bookId(book.getBookId())
                 .bookTitle(book.getBookTitle())
@@ -85,8 +87,8 @@ public class Book {
                 .bookOriginPrice(book.getBookOriginPrice())
                 .bookPrice(book.getBookPrice())
                 .bookSellCount(book.getBookSellCount())
-                .publisherName(book.getPublisher().getPublisherName())
-                .bookStatus(book.getBookStatus().getBookStatus())
+                .publisher(publisher)
+                .bookStatus(bookStatus)
                 .build();
     }
 

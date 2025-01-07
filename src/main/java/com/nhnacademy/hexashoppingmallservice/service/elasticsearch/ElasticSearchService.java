@@ -30,6 +30,7 @@ public class ElasticSearchService {
         return elasticSearchRepository.save(book);
     }
 
+
     public List<SearchBookDTO> searchBooks(String search, Pageable pageable) {
         try {
             int from = pageable.getPageNumber() * pageable.getPageSize();
@@ -45,8 +46,8 @@ public class ElasticSearchService {
                                                     .operator(Operator.And)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authorsName^3",
-                                                            "tagsName^2"
+                                                            "authors.authorName^3",
+                                                            "tags.tagName^2"
                                                     ))
                                             )
 
@@ -92,8 +93,8 @@ public class ElasticSearchService {
                                                     .query(search)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
-                                                            "authorsName^3",
-                                                            "tagsName^2"
+                                                            "authors.authorName^3",
+                                                            "tags.tagName^2"
                                                     ))
                                             )
                                     )
@@ -167,7 +168,7 @@ public class ElasticSearchService {
                     .index("hexa")
                     .query(q -> q
                             .match(m -> m
-                                    .field("authorsName")
+                                    .field("authors.authorName")
                                     .query(author)
                             )
                     )
@@ -244,7 +245,7 @@ public class ElasticSearchService {
                             .bool(b -> b
                                     .should(s -> s
                                             .match(m -> m
-                                                    .field("tagsName")
+                                                    .field("tags.tagName")
                                                     .query(tag)
                                             )
                                     )

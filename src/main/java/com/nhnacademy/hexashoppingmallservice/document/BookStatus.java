@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookStatus {
     private Long bookStatusId;
-    private String bookStatusName;
+    private String bookStatus;
 
     public static BookStatus of(Long bookStatusId, String bookStatus) {
         return BookStatus.builder()
                 .bookStatusId(bookStatusId)
-                .bookStatusName(bookStatus)
+                .bookStatus(bookStatus)
                 .build();
     }
 }

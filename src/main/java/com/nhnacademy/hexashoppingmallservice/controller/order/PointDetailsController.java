@@ -49,6 +49,9 @@ public class PointDetailsController {
             @PathVariable String memberId , HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
         Long sum = pointDetailsService.sumPoint(memberId);
+        if(sum == null) {
+            sum = 0L;
+        }
         return ResponseEntity.ok(sum);
     }
 
