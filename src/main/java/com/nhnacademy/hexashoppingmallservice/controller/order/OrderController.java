@@ -22,12 +22,12 @@ public class OrderController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/api/orders")
-    public ResponseEntity<Void> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO,
+    public ResponseEntity<Long> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO,
                                              @RequestParam List<Long> bookIds,
                                              @RequestParam List<Integer> amounts,
                                              @RequestParam(required = false) Long couponId) {
-        orderService.createOrder(orderRequestDTO, bookIds, amounts, couponId);
-        return ResponseEntity.noContent().build();
+        Long id = orderService.createOrder(orderRequestDTO, bookIds, amounts, couponId);
+        return ResponseEntity.ok(id);
     }
 
     @GetMapping("/api/orders")
