@@ -32,12 +32,22 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             """)
     Page<Book> findBooksByAuthorNameLike(@Param("authorName") String authorName, Pageable pageable);
 
+    // bookName 필드를 기준으로 내림차순 정렬된 모든 책 목록 반환
+    Page<Book> findAllByOrderByBookTitleDesc(Pageable pageable);
+
+    // bookName 필드를 기준으로 오름차순 정렬된 모든 책 목록 반환
+    Page<Book> findAllByOrderByBookTitleAsc(Pageable pageable);
+
 
     // 도서 목록 - 조회수 (내림차순)
     Page<Book> findByOrderByBookViewDesc(Pageable pageable);
 
     // 도서 목록 - 베스트셀러 (내림차순)
     Page<Book> findByOrderByBookSellCountDesc(Pageable pageable);
+
+    // 리뷰 순 기준으로 도서를 내림차순 정렬
+    @Query("SELECT b FROM Book b LEFT JOIN Review r ON b = r.book GROUP BY b ORDER BY COUNT(r) DESC")
+    Page<Book> findAllOrderByReviewCountDesc(Pageable pageable);
 
     // 도서 목록 - 카테고리 별
     @Query("""

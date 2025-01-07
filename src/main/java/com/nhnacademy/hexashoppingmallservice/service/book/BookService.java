@@ -116,6 +116,21 @@ public class BookService {
         return bookRepository.findAllByOrderByBookPubDateDesc(pageable).getContent();
     }
 
+    // 도서 목록 - 도서명 오름차순
+    public List<Book> getBooksByNameAsc(Pageable pageable) {
+        return bookRepository.findAllByOrderByBookPubDateDesc(pageable).getContent();
+    }
+
+    // 도서 목록 - 도서명 내림차순
+    public List<Book> getBooksByNameDesc(Pageable pageable) {
+        return bookRepository.findAllByOrderByBookTitleDesc(pageable).getContent();
+    }
+
+    // 도서 목록 - 리뷰순으로 내림찯순
+    public List<Book> getBooksByIsbnAsc(Pageable pageable) {
+        return bookRepository.findAllOrderByReviewCountDesc(pageable).getContent();
+    }
+
     // 도서 수정
     @Transactional
     public Book updateBook(Long bookId, BookUpdateRequestDTO bookRequestDTO) {
