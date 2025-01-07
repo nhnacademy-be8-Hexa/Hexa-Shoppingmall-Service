@@ -385,6 +385,8 @@ class OrderServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(mock(Book.class)));
             when(bookRepository.findById(999L)).thenReturn(Optional.empty());
 
+            when(orderRepository.save(any(Order.class))).thenReturn(order);
+
             // Act & Assert
             BookNotFoundException exception = assertThrows(BookNotFoundException.class, () -> {
                 orderService.createOrder(dto, bookIds, amounts, couponId);
