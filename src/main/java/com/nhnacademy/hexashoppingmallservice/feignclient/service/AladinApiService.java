@@ -47,7 +47,6 @@ public class AladinApiService {
     private final BookStatusRepository bookStatusRepository;
     private final AuthorRepository authorRepository;
     private final BookAuthorRepository bookAuthorRepository;
-    private final ElasticSearchRepository elasticSearchRepository;
     private final ObjectMapper objectMapper;
     private final CategoryRepository categoryRepository;
     private final BookCategoryRepository bookCategoryRepository;
@@ -68,7 +67,6 @@ public class AladinApiService {
         this.bookStatusRepository = bookStatusRepository;
         this.authorRepository = authorRepository;
         this.bookAuthorRepository = bookAuthorRepository;
-        this.elasticSearchRepository = elasticSearchRepository;
         this.objectMapper = new ObjectMapper()
                 .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -178,7 +176,7 @@ public class AladinApiService {
                     }
                     BookCategory bookCategory = BookCategory.of(category, book);
                     bookCategoryRepository.save(bookCategory);
-                    
+
                     parentCategory = category;
 
                 }

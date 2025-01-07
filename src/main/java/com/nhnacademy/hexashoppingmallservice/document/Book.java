@@ -33,7 +33,7 @@ public class Book {
     private BookStatus bookStatus;
 
     private long bookIsbn;
-
+    
     private String bookPubDate;
 
     private int bookOriginPrice;
