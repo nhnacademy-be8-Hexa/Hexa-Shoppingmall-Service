@@ -62,8 +62,11 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    @Transactional
-    public List<MemberProjection> getMembers(Pageable pageable) {
+    @Transactional(readOnly = true)
+    public List<MemberProjection> getMembers(Pageable pageable, String search) {
+        if (search != null && !search.isEmpty()) {
+            return memberRepository.findByMemberIdContaining(search, pageable).getContent();
+        }
         return memberRepository.findAllBy(pageable).getContent();
     }
 
@@ -128,6 +131,15 @@ public class MemberService {
     @Transactional
     public void saveAll(List<? extends Member> members) {
         memberRepository.saveAll(members);
+    }
+
+
+    // 검색 조건에 따른 회원 수 조회
+    public long countBySearch(String search) {
+        if (search != null && !search.isEmpty()) {
+            return memberRepository.countByMemberIdContaining(search);
+        }
+        return memberRepository.count();
     }
 
 }
