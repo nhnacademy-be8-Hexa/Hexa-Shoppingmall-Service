@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.controller.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.order.GuestOrderRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.dto.order.GuestOrderValidateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.GuestOrder;
 import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.GuestOrderService;
@@ -38,6 +39,13 @@ public class GuestOrderController {
     @PutMapping
     public ResponseEntity<GuestOrder> updateGuestOrder(@Valid @RequestBody GuestOrderRequestDTO guestOrderRequestDTOs) {
         return ResponseEntity.ok(guestOrderService.updateGuestOrder(guestOrderRequestDTOs));
+    }
+
+    // orderId와 guestOrderPassword로 존재 여부 확인
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateGuestOrder(@Valid @RequestBody GuestOrderValidateRequestDTO guestOrderValidateRequestDTO) {
+        String password = guestOrderService.getGuestOrderPassword(guestOrderValidateRequestDTO.getOrderId(), guestOrderValidateRequestDTO.getGuestOrderPassword());
+        return ResponseEntity.ok(password);
     }
 
 
