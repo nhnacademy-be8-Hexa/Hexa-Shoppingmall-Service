@@ -125,4 +125,9 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<List<Category>> getAllCategoriesByBookId(@PathVariable Long bookId) {
+        return ResponseEntity.ok(categoryService.getAllCategoriesByBookId(bookId));
+    }
+
 }

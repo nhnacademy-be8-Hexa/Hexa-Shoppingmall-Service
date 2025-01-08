@@ -8,6 +8,8 @@ import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
+
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -62,4 +64,23 @@ public class OrderController {
     public ResponseEntity<Long> getOrderAmount(@PathVariable Long orderId, @PathVariable Long bookId) {
         return ResponseEntity.ok(orderService.getAmount(orderId, bookId));
     }
+
+    // 특정 도서가 특정 멤버가 주문한 사항에 존재하는지를 조회
+    @GetMapping("/api/members/{memberId}/orders/books/{bookId}")
+    public ResponseEntity<Boolean> getCheckOrderBook(@PathVariable String memberId, @PathVariable Long bookId) {
+        return ResponseEntity.ok(orderService.checkOrderBook(memberId, bookId));
+    }
+
+    // orderId 랑 memberId 맞는지 확인하는 메서드
+    @GetMapping("api/orders/{orderId}/{memberId}")
+    public ResponseEntity<Boolean> existsOrderIdAndMember_MemberId(@PathVariable Long orderId, @PathVariable String memberId){
+        return ResponseEntity.ok(orderService.existsOrderIdAndMember_MemberId(orderId,memberId));
+    }
+
+    @GetMapping("api/orders/count/{memberId}")
+    public ResponseEntity<Long> countAllByMember_MemberId(@PathVariable String memberId){
+        Long result = orderService.countAllByMember_MemberId(memberId);
+        return ResponseEntity.ok(result);
+    }
+
 }

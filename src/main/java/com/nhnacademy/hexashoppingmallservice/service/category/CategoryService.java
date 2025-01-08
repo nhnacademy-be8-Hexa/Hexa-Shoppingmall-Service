@@ -167,4 +167,16 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
+    @Transactional(readOnly = true)
+    public List<Category> getAllCategoriesByBookId(Long bookId) {
+        if(!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException("Book Not Found. ID: " + bookId);
+        }
+
+        List<BookCategory> bookCategories = bookCategoryRepository.findByBook_BookId(bookId);
+        return bookCategories.stream()
+                .map(BookCategory::getCategory)
+                .toList();
+    }
+
 }

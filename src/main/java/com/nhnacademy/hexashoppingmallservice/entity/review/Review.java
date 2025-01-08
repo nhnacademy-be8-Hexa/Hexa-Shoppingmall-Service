@@ -30,9 +30,9 @@ public class Review {
     private BigDecimal reviewRating;
 
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, name = "review_isblocked")
     @NotNull
-    private boolean reviewIsblocked;
+    private boolean reviewIsBlocked;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
