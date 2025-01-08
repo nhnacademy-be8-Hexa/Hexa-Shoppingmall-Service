@@ -5,6 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.GuestOrder;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.exception.order.GuestOrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
+import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderPasswordProjection;
 import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.order.GuestOrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GuestOrderService {
     private final OrderRepository orderRepository;
     private final GuestOrderRepository guestOrderRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public GuestOrder createGuestOrder(GuestOrderRequestDTO guestOrderRequestDTO) {
@@ -68,4 +71,11 @@ public class GuestOrderService {
         }
     }
 
+    public String getGuestOrderPassword(Long orderId, String guestOrderPassword) {
+        if(guestOrderRepository.existsByOrderId(orderId)){
+            GuestOrderPasswordProjection projection = guestOrderRepository.findGuestOrderPasswordByOrderId(orderId).orElse(null);
+            return projection.getGuestOrderPassword();
+        }
+        return "";
+    }
 }
