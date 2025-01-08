@@ -187,4 +187,9 @@ public class OrderService {
     public Long countAllByMember_MemberId(String memberId) {
         return orderRepository.countAllByMember_MemberId(memberId);
     }
+
+    @Transactional(readOnly = true)
+    public Long countAllOrders() {
+        return orderRepository.count();
+    }
 }

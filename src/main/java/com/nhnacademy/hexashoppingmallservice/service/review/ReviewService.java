@@ -115,8 +115,21 @@ public class ReviewService {
         review.setReviewIsBlocked(blocked);
     }
 
+    @Transactional(readOnly = true)
+    public boolean checkReviews(String memberId, Long bookId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException("Member ID %s is not Found!".formatted(memberId));
+        }
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException("Book ID %d is not Found!".formatted(bookId));
+        }
+
+        return reviewRepository.existsByMemberMemberIdAndBookBookId(memberId, bookId);
+    }
+
 
     // 신고 5회 이상인 리뷰들 반환
+    @Transactional(readOnly = true)
     public List<ReviewProjection> getHighlyReportedReviews(Pageable pageable) {
         long minimumReportCount = 5;
         return reviewRepository.findReviewsWithMinReports(minimumReportCount, pageable).getContent();

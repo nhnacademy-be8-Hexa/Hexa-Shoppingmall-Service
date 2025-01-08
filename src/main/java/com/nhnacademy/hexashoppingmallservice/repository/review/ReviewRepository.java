@@ -36,4 +36,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT COUNT(r) FROM Review r " +
             "WHERE (SELECT COUNT(mr) FROM MemberReport mr WHERE mr.review = r) >= :reportCount")
     long countReviewsWithMinReports(@Param("reportCount") long reportCount);
+
+    boolean existsByMemberMemberIdAndBookBookId(String memberId, Long bookId);
 }
