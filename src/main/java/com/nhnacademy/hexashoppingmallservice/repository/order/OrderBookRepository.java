@@ -8,4 +8,5 @@ import org.springframework.data.repository.query.Param;
 public interface OrderBookRepository extends JpaRepository<OrderBook, Long> {
     @Query("SELECT SUM(ob.orderBookAmount) FROM OrderBook ob WHERE ob.order.orderId = :orderId AND ob.book.bookId = :bookId")
     Long sumOrderBookAmountByOrderIdAndBookId(@Param("orderId") Long orderId, @Param("bookId") Long bookId);
+    boolean existsByOrder_Member_MemberIdAndBook_BookId(String memberId, Long bookId);
 }
