@@ -167,6 +167,12 @@ public class OrderService {
         }
     }
 
+    // 특정 도서에 대해 주문이 존재하는지 조회
+    @Transactional(readOnly = true)
+    public Boolean checkOrderBook(String memberId, Long bookId) {
+        return orderBookRepository.existsByOrder_Member_MemberIdAndBook_BookId(memberId, bookId);
+    }
+
     private <T> void updateIfNotNull(T value, Consumer<T> updater) {
         if (value != null) {
             updater.accept(value);
