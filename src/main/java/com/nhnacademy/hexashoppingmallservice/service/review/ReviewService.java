@@ -56,7 +56,7 @@ public class ReviewService {
             throw new MemberNotFoundException("Member ID %s is not Found!".formatted(memberId));
         }
 
-        return reviewRepository.findByMemberMemberIdAndReviewIsblockedFalse(memberId, pageable).getContent();
+        return reviewRepository.findByMemberMemberIdAndReviewIsBlockedFalse(memberId, pageable).getContent();
     }
 
     // 멤버에 대한 리뷰 목록 페이징을 위한 총계
@@ -65,7 +65,7 @@ public class ReviewService {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException("Member ID %s is not Found!".formatted(memberId));
         }
-        return reviewRepository.countByMemberMemberIdAndReviewIsblockedFalse(memberId);
+        return reviewRepository.countByMemberMemberIdAndReviewIsBlockedFalse(memberId);
     }
 
     // 특정 도서에 대한 리뷰 목록
@@ -75,7 +75,7 @@ public class ReviewService {
             throw new BookNotFoundException("Book ID %d is not Found!".formatted(bookId));
         }
 
-        return reviewRepository.findByBookBookIdAndReviewIsblockedFalse(bookId, pageable).getContent();
+        return reviewRepository.findByBookBookIdAndReviewIsBlockedFalse(bookId, pageable).getContent();
     }
 
     // 특정 도서에 대한 리뷰 페이징을 위한 총계
@@ -84,7 +84,7 @@ public class ReviewService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException("Book ID %d is not Found!".formatted(bookId));
         }
-        return reviewRepository.countByBookBookIdAndReviewIsblockedFalse(bookId);
+        return reviewRepository.countByBookBookIdAndReviewIsBlockedFalse(bookId);
     }
 
     @Transactional
@@ -104,7 +104,7 @@ public class ReviewService {
     }
     @Transactional(readOnly = true)
     public List<ReviewProjection> getReviewsIsBlocked(Pageable pageable) {
-        return reviewRepository.findAllByReviewIsblockedTrue(pageable).getContent();
+        return reviewRepository.findAllByReviewIsBlockedTrue(pageable).getContent();
     }
 
     @Transactional
@@ -112,7 +112,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new ReviewNotFoundException("Review ID %d is not Found!".formatted(reviewId))
         );
-        review.setReviewIsblocked(blocked);
+        review.setReviewIsBlocked(blocked);
     }
 
 

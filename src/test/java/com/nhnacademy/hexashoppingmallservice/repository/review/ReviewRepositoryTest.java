@@ -142,7 +142,7 @@ class ReviewRepositoryTest {
                 member,
                 book
         );
-        review3.setReviewIsblocked(true);
+        review3.setReviewIsBlocked(true);
         entityManager.persist(review3);
         entityManager.flush();
         entityManager.clear();
@@ -160,7 +160,7 @@ class ReviewRepositoryTest {
         PageRequest pageable = PageRequest.of(0, 10);
 
         // Act
-        Page<ReviewProjection> reviews = reviewRepository.findByMemberMemberIdAndReviewIsblockedFalse(memberId, pageable);
+        Page<ReviewProjection> reviews = reviewRepository.findByMemberMemberIdAndReviewIsBlockedFalse(memberId, pageable);
 
         // Assert
         assertThat(reviews).isNotNull();
@@ -181,7 +181,7 @@ class ReviewRepositoryTest {
         PageRequest pageable = PageRequest.of(0, 10);
 
         // Act
-        Page<ReviewProjection> reviews = reviewRepository.findByBookBookIdAndReviewIsblockedFalse(bookId, pageable);
+        Page<ReviewProjection> reviews = reviewRepository.findByBookBookIdAndReviewIsBlockedFalse(bookId, pageable);
 
         // Assert
         assertThat(reviews).isNotNull();
@@ -198,7 +198,7 @@ class ReviewRepositoryTest {
         PageRequest pageable = PageRequest.of(0, 10);
 
         // Act
-        Page<ReviewProjection> blockedReviews = reviewRepository.findAllByReviewIsblockedTrue(pageable);
+        Page<ReviewProjection> blockedReviews = reviewRepository.findAllByReviewIsBlockedTrue(pageable);
 
         // Assert
         assertThat(blockedReviews).isNotNull();

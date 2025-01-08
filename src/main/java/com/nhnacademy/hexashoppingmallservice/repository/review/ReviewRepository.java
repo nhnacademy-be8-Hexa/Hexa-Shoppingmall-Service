@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Page<ReviewProjection> findByMemberMemberIdAndReviewIsblockedFalse(String memberId, Pageable pageable);
-    Long countByMemberMemberIdAndReviewIsblockedFalse(String memberId);
-    Page<ReviewProjection> findByBookBookIdAndReviewIsblockedFalse(Long bookId, Pageable pageable);
-    Long countByBookBookIdAndReviewIsblockedFalse(Long bookId);
-    Page<ReviewProjection> findAllByReviewIsblockedTrue(Pageable pageable);
+    Page<ReviewProjection> findByMemberMemberIdAndReviewIsBlockedFalse(String memberId, Pageable pageable);
+    Long countByMemberMemberIdAndReviewIsBlockedFalse(String memberId);
+    Page<ReviewProjection> findByBookBookIdAndReviewIsBlockedFalse(Long bookId, Pageable pageable);
+    Long countByBookBookIdAndReviewIsBlockedFalse(Long bookId);
+    Page<ReviewProjection> findAllByReviewIsBlockedTrue(Pageable pageable);
     /**
      * 신고가 특정 회수 이상인 리뷰들을 조회합니다.
      * 차단 여부와 관계없이 모든 리뷰를 포함합니다.
