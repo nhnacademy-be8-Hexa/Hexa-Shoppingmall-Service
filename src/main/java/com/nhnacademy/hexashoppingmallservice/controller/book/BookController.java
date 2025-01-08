@@ -50,7 +50,13 @@ public class BookController {
             //좋아요수에 의한 정렬
             @RequestParam(required = false) Boolean sortByLikeCount,
             //출간일 최신순으로 정렬
-            @RequestParam(required = false) Boolean latest
+            @RequestParam(required = false) Boolean latest,
+            // 도서명 내림차순
+            @RequestParam(required = false) Boolean sortByBookTitleDesc,
+            // 도서명 오름차순
+            @RequestParam(required = false) Boolean sortByBookTitleAsc,
+            // 리뷰순
+            @RequestParam(required = false) Boolean sortByReviews
     ) {
         if (search != null && !search.isEmpty()) {
             return bookService.getBooksByBookTitle(search, pageable);
@@ -79,6 +85,12 @@ public class BookController {
         }
         if (latest != null && latest) {
             return bookService.getBooksByBookPubDate(pageable);
+        }
+        if (sortByBookTitleDesc != null && sortByBookTitleDesc) {
+            return bookService.getBooksByNameDesc(pageable);
+        }
+        if (sortByBookTitleAsc != null && sortByBookTitleAsc) {
+            return bookService.getBooksByNameAsc(pageable);
         }
         return bookService.getBooks(pageable);
 
@@ -110,7 +122,6 @@ public class BookController {
     @PutMapping("/{bookId}")
     public Book updateBook(@PathVariable Long bookId, @RequestBody @Valid BookUpdateRequestDTO bookRequestDTO,
                            HttpServletRequest request) {
-        jwtUtils.ensureAdmin(request);
         return bookService.updateBook(bookId, bookRequestDTO);
     }
 

@@ -181,7 +181,7 @@ class ReviewServiceTest {
         ReviewProjection reviewProjection2 = mock(ReviewProjection.class);
         List<ReviewProjection> mockReviews = Arrays.asList(reviewProjection1, reviewProjection2);
 
-        when(reviewRepository.findByMemberMemberIdAndReviewIsblockedFalse(validMemberId, pageable))
+        when(reviewRepository.findByMemberMemberIdAndReviewIsBlockedFalse(validMemberId, pageable))
                 .thenReturn(new PageImpl<>(mockReviews));
 
         // Act
@@ -189,7 +189,7 @@ class ReviewServiceTest {
 
         // Assert
         verify(memberRepository, times(1)).existsById(validMemberId);
-        verify(reviewRepository, times(1)).findByMemberMemberIdAndReviewIsblockedFalse(validMemberId, pageable);
+        verify(reviewRepository, times(1)).findByMemberMemberIdAndReviewIsBlockedFalse(validMemberId, pageable);
         assertEquals(mockReviews, result);
     }
 
@@ -227,7 +227,7 @@ class ReviewServiceTest {
         ReviewProjection reviewProjection2 = mock(ReviewProjection.class);
         List<ReviewProjection> mockReviews = Arrays.asList(reviewProjection1, reviewProjection2);
 
-        when(reviewRepository.findByBookBookIdAndReviewIsblockedFalse(validBookId, pageable))
+        when(reviewRepository.findByBookBookIdAndReviewIsBlockedFalse(validBookId, pageable))
                 .thenReturn(new PageImpl<>(mockReviews));
 
         // Act
@@ -235,7 +235,7 @@ class ReviewServiceTest {
 
         // Assert
         verify(bookRepository, times(1)).existsById(validBookId);
-        verify(reviewRepository, times(1)).findByBookBookIdAndReviewIsblockedFalse(validBookId, pageable);
+        verify(reviewRepository, times(1)).findByBookBookIdAndReviewIsBlockedFalse(validBookId, pageable);
         assertEquals(mockReviews, result);
     }
 
@@ -348,14 +348,14 @@ class ReviewServiceTest {
         ReviewProjection reviewProjection2 = mock(ReviewProjection.class);
         List<ReviewProjection> mockReviews = Arrays.asList(reviewProjection1, reviewProjection2);
 
-        when(reviewRepository.findAllByReviewIsblockedTrue(pageable))
+        when(reviewRepository.findAllByReviewIsBlockedTrue(pageable))
                 .thenReturn(new PageImpl<>(mockReviews));
 
         // Act
         List<ReviewProjection> result = reviewService.getReviewsIsBlocked(pageable);
 
         // Assert
-        verify(reviewRepository, times(1)).findAllByReviewIsblockedTrue(pageable);
+        verify(reviewRepository, times(1)).findAllByReviewIsBlockedTrue(pageable);
         assertEquals(mockReviews, result);
     }
 
@@ -375,7 +375,7 @@ class ReviewServiceTest {
 
         // Assert
         verify(reviewRepository, times(1)).findById(reviewId);
-        assertEquals(blocked, validReview.isReviewIsblocked());
+        assertEquals(blocked, validReview.isReviewIsBlocked());
     }
 
     /**

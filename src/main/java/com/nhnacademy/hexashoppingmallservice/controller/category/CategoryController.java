@@ -69,6 +69,25 @@ public class CategoryController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    /**
+     * 모든 카테고리에서 서브카테고리가 존재하는 카테고리들의 ID를 반환
+     *
+     * @return 서브카테고리가 있는 카테고리들의 ID 목록
+     */
+    @GetMapping("/ids")
+    public ResponseEntity<List<Long>> findCategoryIdsWithSubCategories() {
+        List<CategoryDTO> categories = categoryService.getAllCategoriesWithSubCategories();
+        List<Long> categoryIds = categoryService.findCategoryIdsWithSubCategories(categories);
+        return new ResponseEntity<>(categoryIds, HttpStatus.OK);
+    }
+
+    @GetMapping("/ids/{categoryId}")
+    public ResponseEntity<List<Long>> extractCategoryIds(@PathVariable Long categoryId) {
+        List<CategoryDTO> categories = categoryService.getAllCategoriesWithSubCategories();
+        List<Long> categoryIds = categoryService.extractCategoryIds(categories, categoryId);
+        return new ResponseEntity<>(categoryIds, HttpStatus.OK);
+    }
+
     @GetMapping("/paged")
     public ResponseEntity<List<Category>> getAllPagedCategories(Pageable pageable) {
         List<Category> categories = categoryService.getAllPagedCategories(pageable);
@@ -104,6 +123,11 @@ public class CategoryController {
     public ResponseEntity<Void> getAllBooksByCategoryId(@PathVariable Long categoryId, @PathVariable Long bookId) {
         categoryService.insertBook(categoryId, bookId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<List<Category>> getAllCategoriesByBookId(@PathVariable Long bookId) {
+        return ResponseEntity.ok(categoryService.getAllCategoriesByBookId(bookId));
     }
 
 }

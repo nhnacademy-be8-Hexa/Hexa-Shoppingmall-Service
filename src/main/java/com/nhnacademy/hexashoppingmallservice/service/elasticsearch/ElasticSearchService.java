@@ -9,6 +9,7 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.google.common.collect.Lists;
 import com.nhnacademy.hexashoppingmallservice.document.Book;
 import com.nhnacademy.hexashoppingmallservice.dto.book.SearchBookDTO;
+import com.nhnacademy.hexashoppingmallservice.exception.elasticsearch.ElasticsearchException;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import java.io.IOException;
 import java.util.List;
@@ -78,7 +79,8 @@ public class ElasticSearchService {
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ElasticsearchException(
+                    String.format("Error occurred while searching books for query '%s'", search), e);
         }
     }
 
@@ -114,7 +116,9 @@ public class ElasticSearchService {
 
             return searchResponse.hits().total() != null ? searchResponse.hits().total().value() : 0;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ElasticsearchException(
+                    String.format("Error occurred while retrieving total count for query: '%s'", search), e
+            );
         }
     }
 

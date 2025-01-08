@@ -30,16 +30,31 @@ public class MemberController {
     private final LikeService likeService;
     private final JwtUtils jwtUtils;
 
+    // 멤버 전체 조회 및 검색
     @GetMapping("/api/members")
-    public List<MemberProjection> getMembers(
-            @RequestParam(defaultValue = "0") int page, @RequestParam(required = false) String search, HttpServletRequest request) {
-        jwtUtils.ensureAdmin(request);
-        Pageable pageable = PageRequest.of(page, SIZE);
-        if(search != null && !search.isEmpty()) {
-            return memberService.searchMembersById(pageable, search);
-        }
-        return memberService.getMembers(pageable);
+    public ResponseEntity<List<MemberProjection>> getMembers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request); // 관리자 권한 확인
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 검색 조건과 전체 조회를 함께 처리
+        List<MemberProjection> members = memberService.getMembers(pageable, search);
+        return ResponseEntity.ok(members);
     }
+
+    // 전체 회원 수 조회 (검색 조건 포함)
+    @GetMapping("/api/members/count")
+    public ResponseEntity<Long> getMemberCount(
+            @RequestParam(required = false) String search,
+            HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request); // 관리자 권한 확인
+        long totalCount = memberService.countBySearch(search);
+        return ResponseEntity.ok(totalCount);
+    }
+
 
     @GetMapping("/api/members/{memberId}")
     public Member getMember(@PathVariable String memberId) {

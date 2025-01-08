@@ -167,9 +167,29 @@ public class OrderService {
         }
     }
 
+    // 특정 도서에 대해 주문이 존재하는지 조회
+    @Transactional(readOnly = true)
+    public Boolean checkOrderBook(String memberId, Long bookId) {
+        return orderBookRepository.existsByOrder_Member_MemberIdAndBook_BookId(memberId, bookId);
+    }
+
     private <T> void updateIfNotNull(T value, Consumer<T> updater) {
         if (value != null) {
             updater.accept(value);
         }
+    }
+
+
+    public Boolean existsOrderIdAndMember_MemberId(Long orderId, String memberMemberId){
+        return orderRepository.existsByOrderIdAndMember_MemberId(orderId,memberMemberId);
+    }
+
+    public Long countAllByMember_MemberId(String memberId) {
+        return orderRepository.countAllByMember_MemberId(memberId);
+    }
+
+    @Transactional(readOnly = true)
+    public Long countAllOrders() {
+        return orderRepository.count();
     }
 }
