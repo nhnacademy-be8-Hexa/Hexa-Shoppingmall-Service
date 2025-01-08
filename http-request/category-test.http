@@ -25,3 +25,6 @@ GET http://localhost:8081/api/categories
 
 ### 도서를 카테고리에 추가
 POST http://localhost:8081/api/categories/1/books/1
+
+### 도서 아이디로 카테고리 조회
+GET localhost:8081/api/categories/books/11
