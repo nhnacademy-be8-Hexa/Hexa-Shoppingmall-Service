@@ -60,6 +60,17 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    // 특정 멤버가 특정 도서에 대해 리뷰를 작성했는지를 검증
+    @GetMapping("/members/{memberId}/books/{bookId}/reviews")
+    public ResponseEntity<Boolean> checkReviews(
+            @PathVariable String memberId,
+            @PathVariable Long bookId,
+            HttpServletRequest request
+    ) {
+        jwtUtils.ensureUserAccess(request, memberId);
+        return ResponseEntity.ok(reviewService.checkReviews(memberId, bookId));
+    }
+
     // 특정 회원의 리뷰 총계를 조회
     @GetMapping("/members/{memberId}/reviews/total")
     public ResponseEntity<Long> getTotalReviews(@PathVariable String memberId, HttpServletRequest request) {
