@@ -84,7 +84,8 @@ public class OrderController {
     }
 
     @GetMapping("api/orders/count")
-    public Long getTotalOrderCount() {
-        return orderService.countAllOrders();
+    public ResponseEntity<Long> getTotalOrderCount() {
+        Long count = orderService.countAllOrders();
+        return ResponseEntity.ok(count);
     }
 }
