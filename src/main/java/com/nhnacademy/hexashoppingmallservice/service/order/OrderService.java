@@ -178,4 +178,13 @@ public class OrderService {
             updater.accept(value);
         }
     }
+
+
+    public Boolean existsOrderIdAndMember_MemberId(Long orderId, String memberMemberId){
+        return orderRepository.existsByOrderIdAndMember_MemberId(orderId,memberMemberId);
+    }
+
+    public Long countAllByMember_MemberId(String memberId) {
+        return orderRepository.countAllByMember_MemberId(memberId);
+    }
 }
