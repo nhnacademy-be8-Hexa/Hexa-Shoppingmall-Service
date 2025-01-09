@@ -65,57 +65,68 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    @Transactional(readOnly = true)
     // 도서 전체 조회
     public List<Book> getBooks(Pageable pageable) {
         return bookRepository.findAll(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 조회수 (내림차순)
     public List<Book> getBooksByBookView(Pageable pageable) {
         return bookRepository.findByOrderByBookViewDesc(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 베스트셀러 (내림차순)
     public List<Book> getBooksByBookSellCount(Pageable pageable) {
         return bookRepository.findByOrderByBookSellCountDesc(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 카테고리 별
     public List<Book> getBooksByCategory(List<Long> categoryIds, Pageable pageable) {
         // 카테고리 아이디들이 비어있으면 빈 리스트 반환하게 하는 로직 추가하면 좋을듯
         return bookRepository.findBooksByCategoryIds(categoryIds, pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     //좋아요 (내림차순)
     public List<Book> getBooksByLikeCount(Pageable pageable) {
         return bookRepository.findBooksOrderByLikeCountDesc(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 출판사
     public List<Book> getBooksByPublisherName(String publisherName, Pageable pageable) {
         return bookRepository.findBooksByPublisherName(publisherName, pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 도서명
     public List<Book> getBooksByBookTitle(String bookTitle, Pageable pageable) {
         return bookRepository.findByBookTitleContaining(bookTitle, pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 저자 이름
     public List<Book> getBooksByAuthorName(String authorName, Pageable pageable) {
         return bookRepository.findBooksByAuthorNameLike(authorName, pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 태그
     public List<Book> getBooksByTag(String tagName, Pageable pageable) {
         return bookRepository.findBooksByTagName(tagName, pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 최신순(출간일 기준)
     public List<Book> getBooksByBookPubDate(Pageable pageable) {
         return bookRepository.findAllByOrderByBookPubDateDesc(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 도서명 오름차순
     public List<Book> getBooksByNameAsc(Pageable pageable) {
         return bookRepository.findAllByOrderByBookPubDateDesc(pageable).getContent();
@@ -126,6 +137,7 @@ public class BookService {
         return bookRepository.findAllByOrderByBookTitleDesc(pageable).getContent();
     }
 
+    @Transactional(readOnly = true)
     // 도서 목록 - 리뷰순으로 내림찯순
     public List<Book> getBooksByIsbnAsc(Pageable pageable) {
         return bookRepository.findAllOrderByReviewCountDesc(pageable).getContent();
