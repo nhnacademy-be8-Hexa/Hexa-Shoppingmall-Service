@@ -35,7 +35,7 @@ public class ReturnsReasonService {
 
     @Transactional
     public List<ReturnsReason> getReturnsReasons(Pageable pageable) {
-        return returnsReasonRepository.findAll(pageable).getContent();
+        return returnsReasonRepository.findAll();
     }
 
     @Transactional
@@ -45,15 +45,6 @@ public class ReturnsReasonService {
         );
 
     }
-//
-//    @Transactional
-//    public List<Returns> getReturnsByMemberId(String memberId) {
-//        List<Returns> returns = returnsReasonRepository.findByMemberId(memberId);
-//        if (returns.isEmpty()) {
-//            throw new ReturnsReasonNotFoundException("No returns found for Member ID: " + memberId);
-//        }
-//        return returns;
-//    }
 
     @Transactional
     public ReturnsReason updateReturnsReason(Long returnsReasonId ,ReturnsReasonRequestDTO returnsReasonRequestDTO) {
