@@ -9,13 +9,10 @@ import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundExc
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.LikeRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +33,8 @@ public class LikeService {
 
         boolean exists = likeRepository.existsByBookBookIdAndMemberMemberId(bookId, memberId);
         if (exists) {
-            throw new LikeAlreadyExistsException(String.format("Like already exists for bookId %d and memberId %s.", bookId, memberId));
+            throw new LikeAlreadyExistsException(
+                    String.format("Like already exists for bookId %d and memberId %s.", bookId, memberId));
         }
 
         Book book = bookRepository.findById(bookId).get();
@@ -67,5 +65,40 @@ public class LikeService {
             throw new MemberNotFoundException("MemberId %s is not exist".formatted(memberId));
         }
         return likeRepository.findBooksLikedByMemberId(memberId);
+    }
+
+
+    /**
+     * 좋아요를 토글하는 메서드
+     * 이미 좋아요가 있으면 취소하고, 없으면 추가합니다.
+     *
+     * @param bookId   좋아요를 토글할 책의 ID
+     * @param memberId 좋아요를 토글할 회원의 ID
+     */
+    @Transactional
+    public void toggleLike(Long bookId, String memberId) {
+
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotExistException("BookId %d is not exist".formatted(bookId));
+        }
+
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException("MemberId %s is not exist".formatted(memberId));
+        }
+
+        boolean exists = likeRepository.existsByBookBookIdAndMemberMemberId(bookId, memberId);
+
+        if (exists) {
+            deleteLike(bookId, memberId);
+        } else {
+            createLike(bookId, memberId);
+        }
+    }
+
+    /**
+     * 좋아요를 삭제하는 메서드
+     */
+    private void deleteLike(Long bookId, String memberId) {
+        likeRepository.deleteByBookBookIdAndMemberMemberId(bookId, memberId);
     }
 }

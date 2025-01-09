@@ -81,6 +81,12 @@ public class CategoryController {
         return new ResponseEntity<>(categoryIds, HttpStatus.OK);
     }
 
+    /**
+     * 주어진 카테고리 ID와 그 하위 서브 카테고리들의 ID 목록을 반환합니다.
+     *
+     * @param categoryId 조회할 카테고리 ID
+     * @return 카테고리 및 서브 카테고리들의 ID 목록
+     */
     @GetMapping("/ids/{categoryId}")
     public ResponseEntity<List<Long>> extractCategoryIds(@PathVariable Long categoryId) {
         List<CategoryDTO> categories = categoryService.getAllCategoriesWithSubCategories();
@@ -88,18 +94,34 @@ public class CategoryController {
         return new ResponseEntity<>(categoryIds, HttpStatus.OK);
     }
 
+    /**
+     * 카테고리 목록을 페이징 처리하여 반환하는 엔드포인트
+     *
+     * @param pageable 페이징 정보 (page, size)
+     * @return 페이징된 카테고리 목록
+     */
     @GetMapping("/paged")
     public ResponseEntity<List<Category>> getAllPagedCategories(Pageable pageable) {
         List<Category> categories = categoryService.getAllPagedCategories(pageable);
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @GetMapping("/unPaged")
-    public ResponseEntity<List<Category>> getAllUnPagedCategories() {
-        List<Category> categories = categoryService.getAllUnPagedCategories();
+    /**
+     * 카테고리 목록을 페이징 처리하지 않고 전체 데이터를 반환하는 엔드포인트
+     *
+     * @return 전체 카테고리 목록
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    /**
+     * 전체 카테고리 수를 반환하는 엔드포인트.
+     *
+     * @return 전체 카테고리 수
+     */
     @GetMapping("/total")
     public ResponseEntity<Long> getTotal() {
         return ResponseEntity.ok(categoryService.getTotal());
