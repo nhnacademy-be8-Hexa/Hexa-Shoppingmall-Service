@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.entity.toss;
+package com.nhnacademy.hexashoppingmallservice.entity.payment;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
