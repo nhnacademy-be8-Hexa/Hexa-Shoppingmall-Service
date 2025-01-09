@@ -20,9 +20,9 @@ public class TossPaymentService {
         tossPaymentRepository.save(tossPayment);
     }
 
-    public TossPayment getPayment(String key) {
-        return tossPaymentRepository.findById(key).orElseThrow(
-                () -> new PaymentNotFoundException("payment not found : " + key)
+    public TossPayment getPayment(Long orderId) {
+        return tossPaymentRepository.findById(orderId).orElseThrow(
+                () -> new PaymentNotFoundException("payment not found : " + orderId)
         );
     }
 

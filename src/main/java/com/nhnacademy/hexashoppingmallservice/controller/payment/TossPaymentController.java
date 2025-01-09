@@ -20,11 +20,11 @@ public class TossPaymentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{paymentKey}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<TossPayment> getPayment(
-            @PathVariable String paymentKey
+            @PathVariable Long orderId
     ){
-        return ResponseEntity.ok(tossPaymentService.getPayment(paymentKey));
+        return ResponseEntity.ok(tossPaymentService.getPayment(orderId));
     }
 
 }
