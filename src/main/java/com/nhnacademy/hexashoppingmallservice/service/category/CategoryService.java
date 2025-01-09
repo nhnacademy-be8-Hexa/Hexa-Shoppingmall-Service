@@ -145,7 +145,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public List<Category> getAllUnPagedCategories() {
+    public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
@@ -169,7 +169,7 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public List<Category> getAllCategoriesByBookId(Long bookId) {
-        if(!bookRepository.existsById(bookId)) {
+        if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException("Book Not Found. ID: " + bookId);
         }
 
