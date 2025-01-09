@@ -59,7 +59,7 @@ Content-Type: application/json
 GET localhost:8081/api/orders
 
 ### 회원 주문 목록 조회
-GET localhost:8081/api/orders
+GET localhost:8081/api/members/jsj/orders?page=0&size=10&sort=orderId,desc
 
 ### 주문 수정 (상태 수정)
 PATCH localhost:8081/api/orders/1
