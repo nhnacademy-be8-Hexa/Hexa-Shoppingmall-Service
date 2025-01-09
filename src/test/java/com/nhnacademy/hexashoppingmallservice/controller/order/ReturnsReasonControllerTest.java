@@ -97,13 +97,10 @@ public class ReturnsReasonControllerTest {
     @Test
     void testGetAllReturnsReasons() throws Exception {
         // Given
-        Pageable pageable = PageRequest.of(0, 10);
-        when(returnsReasonService.getReturnsReasons(pageable)).thenReturn(new PageImpl<>(List.of(responseEntity)).getContent());
+        when(returnsReasonService.getReturnsReasons()).thenReturn(new PageImpl<>(List.of(responseEntity)).getContent());
 
         // When
         ResultActions result = mockMvc.perform(get("/api/returnsReason")
-                .param("page", "0")
-                .param("size", "10")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // Then
@@ -111,10 +108,6 @@ public class ReturnsReasonControllerTest {
                 .andExpect(jsonPath("$[0].returnsReasonId").value(1))
                 .andExpect(jsonPath("$[0].returnsReason").value("Reason for return"))
                 .andDo(document("returnsReason/get-all",
-                        queryParameters(
-                                parameterWithName("page").description("페이지 번호"),
-                                parameterWithName("size").description("한 페이지 크기")
-                        ),
                         responseFields(
                                 fieldWithPath("[].returnsReasonId").description("반품사유 ID"),
                                 fieldWithPath("[].returnsReason").description("반품사유")

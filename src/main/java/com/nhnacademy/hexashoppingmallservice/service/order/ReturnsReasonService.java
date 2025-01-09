@@ -1,21 +1,15 @@
 package com.nhnacademy.hexashoppingmallservice.service.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.order.ReturnsReasonRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
-import com.nhnacademy.hexashoppingmallservice.entity.order.Returns;
 import com.nhnacademy.hexashoppingmallservice.entity.order.ReturnsReason;
-import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.ReturnsReasonNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.ReturnsReasonRepository;
-import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.Formatter;
 import java.util.List;
 
 @Service
@@ -34,8 +28,8 @@ public class ReturnsReasonService {
     }
 
     @Transactional
-    public List<ReturnsReason> getReturnsReasons(Pageable pageable) {
-        return returnsReasonRepository.findAll(pageable).getContent();
+    public List<ReturnsReason> getReturnsReasons() {
+        return returnsReasonRepository.findAll();
     }
 
     @Transactional
@@ -45,15 +39,6 @@ public class ReturnsReasonService {
         );
 
     }
-//
-//    @Transactional
-//    public List<Returns> getReturnsByMemberId(String memberId) {
-//        List<Returns> returns = returnsReasonRepository.findByMemberId(memberId);
-//        if (returns.isEmpty()) {
-//            throw new ReturnsReasonNotFoundException("No returns found for Member ID: " + memberId);
-//        }
-//        return returns;
-//    }
 
     @Transactional
     public ReturnsReason updateReturnsReason(Long returnsReasonId ,ReturnsReasonRequestDTO returnsReasonRequestDTO) {

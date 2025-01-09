@@ -52,18 +52,17 @@ class ReturnsReasonServiceTest {
     @Test
     void testGetReturnsReasons() {
         // Arrange
-        Pageable pageable = mock(Pageable.class);
         List<ReturnsReason> expectedReasons = List.of(
                 ReturnsReason.of("Damaged Item"),
                 ReturnsReason.of("Wrong Item")
         );
-        when(returnsReasonRepository.findAll(pageable)).thenReturn(new PageImpl<>(expectedReasons));
+        when(returnsReasonRepository.findAll()).thenReturn(expectedReasons);
 
         // Act
-        List<ReturnsReason> actualReasons = returnsReasonService.getReturnsReasons(pageable);
+        List<ReturnsReason> actualReasons = returnsReasonService.getReturnsReasons();
 
         // Assert
-        verify(returnsReasonRepository, times(1)).findAll(pageable);
+        verify(returnsReasonRepository, times(1)).findAll();
         assertThat(actualReasons).hasSize(expectedReasons.size());
         assertThat(actualReasons).containsAll(expectedReasons);
     }
