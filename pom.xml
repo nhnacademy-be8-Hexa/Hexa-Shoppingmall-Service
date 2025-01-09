@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -43,6 +45,7 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!-- 기존 의존성들 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -114,13 +117,13 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- elasticsearch 설정-->
+        <!-- Elasticsearch 설정 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
-        <!-- 로깅설정 -->
+        <!-- 로깅 설정 -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -143,15 +146,13 @@
             <version>2.11.0</version>
         </dependency>
 
-        <!--        jwt-->
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
+        <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.12.6</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
@@ -159,7 +160,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
@@ -171,16 +171,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
         <finalName>api</finalName>
         <plugins>
+            <!-- Asciidoctor Maven Plugin 설정 -->
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.2.1</version> <!-- 기존 버전 유지 -->
                 <executions>
                     <execution>
                         <id>generate-docs</id>
@@ -189,8 +189,14 @@
                             <goal>process-asciidoc</goal>
                         </goals>
                         <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/asciidoc</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-docs</outputDirectory>
                             <backend>html</backend>
                             <doctype>book</doctype>
+                            <attributes>
+                                <snippets>${project.build.directory}/generated-snippets</snippets>
+                                <source-highlighter>highlightjs</source-highlighter> <!-- 코드 하이라이팅 설정 (선택 사항) -->
+                            </attributes>
                         </configuration>
                     </execution>
                 </executions>
@@ -202,6 +208,34 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <!-- Maven Resources Plugin 설정 -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version> <!-- 버전 명시 -->
+                <executions>
+                    <execution>
+                        <id>copy-docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static/docs</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-docs</directory>
+                                    <includes>
+                                        <include>**/*.html</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -214,30 +248,8 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.outputDirectory}/static/docs
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>
-                                        ${project.build.directory}/generated-docs
-                                    </directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
+            <!-- Jacoco Maven Plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -258,6 +270,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Maven Surefire Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
