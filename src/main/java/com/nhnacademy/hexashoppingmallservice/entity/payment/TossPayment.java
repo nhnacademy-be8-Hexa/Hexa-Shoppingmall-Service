@@ -14,12 +14,11 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 public class TossPayment {
     @Id
-    @Length(max = 50)
-    private String paymentKey;
+    private Long orderId;
 
     @NotNull
-    @Length(max = 70)
-    private String orderId;
+    @Length(max = 50)
+    private String paymentKey;
 
     @NotNull
     private int amount;
