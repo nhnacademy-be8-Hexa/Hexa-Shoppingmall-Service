@@ -3,10 +3,10 @@ POST localhost:8081/api/toss-payment
 Content-Type: application/json
 
 {
+  "orderId": 1,
   "paymentKey": "testkey12345",
-  "orderId": "order-test12345",
   "amount": 10000000
 }
 
 ### payment 조회
-GET localhost:8081/api/toss-payment/testkey12345
+GET localhost:8081/api/toss-payment/1
