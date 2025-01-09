@@ -40,10 +40,11 @@ public class OrderController {
     }
 
     @GetMapping("/api/members/{memberId}/orders")
-    public ResponseEntity<List<OrderProjection>> getOrdersByMemberId(@Valid @RequestParam(defaultValue = "0") int page,
-                                           @PathVariable String memberId, HttpServletRequest request) {
+    public ResponseEntity<List<OrderProjection>> getOrdersByMemberId(
+            @PathVariable String memberId,
+            Pageable pageable,
+            HttpServletRequest request) {
         jwtUtils.ensureUserAccess(request, memberId);
-        Pageable pageable = PageRequest.of(page, SIZE);
         return ResponseEntity.ok(orderService.getOrdersByMemberId(memberId, pageable));
     }
 

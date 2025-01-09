@@ -9,7 +9,7 @@ Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb
 }
 
 ### 2. 모든 반품 사유 조회 (GET /api/returnsReason)
-GET http://localhost:8081/api/returnsReason?page=0&size=10
+GET http://localhost:8081/api/returnsReason
 
 ### 3. 특정 반품 사유 조회 (GET /api/returnsReason/{returnsReasonId})
 GET http://localhost:8081/api/returnsReason/1

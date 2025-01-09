@@ -27,8 +27,8 @@ public class ReturnsReasonController {
     }
 
     @GetMapping("/api/returnsReason")
-    public List<ReturnsReason> getAllReturnsReasons(Pageable pageable) {
-        return returnsReasonService.getReturnsReasons(pageable);
+    public List<ReturnsReason> getAllReturnsReasons() {
+        return returnsReasonService.getReturnsReasons();
     }
 
     @GetMapping("/api/returnsReason/{returnsReasonId}")
