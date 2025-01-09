@@ -147,7 +147,7 @@ class AddressControllerTest {
         ResultActions result = mockMvc.perform(get(BASE_URL, MEMBER_ID)
                 .param("page", "0")
                 .param("size", "10")
-                .param("sort", "addressName,asc")
+                .param("sort", "")
                 .header("Authorization", "Bearer dummy-token"));
 
         // Assert
