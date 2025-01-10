@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.service.tag;
 
 import com.nhnacademy.hexashoppingmallservice.dto.tag.TagRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookTag;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
 import com.nhnacademy.hexashoppingmallservice.exception.tag.TagNotFoundException;
@@ -12,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -39,13 +43,19 @@ class TagServiceTest {
     @DisplayName("모든 태그 조회 테스트")
     void getAllTags() {
         Tag tag = Tag.of("Test Tag");
-        when(tagRepository.findAll()).thenReturn(List.of(tag));
+        Page<Tag> page = mock(Page.class);
+        Pageable pageable = Pageable.unpaged();
 
-        List<Tag> tags = tagService.getAllTags();
+        // 스텁 설정: Pageable.unpaged()를 전달할 때 Page<Tag> 반환
+        when(tagRepository.findAll(pageable)).thenReturn(page);
+        when(page.getContent()).thenReturn(List.of(tag));
+
+        // When
+        List<Tag> tags = tagService.getAllTags(pageable);
 
         assertThat(tags).isNotEmpty();
         assertThat(tags.get(0).getTagName()).isEqualTo("Test Tag");
-        verify(tagRepository, times(1)).findAll();
+        verify(tagRepository, times(1)).findAll(pageable);
     }
 
     @Test
