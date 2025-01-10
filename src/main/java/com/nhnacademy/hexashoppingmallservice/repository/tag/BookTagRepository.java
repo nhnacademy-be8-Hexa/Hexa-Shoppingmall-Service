@@ -3,13 +3,12 @@ package com.nhnacademy.hexashoppingmallservice.repository.tag;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookTag;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface BookTagRepository extends JpaRepository<BookTag, Long> {
     // 책 id 로 태그 리스트 조회
