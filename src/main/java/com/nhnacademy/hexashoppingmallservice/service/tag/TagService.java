@@ -25,7 +25,8 @@ public class TagService {
 
     public List<Tag> getAllTags(Pageable pageable) {
         Page<Tag> page = tagRepository.findAll(pageable);
-        return page.getContent();
+        List<Tag> tags = page.getContent();
+        return tags;
     }
 
     @Transactional
@@ -53,6 +54,11 @@ public class TagService {
         );
 
         tag.setTagName(requestDTO.tagName());
+    }
+
+    @Transactional
+    public long getTotal() {
+        return tagRepository.count();
     }
 
 }
