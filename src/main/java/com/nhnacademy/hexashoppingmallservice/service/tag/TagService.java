@@ -7,10 +7,14 @@ import com.nhnacademy.hexashoppingmallservice.exception.tag.TagNotFoundException
 import com.nhnacademy.hexashoppingmallservice.repository.tag.BookTagRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +23,10 @@ public class TagService {
     private final TagRepository tagRepository;
     private final BookTagRepository bookTagRepository;
 
-    public List<Tag> getAllTags() {
-        return tagRepository.findAll();
+    public List<Tag> getAllTags(Pageable pageable) {
+        Page<Tag> page = tagRepository.findAll(pageable);
+        List<Tag> tags = page.getContent();
+        return tags;
     }
 
     @Transactional
@@ -48,6 +54,11 @@ public class TagService {
         );
 
         tag.setTagName(requestDTO.tagName());
+    }
+
+    @Transactional
+    public long getTotal() {
+        return tagRepository.count();
     }
 
 }
