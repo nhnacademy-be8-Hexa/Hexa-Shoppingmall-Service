@@ -87,7 +87,7 @@ public class CategoryController {
      * @param categoryId 조회할 카테고리 ID
      * @return 카테고리 및 서브 카테고리들의 ID 목록
      */
-    @GetMapping("/ids/{categoryId}")
+    @GetMapping("/{categoryId}/ids")
     public ResponseEntity<List<Long>> extractCategoryIds(@PathVariable Long categoryId) {
         List<CategoryDTO> categories = categoryService.getAllCategoriesWithSubCategories();
         List<Long> categoryIds = categoryService.extractCategoryIds(categories, categoryId);

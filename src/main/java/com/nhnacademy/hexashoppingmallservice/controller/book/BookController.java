@@ -100,7 +100,7 @@ public class BookController {
     @GetMapping("/ids")
     public List<Book> getBooksByIds(
             @RequestParam List<Long> bookIds
-    ){
+    ) {
         return bookService.getBooksByIds(bookIds);
     }
 
