@@ -6,16 +6,12 @@ import com.nhnacademy.hexashoppingmallservice.service.tag.TagService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,8 +38,9 @@ public class TagController {
     }
 
     @GetMapping("/tags")
-    public ResponseEntity<List<Tag>> getAllTags() {
-        return ResponseEntity.ok(tagService.getAllTags());
+    public ResponseEntity<List<Tag>> getAllTags(Pageable pageable) {
+
+        return ResponseEntity.ok(tagService.getAllTags(pageable));
     }
 
     @DeleteMapping("/admin/tags/{tagId}")
@@ -52,6 +49,14 @@ public class TagController {
     ) {
         tagService.deleteTag(tagId);
         return ResponseEntity.ok().build();
+    }
+
+    // 전체 태그 수 조회 (검색 조건 포함)
+    @GetMapping("/admin/tags/count")
+    public ResponseEntity<Long> getTotalTags() {
+        long totalTag = tagService.getTotal();
+        return ResponseEntity.ok().body(totalTag);
+
     }
 
 }

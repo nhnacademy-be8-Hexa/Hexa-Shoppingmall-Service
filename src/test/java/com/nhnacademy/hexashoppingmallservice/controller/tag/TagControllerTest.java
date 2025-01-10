@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -103,7 +104,7 @@ class TagControllerTest {
                 Tag.of("Technology")
         );
 
-        given(tagService.getAllTags()).willReturn(mockTags);
+        given(tagService.getAllTags(any(Pageable.class))).willReturn(mockTags);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/tags")
                         .header("Authorization", "Bearer mock-token")
@@ -117,7 +118,7 @@ class TagControllerTest {
                         )
                 ));
 
-        verify(tagService).getAllTags();
+        verify(tagService).getAllTags(any(Pageable.class));
     }
 
     @Test
