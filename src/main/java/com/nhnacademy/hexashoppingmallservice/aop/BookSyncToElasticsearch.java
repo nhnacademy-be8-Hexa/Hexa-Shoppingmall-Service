@@ -58,7 +58,7 @@ public class BookSyncToElasticsearch {
                 Publisher publisher = publisherRepository.findById(book.getPublisher().getPublisherId()).orElseThrow();
                 BookStatus bookStatus =
                         bookStatusRepository.findById(book.getBookStatus().getBookStatusId()).orElseThrow();
-                
+
                 com.nhnacademy.hexashoppingmallservice.document.Publisher documentPublisher =
                         com.nhnacademy.hexashoppingmallservice.document.Publisher.of(
                                 publisher.getPublisherId(), publisher.getPublisherName()
@@ -94,6 +94,7 @@ public class BookSyncToElasticsearch {
             }
         }
     }
+
 
 //    @After("execution(* com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository.deleteById(..))")
 //    public void syncBookToElasticsearchAfterDelete(JoinPoint joinPoint) {
@@ -157,6 +158,31 @@ public class BookSyncToElasticsearch {
                 if (tagRemoved) {
                     book.setTags(currentTags);
                     elasticsearchRepository.save(book);
+                }
+            }
+        }
+    }
+
+    @After(value = "execution(* com.nhnacademy.hexashoppingmallservice.repository.tag.BookTagRepository.deleteByBook_BookIdAndTag_TagId(..)) && args(bookId, tagId)",
+            argNames = "bookId,tagId")
+    public void deleteTagFromBooksAfterTagRelationDelete(Long bookId, Long tagId) {
+        Iterable<com.nhnacademy.hexashoppingmallservice.document.Book> booksIterable =
+                elasticsearchRepository.findAll();
+        
+        List<com.nhnacademy.hexashoppingmallservice.document.Book> books =
+                StreamSupport.stream(booksIterable.spliterator(), false)
+                        .toList();
+
+        for (com.nhnacademy.hexashoppingmallservice.document.Book book : books) {
+            if (book.getBookId().equals(bookId)) {
+                List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+
+                if (Objects.nonNull(currentTags)) {
+                    boolean tagRemoved = currentTags.removeIf(existingTag -> existingTag.getTagId().equals(tagId));
+                    if (tagRemoved) {
+                        book.setTags(currentTags);
+                        elasticsearchRepository.save(book);
+                    }
                 }
             }
         }
