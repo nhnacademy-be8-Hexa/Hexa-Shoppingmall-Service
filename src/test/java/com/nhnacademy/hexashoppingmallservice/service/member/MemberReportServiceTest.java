@@ -159,7 +159,7 @@ class MemberReportServiceTest {
             // Assert
             verify(memberRepository, times(1)).existsById(existingMemberId);
             verify(reviewRepository, times(1)).existsById(existingReviewId);
-            verify(memberReportRepository, times(1)).countByReviewReviewId(existingReviewId);
+            verify(memberReportRepository, times(2)).countByReviewReviewId(existingReviewId);
             verify(memberRepository, times(1)).findById(existingMemberId);
             verify(reviewRepository, times(1)).findById(existingReviewId);
             verify(memberReportRepository, times(1)).save(any(MemberReport.class));
@@ -211,6 +211,7 @@ class MemberReportServiceTest {
             when(memberRepository.existsById(existingMemberId)).thenReturn(true);
             when(reviewRepository.existsById(existingReviewId)).thenReturn(true);
             when(memberReportRepository.countByReviewReviewId(existingReviewId)).thenReturn(1L);
+            when(memberReportRepository.countByMemberMemberId(existingMemberId)).thenReturn(1L);  // 추가
 
             // Act & Assert
             assertThatThrownBy(() -> memberReportService.saveMemberReport(existingMemberId, existingReviewId))
@@ -220,6 +221,7 @@ class MemberReportServiceTest {
             verify(memberRepository, times(1)).existsById(existingMemberId);
             verify(reviewRepository, times(1)).existsById(existingReviewId);
             verify(memberReportRepository, times(1)).countByReviewReviewId(existingReviewId);
+            verify(memberReportRepository, times(1)).countByMemberMemberId(existingMemberId);  // 추가
             verify(memberRepository, never()).findById(anyString());
             verify(reviewRepository, never()).findById(anyLong());
             verify(memberReportRepository, never()).save(any(MemberReport.class));
@@ -273,12 +275,18 @@ class MemberReportServiceTest {
             when(reviewRepository.existsById(existingReviewId)).thenReturn(true);
             doNothing().when(memberReportRepository).deleteAllByReviewReviewId(existingReviewId);
 
-            // Act
+            // 더미 Review 객체 생성 (필요한 경우 필드 설정)
+            Review dummyReview = new Review();
+            // 예를 들어, 리뷰가 차단된 상태에서 삭제 후 차단 해제를 수행한다고 가정하면:
+            dummyReview.setReviewIsBlocked(true);
+
+            when(reviewRepository.findById(existingReviewId)).thenReturn(Optional.of(dummyReview));
+
             memberReportService.allDelete(existingReviewId);
 
-            // Assert
             verify(reviewRepository, times(1)).existsById(existingReviewId);
             verify(memberReportRepository, times(1)).deleteAllByReviewReviewId(existingReviewId);
+            verify(reviewRepository, times(1)).findById(existingReviewId);
         }
 
         @Test
