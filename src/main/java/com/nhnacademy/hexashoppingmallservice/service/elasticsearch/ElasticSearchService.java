@@ -48,7 +48,7 @@ public class ElasticSearchService {
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
                                                             "authors.authorName^3",
-                                                            "tags.tagName^2"
+                                                            "bookTags.tagName^2"
                                                     ))
                                             )
 
@@ -96,7 +96,7 @@ public class ElasticSearchService {
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
                                                             "authors.authorName^3",
-                                                            "tags.tagName^2"
+                                                            "bookTags.tagName^2"
                                                     ))
                                             )
                                     )
@@ -249,7 +249,7 @@ public class ElasticSearchService {
                             .bool(b -> b
                                     .should(s -> s
                                             .match(m -> m
-                                                    .field("tags.tagName")
+                                                    .field("bookTags.tagName")
                                                     .query(tag)
                                             )
                                     )
