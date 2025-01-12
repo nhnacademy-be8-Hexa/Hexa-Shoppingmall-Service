@@ -17,20 +17,20 @@ import org.springframework.stereotype.Component;
 public class BatchScheduler {
 
     private final JobLauncher jobLauncher;
-    private final Job dormantMemberJob;
+    private final Job memberJob;
 
-    public BatchScheduler(JobLauncher jobLauncher, Job dormantMemberJob) {
+    public BatchScheduler(JobLauncher jobLauncher, Job memberJob) {
         this.jobLauncher = jobLauncher;
-        this.dormantMemberJob = dormantMemberJob;
+        this.memberJob = memberJob;
     }
-
+//    @Scheduled(cron = "0 0/1 * * * ?")  // 매 분마다 실행
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
-    public void runDormantMemberJob() {
+    public void runMemberJob() {
         try {
             JobParameters jobParameters = new JobParametersBuilder()
                     .addLong("timestamp", System.currentTimeMillis())
                     .toJobParameters();
-            jobLauncher.run(dormantMemberJob, jobParameters);
+            jobLauncher.run(memberJob, jobParameters);
         } catch (Exception e) {
             // 로깅 및 예외 처리
             log.error(e.getMessage(), e);
