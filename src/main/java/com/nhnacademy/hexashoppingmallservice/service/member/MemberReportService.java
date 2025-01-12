@@ -29,11 +29,14 @@ public class MemberReportService {
         if (!reviewRepository.existsById(reviewId)) {
             throw new ReviewNotFoundException("Review ID %d does Not Exist!".formatted(reviewId));
         }
-        if (memberReportRepository.countByReviewReviewId(reviewId) > 0) {
+        if (memberReportRepository.countByReviewReviewId(reviewId) > 0 && memberReportRepository.countByMemberMemberId(memberId) > 0) {
             throw new MemberReportAlreadyExist("Member report already exist!");
         }
         Member member = memberRepository.findById(memberId).get();
         Review review = reviewRepository.findById(reviewId).get();
+        if (memberReportRepository.countByReviewReviewId(reviewId) >= 4) {
+            review.setReviewIsBlocked(true);
+        }
         MemberReport memberReport = MemberReport.of(member, review);
         memberReportRepository.save(memberReport);
     }
@@ -54,6 +57,8 @@ public class MemberReportService {
             throw new ReviewNotFoundException("Review ID %d does Not Exist!".formatted(reviewId));
         }
         memberReportRepository.deleteAllByReviewReviewId(reviewId);
+        Review review = reviewRepository.findById(reviewId).get();
+        review.setReviewIsBlocked(false);
     }
 }
 
