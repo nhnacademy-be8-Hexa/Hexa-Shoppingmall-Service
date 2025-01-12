@@ -24,7 +24,7 @@ public class Book {
     @Setter
     private String bookDescription;
     @Setter
-    private List<Tag> tags;
+    private List<Tag> bookTags;
     @Setter
     private List<Author> authors;
     @Setter
@@ -33,7 +33,7 @@ public class Book {
     private BookStatus bookStatus;
 
     private long bookIsbn;
-    
+
     private String bookPubDate;
 
     private int bookOriginPrice;

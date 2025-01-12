@@ -121,7 +121,7 @@ public class BookSyncToElasticsearch {
             com.nhnacademy.hexashoppingmallservice.document.Book book =
                     elasticsearchRepository.findById(bookTag.getBook().getBookId()).orElseThrow();
 
-            List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+            List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getBookTags();
 
             if (Objects.isNull(currentTags)) {
                 currentTags = new ArrayList<>();
@@ -136,7 +136,7 @@ public class BookSyncToElasticsearch {
                 currentTags.add(documentTag);
             }
 
-            book.setTags(currentTags);
+            book.setBookTags(currentTags);
             elasticsearchRepository.save(book);
         }
     }
@@ -151,12 +151,12 @@ public class BookSyncToElasticsearch {
                         .toList();
 
         for (com.nhnacademy.hexashoppingmallservice.document.Book book : books) {
-            List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+            List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getBookTags();
 
             if (Objects.nonNull(currentTags)) {
                 boolean tagRemoved = currentTags.removeIf(existingTag -> existingTag.getTagId().equals(tagId));
                 if (tagRemoved) {
-                    book.setTags(currentTags);
+                    book.setBookTags(currentTags);
                     elasticsearchRepository.save(book);
                 }
             }
@@ -168,19 +168,19 @@ public class BookSyncToElasticsearch {
     public void deleteTagFromBooksAfterTagRelationDelete(Long bookId, Long tagId) {
         Iterable<com.nhnacademy.hexashoppingmallservice.document.Book> booksIterable =
                 elasticsearchRepository.findAll();
-        
+
         List<com.nhnacademy.hexashoppingmallservice.document.Book> books =
                 StreamSupport.stream(booksIterable.spliterator(), false)
                         .toList();
 
         for (com.nhnacademy.hexashoppingmallservice.document.Book book : books) {
             if (book.getBookId().equals(bookId)) {
-                List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getTags();
+                List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getBookTags();
 
                 if (Objects.nonNull(currentTags)) {
                     boolean tagRemoved = currentTags.removeIf(existingTag -> existingTag.getTagId().equals(tagId));
                     if (tagRemoved) {
-                        book.setTags(currentTags);
+                        book.setBookTags(currentTags);
                         elasticsearchRepository.save(book);
                     }
                 }
