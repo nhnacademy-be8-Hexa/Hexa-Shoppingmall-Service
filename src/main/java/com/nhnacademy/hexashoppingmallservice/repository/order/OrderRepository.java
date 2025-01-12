@@ -15,4 +15,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<OrderProjection> findByOrderId(Long orderId);
     Boolean existsByOrderIdAndMember_MemberId(Long orderId, @Length(max = 50) String memberMemberId);
     Long countAllByMember_MemberId(@Length(max = 50) String memberMemberId);
+    // 주문 상태 목록 페이징 처리
+    Page<OrderProjection> findByOrderStatus_OrderStatusId(Long orderStatusId, Pageable pageable);
+    // 주문 상태별 총 개수
+    Long countByOrderStatus_OrderStatusId(Long orderStatusId);
 }
