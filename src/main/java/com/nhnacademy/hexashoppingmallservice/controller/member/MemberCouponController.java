@@ -69,7 +69,7 @@ public class MemberCouponController {
         return ResponseEntity.ok(isAssigned);
     }
 
-    @GetMapping("members/coupons/check-duplicate")
+    @GetMapping("/members/coupons/check-duplicate")
     public ResponseEntity<Boolean> checkCouponDuplicate(@RequestParam Long couponId) {
         boolean isDuplicate = memberCouponService.isCouponIdDuplicate(couponId);
 
