@@ -6,6 +6,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.*;
 import com.nhnacademy.hexashoppingmallservice.projection.member.MemberCouponProjection;
 import com.nhnacademy.hexashoppingmallservice.projection.order.PointDetailsProjection;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberCouponService;
+import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -68,6 +69,9 @@ class MemberCouponControllerTest {
 
     @MockBean
     private JwtUtils jwtUtils;
+
+    @MockBean
+    private MemberService memberService;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
