@@ -46,4 +46,14 @@ public class MemberCouponService {
         MemberCoupon memberCoupon = memberCouponRepository.findById(couponId).get();
         memberCouponRepository.delete(memberCoupon);
     }
+
+    @Transactional
+    public boolean isCouponAlreadyAssigned(Long couponId, Member member) {
+        return memberCouponRepository.existsByCouponIdAndMember(couponId, member);
+    }
+
+
+    public boolean isCouponIdDuplicate(Long couponId) {
+        return memberCouponRepository.existsByCouponId(couponId);
+    }
 }
