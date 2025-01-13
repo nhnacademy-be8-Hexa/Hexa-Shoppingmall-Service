@@ -88,13 +88,12 @@ public class OrderController {
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/api/orders/status/{statusId}")
-    public ResponseEntity<List<OrderProjection>> getOrdersByStatus(
-            @PathVariable Long statusId,
-            Pageable pageable) {
+    @GetMapping("/api/orders/status")
+    public ResponseEntity<List<OrderProjection>> getOrderStatus(@RequestParam Long statusId, Pageable pageable) {
         List<OrderProjection> orders = orderService.getOrdersByStatusId(statusId, pageable);
         return ResponseEntity.ok(orders);
     }
+
 
     @GetMapping("/api/orders/status/{statusId}/count")
     public ResponseEntity<Long> countOrdersByStatus(@PathVariable Long statusId) {
