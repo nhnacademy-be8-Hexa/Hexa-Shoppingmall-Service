@@ -3,6 +3,7 @@ package com.nhnacademy.hexashoppingmallservice.service.order;
 import com.nhnacademy.hexashoppingmallservice.dto.order.OrderRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
+import com.nhnacademy.hexashoppingmallservice.entity.member.MemberOrderSummary3M;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.entity.order.OrderBook;
 import com.nhnacademy.hexashoppingmallservice.entity.order.OrderStatus;
@@ -15,6 +16,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.order.ParameterNotEnouth
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberOrderSummary3MRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
@@ -23,6 +25,8 @@ import com.nhnacademy.hexashoppingmallservice.repository.order.WrappingPaperRepo
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+
+import com.nhnacademy.hexashoppingmallservice.util.MemberRatingUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +42,8 @@ public class OrderService {
     private final OrderStatusRepository orderStatusRepository;
     private final OrderBookRepository orderBookRepository;
     private final BookRepository bookRepository;
+    private final MemberOrderSummary3MRepository memberOrderSummary3MRepository;
+    private final MemberRatingUtils memberRatingUtils;
 
     @Transactional
     public Long createOrder(OrderRequestDTO orderRequestDTO, List<Long> bookIds, List<Integer> amounts, Long couponId) {
@@ -152,6 +158,30 @@ public class OrderService {
             throw new OrderStatusNotFoundException(
                     "OrderStatus ID %s is not found".formatted(orderRequestDTO.getOrderStatusId()));
         }
+
+        if(Objects.equals(orderStatus.getOrderStatus(), "COMPLETE")){
+
+            MemberOrderSummary3M memberOrderSummary3M = null;
+
+            if(memberOrderSummary3MRepository.existsByMemberId(order.getMember().getMemberId())){
+                 memberOrderSummary3M = memberOrderSummary3MRepository.findByMemberId(order.getMember().getMemberId());
+                Integer orderSum = memberOrderSummary3M.getTotalOrderPrice();
+                memberOrderSummary3M.setTotalOrderPrice(order.getOrderPrice()+orderSum);
+                memberOrderSummary3MRepository.save(memberOrderSummary3M);
+            }
+            else{
+                 memberOrderSummary3M = MemberOrderSummary3M.builder()
+                        .memberId(order.getMember().getMemberId())
+                        .totalOrderPrice(order.getOrderPrice())
+                        .build();
+                memberOrderSummary3MRepository.save(memberOrderSummary3M);
+            }
+
+            Member member=memberRatingUtils.refreshRating(order.getMember(),memberOrderSummary3M);
+
+            memberRepository.saveAndFlush(member);
+        }
+
         order.setOrderStatus(orderStatus);
 
 
