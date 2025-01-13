@@ -11,6 +11,7 @@ import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepo
 import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
+import com.nhnacademy.hexashoppingmallservice.util.MemberRatingUtils;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,13 +50,6 @@ import java.util.Map;
 public class MemberBatchConfig {
 
     final String RATING_NORMAL = "Normal";
-    final String RATING_ROYAL = "Royal";
-    final String RATING_Gold = "Gold";
-    final String RATING_PLATINUM = "Platinum";
-
-    final Long ROYAL_AMOUNT = 100000L;
-    final Long GOLD_AMOUNT = 200000L;
-    final Long PLATINUM_AMOUNT = 300000L;
 
 
     private final JobRepository jobRepository;
@@ -68,6 +62,7 @@ public class MemberBatchConfig {
     private final RatingService ratingService;
     private final RatingRepository ratingRepository;
     private final MemberOrderSummary3MRepository memberOrderSummary3MRepository;
+    private final MemberRatingUtils memberRatingUtils;
 
     //// 테이블 초기화 리스너
 
@@ -282,27 +277,10 @@ public class MemberBatchConfig {
 
     private ItemProcessor<MemberOrderSummary3M, Member> recalculateGradeProcessor() {
 
-        Rating royal = ratingRepository.findByRatingName(RATING_ROYAL);
-        Rating gold = ratingRepository.findByRatingName(RATING_Gold);
-        Rating platimum = ratingRepository.findByRatingName(RATING_PLATINUM);
-
-
-
         return orderSummary -> {
             // 3개월치 주문 금액을 기반으로 등급을 다시 매긴다
             Member member = memberRepository.findById(orderSummary.getMemberId()).orElseThrow();
-            int totalOrderPrice = orderSummary.getTotalOrderPrice();
-
-            if(totalOrderPrice>=ROYAL_AMOUNT){
-                member.setRating(royal);
-            }
-            if (totalOrderPrice>=GOLD_AMOUNT) {
-                member.setRating(gold);
-            }
-            if (totalOrderPrice>=PLATINUM_AMOUNT) {
-                member.setRating(platimum);
-            }
-            return member;
+            return memberRatingUtils.refreshRating(member,orderSummary);
         };
     }
 
