@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -191,5 +192,15 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Long countAllOrders() {
         return orderRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderProjection> getOrdersByStatusId(Long orderStatusId, Pageable pageable) {
+        return orderRepository.findByOrderStatus_OrderStatusId(orderStatusId, pageable).getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countOrdersByStatusId(Long orderStatusId) {
+        return orderRepository.countByOrderStatus_OrderStatusId(orderStatusId);
     }
 }

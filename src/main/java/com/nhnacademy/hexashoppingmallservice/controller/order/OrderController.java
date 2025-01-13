@@ -1,7 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.controller.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.order.OrderRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.OrderService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
@@ -9,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 
-import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,6 +85,19 @@ public class OrderController {
     @GetMapping("/api/orders/count")
     public ResponseEntity<Long> getTotalOrderCount() {
         Long count = orderService.countAllOrders();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/api/orders/status")
+    public ResponseEntity<List<OrderProjection>> getOrderStatus(@RequestParam Long statusId, Pageable pageable) {
+        List<OrderProjection> orders = orderService.getOrdersByStatusId(statusId, pageable);
+        return ResponseEntity.ok(orders);
+    }
+
+
+    @GetMapping("/api/orders/status/{statusId}/count")
+    public ResponseEntity<Long> countOrdersByStatus(@PathVariable Long statusId) {
+        Long count = orderService.countOrdersByStatusId(statusId);
         return ResponseEntity.ok(count);
     }
 }
