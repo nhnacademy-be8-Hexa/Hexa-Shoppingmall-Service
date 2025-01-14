@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -123,6 +124,14 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping("/{categoryId}/books")
+    public ResponseEntity<Void> insertBooks(@PathVariable Long categoryId, @RequestBody List<Long> books,
+                                            HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
+        categoryService.insertBooks(categoryId, books);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{categoryId}")
     public ResponseEntity<List<Book>> getAllBooksByCategoryId(@PathVariable Long categoryId) {
         return ResponseEntity.ok(categoryService.getAllBooksByCategoryId(categoryId));
@@ -136,9 +145,20 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping("/{categoryId}/books")
+    public ResponseEntity<Void> deleteByCategoryIdAndBookIds(@PathVariable Long categoryId,
+                                                             @RequestParam List<Long> bookIds,
+                                                             HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
+        categoryService.deleteByCategoryIdAndBookIds(categoryId, bookIds);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
     @GetMapping("/books/{bookId}")
     public ResponseEntity<List<Category>> getAllCategoriesByBookId(@PathVariable Long bookId) {
         return ResponseEntity.ok(categoryService.getAllCategoriesByBookId(bookId));
     }
+
 
 }
