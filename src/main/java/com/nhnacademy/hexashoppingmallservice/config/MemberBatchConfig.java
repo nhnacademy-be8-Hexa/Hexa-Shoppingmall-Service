@@ -3,9 +3,15 @@ package com.nhnacademy.hexashoppingmallservice.config;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberOrderSummary3M;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
+import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberOrderSummary3MRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberStatusRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.member.RatingRepository;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
+import com.nhnacademy.hexashoppingmallservice.service.member.RatingService;
+import com.nhnacademy.hexashoppingmallservice.util.MemberRatingUtils;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +24,12 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -30,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -40,12 +49,22 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberBatchConfig {
 
+    final String RATING_NORMAL = "Normal";
+
+
     private final JobRepository jobRepository;
     private final EntityManagerFactory entityManagerFactory;
     private final MemberService memberService;
     private final MemberStatusRepository memberStatusRepository;
     private final PlatformTransactionManager transactionManager;
-    private final MemberOrderSummary3MJobListener jobListener;//// 테이블 초기화 리스너
+    private final MemberOrderSummary3MJobListener jobListener;
+    private final MemberRepository memberRepository;
+    private final RatingService ratingService;
+    private final RatingRepository ratingRepository;
+    private final MemberOrderSummary3MRepository memberOrderSummary3MRepository;
+    private final MemberRatingUtils memberRatingUtils;
+
+    //// 테이블 초기화 리스너
 
     @Bean
     @Transactional
@@ -55,6 +74,8 @@ public class MemberBatchConfig {
                 .listener(jobListener)
                 .start(dormantMemberStep())
                 .next(orderSummaryStep())
+                .next(resetMemberGradeStep())
+                .next(recalculateMemberGradeStep())
                 .build();
     }
 
@@ -105,6 +126,10 @@ public class MemberBatchConfig {
 
 
 
+
+
+
+    // 자정마다 주문 합계 조회하는 스텝
 
     @Bean
     public Step orderSummaryStep() {
@@ -173,12 +198,97 @@ public class MemberBatchConfig {
         };
     }
 
+
     @Bean
     public ItemWriter<MemberOrderSummary3M> memberOrderSummary3MItemWriter() {
         JpaItemWriter<MemberOrderSummary3M> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
     }
+
+
+
+
+    // 자정마다 멤버 등급 초기화 함수
+
+    @Bean
+    public Step resetMemberGradeStep() {
+
+        return new StepBuilder("updateMemberGradeStep",jobRepository)
+                .<Member, Member>chunk(100,transactionManager)
+                .reader(memberItemReader())  // 멤버 데이터를 읽어오는 리더
+                .processor(updateGradeProcessor())  // 등급을 업데이트하는 프로세서
+                .writer(updateGradeWriter())  // 업데이트된 등급을 반영하는 라이터
+                .build();
+    }
+
+
+
+    private ItemReader<Member> resetMemberRatingItemReader() {
+        List<Member> members = memberRepository.findAll();
+        return new ListItemReader<>(members);
+    }
+
+    private ItemProcessor<Member, Member> updateGradeProcessor() {
+
+        return new ItemProcessor<Member, Member>() {
+
+            private final Rating rating = ratingRepository.findByRatingName(RATING_NORMAL);
+
+            @Override
+            public Member process(Member item) throws Exception {
+                item.setRating(rating);
+                return item;
+            }
+
+        };
+
+    }
+
+    private ItemWriter<Member> updateGradeWriter() {
+        // 멤버들의 등급을 DB에 업데이트
+        return memberRepository::saveAll;
+    }
+
+
+
+
+
+    // 금액에 따른 등급 재조정 스텝
+
+    @Bean
+    public Step recalculateMemberGradeStep() {
+
+        return new StepBuilder("recalculateMemberGradeStep", jobRepository)
+                .<MemberOrderSummary3M, Member>chunk(100, transactionManager)
+                .reader(orderSummaryItemReader())
+                .processor(recalculateGradeProcessor())  // 총 주문금액을 기반으로 등급을 다시 매기는 프로세서
+                .writer(recalculateGradeWriter())  // 새로 매겨진 등급을 업데이트하는 라이터
+                .build();
+    }
+
+
+
+
+    private ItemReader<MemberOrderSummary3M> orderSummaryItemReader() {
+        List<MemberOrderSummary3M> summaries = memberOrderSummary3MRepository.findAll();
+        return new ListItemReader<>(summaries);
+    }
+
+    private ItemProcessor<MemberOrderSummary3M, Member> recalculateGradeProcessor() {
+
+        return orderSummary -> {
+            // 3개월치 주문 금액을 기반으로 등급을 다시 매긴다
+            Member member = memberRepository.findById(orderSummary.getMemberId()).orElseThrow();
+            return memberRatingUtils.refreshRating(member,orderSummary);
+        };
+    }
+
+    private ItemWriter<Member> recalculateGradeWriter() {
+        // 새로 매겨진 등급을 DB에 업데이트
+        return memberRepository::saveAll;
+    }
+
 
 }
 

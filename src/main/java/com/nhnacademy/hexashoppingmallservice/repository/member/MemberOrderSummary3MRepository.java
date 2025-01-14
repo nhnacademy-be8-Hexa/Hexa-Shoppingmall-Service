@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberOrderSummary3MRepository extends JpaRepository<MemberOrderSummary3M, String> {
 
+    Boolean existsByMemberId(String memberId);
     MemberOrderSummary3M findByMemberId(String memberId);
 }

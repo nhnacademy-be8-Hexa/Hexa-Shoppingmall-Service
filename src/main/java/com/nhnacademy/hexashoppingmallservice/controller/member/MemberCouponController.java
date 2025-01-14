@@ -1,8 +1,10 @@
 package com.nhnacademy.hexashoppingmallservice.controller.member;
 
+import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberCoupon;
 import com.nhnacademy.hexashoppingmallservice.projection.member.MemberCouponProjection;
 import com.nhnacademy.hexashoppingmallservice.service.member.MemberCouponService;
+import com.nhnacademy.hexashoppingmallservice.service.member.MemberService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberCouponController {
     private final MemberCouponService memberCouponService;
+
+    private final MemberService memberService;
 
     private final JwtUtils jwtUtils;
 
@@ -55,4 +59,21 @@ public class MemberCouponController {
         memberCouponService.deleteMemberCoupon(couponId, memberId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/members/coupons/is-assigned")
+    public ResponseEntity<Boolean> isCouponAlreadyAssigned(
+            @RequestParam Long couponId,
+            @RequestParam String memberId) {
+        Member member = memberService.getMember(memberId);
+        boolean isAssigned = memberCouponService.isCouponAlreadyAssigned(couponId, member);
+        return ResponseEntity.ok(isAssigned);
+    }
+
+    @GetMapping("/members/coupons/check-duplicate")
+    public ResponseEntity<Boolean> checkCouponDuplicate(@RequestParam Long couponId) {
+        boolean isDuplicate = memberCouponService.isCouponIdDuplicate(couponId);
+
+        return ResponseEntity.ok(isDuplicate);
+    }
+
 }

@@ -45,4 +45,10 @@ public class BookTagController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/tags/{tagId}/books/count")
+    public ResponseEntity<Integer> getBookCountByTag(@PathVariable Long tagId) {
+        int count = bookTagService.countBooksByTagId(tagId);
+        return ResponseEntity.ok(count);
+    }
+
 }

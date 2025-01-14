@@ -56,7 +56,11 @@ public class TagController {
     public ResponseEntity<Long> getTotalTags() {
         long totalTag = tagService.getTotal();
         return ResponseEntity.ok().body(totalTag);
+    }
 
+    @GetMapping("/tags/{tagId}")
+    public ResponseEntity<Tag> getTagById(@PathVariable Long tagId) {
+        return ResponseEntity.ok(tagService.findTagById(tagId));
     }
 
 }

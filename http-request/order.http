@@ -72,3 +72,9 @@ Content-Type: application/json
   "address": "address2",
   "addressDetail": "addressDetail2"
 }
+
+### 주문 상태 확인
+GET localhost:8081/api/orders/status/5
+
+### 주문 상태별 갯수 확인
+GET localhost:8081/api/orders/status/5/count

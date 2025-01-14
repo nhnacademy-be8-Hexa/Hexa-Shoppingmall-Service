@@ -26,7 +26,8 @@ public class OrderStatus {
     // 배송중
     // 대기
     // 완료
-    // 반품
+    // 반품 대기
+    // 반품 완료
     // 주문 취소
 
     @Builder

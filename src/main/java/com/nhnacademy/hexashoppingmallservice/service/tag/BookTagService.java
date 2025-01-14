@@ -40,6 +40,14 @@ public class BookTagService {
         return bookTagRepository.findBooksByTagId(tagId, pageable).getContent();
     }
 
+    // 태그 아이디로 책 갯수 카운트
+    public int countBooksByTagId(Long tagId) {
+        if(!tagRepository.existsById(tagId)) {
+            throw new TagNotFoundException("Tag: %d not found.".formatted(tagId));
+        }
+        return bookTagRepository.countByTag_TagId(tagId);
+    }
+
     // 생성
     @Transactional
     public void create(Long bookId, Long tagId) {
