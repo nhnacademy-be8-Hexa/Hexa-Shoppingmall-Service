@@ -26,4 +26,6 @@ public interface BookTagRepository extends JpaRepository<BookTag, Long> {
 
     void deleteByBook_BookIdAndTag_TagId(Long bookId, Long tagId);
 
+    int countByTag_TagId(Long tagId);
+
 }

@@ -49,3 +49,6 @@ POST localhost:8081/api/admin/books/2/tags/3
 
 ### 1번 도서에 1번 태그 삭제
 DELETE localhost:8081/api/admin/books/1/tags/1
+
+### 태그의 책 갯수
+GET localhost:8081/api/tags/35/books/count
