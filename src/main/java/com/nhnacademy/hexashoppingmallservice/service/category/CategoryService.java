@@ -90,6 +90,29 @@ public class CategoryService {
 
 
     @Transactional
+    public void insertBooks(Long categoryId, List<Long> bookIds) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException("Category Not Found. ID: %d".formatted(categoryId));
+        }
+        Category category = categoryRepository.findById(categoryId).get();
+
+        for (Long bookId : bookIds) {
+            if (!bookRepository.existsById(bookId)) {
+                throw new BookNotFoundException("Book Not Found. ID: %d".formatted(bookId));
+            }
+            Book book = bookRepository.findById(bookId).get();
+
+            BookCategory bookCategory = BookCategory.of(
+                    category,
+                    book
+            );
+
+            bookCategoryRepository.save(bookCategory);
+        }
+    }
+
+
+    @Transactional
     public List<Category> getAllPagedCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).getContent();
     }
@@ -152,5 +175,14 @@ public class CategoryService {
         }
 
         bookCategoryRepository.deleteByCategory_CategoryIdAndBook_BookId(categoryId, bookId);
+    }
+
+    @Transactional
+    public void deleteByCategoryIdAndBookIds(Long categoryId, List<Long> bookIds) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException("Category Not Found. ID: " + categoryId);
+        }
+
+        bookCategoryRepository.deleteByCategory_CategoryIdAndBook_BookIdIn(categoryId, bookIds);
     }
 }
