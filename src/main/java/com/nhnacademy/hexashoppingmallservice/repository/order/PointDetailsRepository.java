@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PointDetailsRepository extends JpaRepository<PointDetails, Long> {
-    @Query("SELECT SUM(pd.pointDetailsIncrement) FROM PointDetails pd WHERE pd.member.memberId = :memberId")
-    Long sumPointDetailsIncrementByMemberId(@Param("memberId") String memberId);
+//    @Query("SELECT SUM(pd.pointDetailsIncrement) FROM PointDetails pd WHERE pd.member.memberId = :memberId")
+//    Long sumPointDetailsIncrementByMemberId(@Param("memberId") String memberId);
     Page<PointDetailsProjection> findAllByMemberMemberId(String memberId, Pageable pageable);
 }

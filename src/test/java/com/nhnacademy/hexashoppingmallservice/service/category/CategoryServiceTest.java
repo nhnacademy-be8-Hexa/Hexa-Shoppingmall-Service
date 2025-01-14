@@ -5,6 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.*;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.category.CategoryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.CategoryRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,9 @@ class CategoryServiceTest {
 
     @Mock
     private BookCategoryRepository bookCategoryRepository;
+
+    @Mock
+    private CategoryRepositoryCustomImpl categoryRepositoryCustom;
 
     @InjectMocks
     private CategoryService categoryService;
@@ -73,7 +77,7 @@ class CategoryServiceTest {
     @Test
     void testGetAllCategoriesWithSubCategories() {
         // Mocking
-        when(categoryRepository.findAllFirstLevelWithSubCategories()).thenReturn(Arrays.asList(parentCategory));
+        when(categoryRepositoryCustom.findAllFirstLevelWithSubCategories()).thenReturn(Arrays.asList(parentCategory));
         when(categoryRepository.findByParentCategory(parentCategory)).thenReturn(Arrays.asList(subCategory1, subCategory2));
 
         List<CategoryDTO> result = categoryService.getAllCategoriesWithSubCategories();
@@ -100,7 +104,7 @@ class CategoryServiceTest {
         assertEquals(subCategory2.getCategoryName(), subDTO2.getCategoryName());
         assertNull(subDTO2.getSubCategories());
 
-        verify(categoryRepository, times(1)).findAllFirstLevelWithSubCategories();
+        verify(categoryRepositoryCustom, times(1)).findAllFirstLevelWithSubCategories();
         verify(categoryRepository, times(1)).findByParentCategory(parentCategory);
     }
 

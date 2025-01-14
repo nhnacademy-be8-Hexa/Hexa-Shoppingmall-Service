@@ -7,6 +7,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.category.CategoryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.CategoryRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import java.util.ArrayList;
@@ -25,10 +26,11 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final BookRepository bookRepository;
     private final BookCategoryRepository bookCategoryRepository;
+    private final CategoryRepositoryCustomImpl categoryRepositoryCustom;
 
     @Transactional(readOnly = true)
     public List<CategoryDTO> getAllCategoriesWithSubCategories() {
-        List<Category> categories = categoryRepository.findAllFirstLevelWithSubCategories();
+        List<Category> categories = categoryRepositoryCustom.findAllFirstLevelWithSubCategories();
         Map<Long, CategoryDTO> categoryMap = new LinkedHashMap<>();
 
         for (Category category : categories) {
