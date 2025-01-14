@@ -88,6 +88,7 @@ public class MemberService {
         updateIfNotNull(memberUpdateDTO.getMemberNumber(), member::setMemberNumber);
         updateIfNotNull(memberUpdateDTO.getMemberBirthAt(), member::setMemberBirthAt);
         updateIfNotNull(memberUpdateDTO.getMemberLastLoginAt(), member::setMemberLastLoginAt);
+        updateIfNotNull(memberUpdateDTO.getMemberEmail(), member::setMemberEmail);
 
         if (memberUpdateDTO.getRatingId() != null) {
             Rating rating = ratingRepository.findById(Long.parseLong(memberUpdateDTO.getRatingId()))
