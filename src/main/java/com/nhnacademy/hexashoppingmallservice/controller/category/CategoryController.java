@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.controller.category;
 
 import com.nhnacademy.hexashoppingmallservice.dto.category.CategoryDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.service.category.CategoryService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
@@ -70,31 +71,6 @@ public class CategoryController {
     }
 
     /**
-     * 모든 카테고리에서 서브카테고리가 존재하는 카테고리들의 ID를 반환
-     *
-     * @return 서브카테고리가 있는 카테고리들의 ID 목록
-     */
-    @GetMapping("/ids")
-    public ResponseEntity<List<Long>> findCategoryIdsWithSubCategories() {
-        List<CategoryDTO> categories = categoryService.getAllCategoriesWithSubCategories();
-        List<Long> categoryIds = categoryService.findCategoryIdsWithSubCategories(categories);
-        return new ResponseEntity<>(categoryIds, HttpStatus.OK);
-    }
-
-    /**
-     * 주어진 카테고리 ID와 그 하위 서브 카테고리들의 ID 목록을 반환합니다.
-     *
-     * @param categoryId 조회할 카테고리 ID
-     * @return 카테고리 및 서브 카테고리들의 ID 목록
-     */
-    @GetMapping("/{categoryId}/ids")
-    public ResponseEntity<List<Long>> extractCategoryIds(@PathVariable Long categoryId) {
-        List<CategoryDTO> categories = categoryService.getAllCategoriesWithSubCategories();
-        List<Long> categoryIds = categoryService.extractCategoryIds(categories, categoryId);
-        return new ResponseEntity<>(categoryIds, HttpStatus.OK);
-    }
-
-    /**
      * 카테고리 목록을 페이징 처리하여 반환하는 엔드포인트
      *
      * @param pageable 페이징 정보 (page, size)
@@ -142,8 +118,21 @@ public class CategoryController {
     }
 
     @PostMapping("/{categoryId}/books/{bookId}")
-    public ResponseEntity<Void> getAllBooksByCategoryId(@PathVariable Long categoryId, @PathVariable Long bookId) {
+    public ResponseEntity<Void> insertBook(@PathVariable Long categoryId, @PathVariable Long bookId) {
         categoryService.insertBook(categoryId, bookId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<List<Book>> getAllBooksByCategoryId(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(categoryService.getAllBooksByCategoryId(categoryId));
+    }
+
+    @DeleteMapping("/{categoryId}/books/{bookId}")
+    public ResponseEntity<Void> deleteByCategoryIdAndBookId(@PathVariable Long categoryId, @PathVariable Long bookId,
+                                                            HttpServletRequest request) {
+        jwtUtils.ensureAdmin(request);
+        categoryService.deleteByCategoryIdAndBookId(categoryId, bookId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
