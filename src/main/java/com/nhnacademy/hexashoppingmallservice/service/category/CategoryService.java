@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -90,21 +89,6 @@ public class CategoryService {
     }
 
 
-    /**
-     * 서브 카테고리가 존재하는 카테고리들의 ID 목록을 반환하는 메서드.
-     *
-     * @return 서브 카테고리가 있는 카테고리들의 ID 리스트
-     */
-    @Transactional(readOnly = true)
-    public List<Long> getCategoryIdsWithSubCategories() {
-        List<CategoryDTO> categories = getAllCategoriesWithSubCategories();
-        return categories.stream()
-                .filter(category -> !category.getSubCategories().isEmpty())
-                .map(CategoryDTO::getCategoryId)
-                .collect(Collectors.toList());
-    }
-
-
     @Transactional
     public List<Category> getAllPagedCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).getContent();
@@ -142,6 +126,18 @@ public class CategoryService {
         List<BookCategory> bookCategories = bookCategoryRepository.findByBook_BookId(bookId);
         return bookCategories.stream()
                 .map(BookCategory::getCategory)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> getAllBooksByCategoryId(Long categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException("Category Not Found. ID: " + categoryId);
+        }
+
+        List<BookCategory> bookCategory = bookCategoryRepository.findByCategory_CategoryId(categoryId);
+        return bookCategory.stream()
+                .map(BookCategory::getBook)
                 .toList();
     }
 
