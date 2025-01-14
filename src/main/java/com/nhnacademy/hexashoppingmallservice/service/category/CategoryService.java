@@ -91,53 +91,19 @@ public class CategoryService {
 
 
     /**
-     * 주어진 카테고리 목록에서 서브 카테고리가 존재하는 카테고리들의 ID를 반환하는 메서드
+     * 서브 카테고리가 존재하는 카테고리들의 ID 목록을 반환하는 메서드.
      *
-     * @param categories 모든 카테고리들의 리스트
-     * @return 서브 카테고리가 존재하는 카테고리들의 ID를 담은 리스트
+     * @return 서브 카테고리가 있는 카테고리들의 ID 리스트
      */
-    public List<Long> findCategoryIdsWithSubCategories(List<CategoryDTO> categories) {
+    @Transactional(readOnly = true)
+    public List<Long> getCategoryIdsWithSubCategories() {
+        List<CategoryDTO> categories = getAllCategoriesWithSubCategories();
         return categories.stream()
                 .filter(category -> !category.getSubCategories().isEmpty())
                 .map(CategoryDTO::getCategoryId)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 주어진 categories 리스트에서 categoryId에 해당하는 카테고리와 그 하위 서브 카테고리들의 categoryId를 추출하는 메서드
-     *
-     * @param categories 카테고리 리스트
-     * @param categoryId 찾고자 하는 카테고리 ID
-     * @return 해당 카테고리와 서브 카테고리들의 categoryId 리스트
-     */
-    public List<Long> extractCategoryIds(List<CategoryDTO> categories, Long categoryId) {
-        List<Long> categoryIds = new ArrayList<>();
-
-        for (CategoryDTO category : categories) {
-            if (category.getCategoryId().equals(categoryId)) {
-                categoryIds.add(category.getCategoryId());
-
-                if (category.getSubCategories() != null && !category.getSubCategories().isEmpty()) {
-                    for (CategoryDTO subCategory : category.getSubCategories()) {
-                        categoryIds.add(subCategory.getCategoryId());
-                    }
-                }
-                break;
-            }
-
-            if (category.getSubCategories() != null && !category.getSubCategories().isEmpty()) {
-                for (CategoryDTO subCategory : category.getSubCategories()) {
-
-                    if (subCategory.getCategoryId().equals(categoryId)) {
-                        categoryIds.add(subCategory.getCategoryId());
-                        break;
-                    }
-                }
-            }
-        }
-
-        return categoryIds;
-    }
 
     @Transactional
     public List<Category> getAllPagedCategories(Pageable pageable) {
@@ -179,4 +145,16 @@ public class CategoryService {
                 .toList();
     }
 
+    @Transactional
+    public void deleteByCategoryIdAndBookId(Long categoryId, Long bookId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new CategoryNotFoundException("Category Not Found. ID: " + categoryId);
+        }
+
+        if (!bookRepository.existsById(bookId)) {
+            throw new BookNotFoundException("Book Not Found. ID: " + bookId);
+        }
+
+        bookCategoryRepository.deleteByCategory_CategoryIdAndBook_BookId(categoryId, bookId);
+    }
 }

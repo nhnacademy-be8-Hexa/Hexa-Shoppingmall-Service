@@ -86,11 +86,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     // 특정 BookId에 대한 Author 리스트 조회
     @Query("""
-        SELECT a
-        FROM Author a
-        JOIN BookAuthor ba ON ba.author = a
-        WHERE ba.book.bookId = :bookId
-    """)
+                SELECT a
+                FROM Author a
+                JOIN BookAuthor ba ON ba.author = a
+                WHERE ba.book.bookId = :bookId
+            """)
     List<Author> findAuthorsByBookId(@Param("bookId") Long bookId);
 
     long countByBookIdIn(List<Long> bookIds);
