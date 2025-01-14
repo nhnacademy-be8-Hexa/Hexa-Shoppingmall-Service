@@ -23,6 +23,12 @@ public class TagService {
     private final TagRepository tagRepository;
     private final BookTagRepository bookTagRepository;
 
+    public Tag findTagById(Long id) {
+        return tagRepository.findById(id).orElseThrow(
+                ()-> new TagNotFoundException("Tag: %d not found.".formatted(id))
+        );
+    }
+
     public List<Tag> getAllTags(Pageable pageable) {
         Page<Tag> page = tagRepository.findAll(pageable);
         List<Tag> tags = page.getContent();
@@ -56,7 +62,6 @@ public class TagService {
         tag.setTagName(requestDTO.tagName());
     }
 
-    @Transactional
     public long getTotal() {
         return tagRepository.count();
     }
