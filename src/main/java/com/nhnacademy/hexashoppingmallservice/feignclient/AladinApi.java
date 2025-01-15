@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface AladinApi {
     @GetMapping
     ResponseEntity<String> searchBooks(
-            @RequestParam("ttbkey") String ttbkey,
+            @RequestParam("ttbKey") String ttbKey,
             @RequestParam("query") String query,
             @RequestParam("output") String output,
-            @RequestParam("version") String version
+            @RequestParam("version") String version,
+            @RequestParam("queryType") String queryType
     );
 }
