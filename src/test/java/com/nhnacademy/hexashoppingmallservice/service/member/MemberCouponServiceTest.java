@@ -234,4 +234,39 @@ class MemberCouponServiceTest {
         verify(memberCouponRepository, never()).delete(any(MemberCoupon.class));
     }
 
+
+    @Test
+    @DisplayName("isCouponIdDuplicate_Success - 특정 쿠폰 ID가 중복되었는지 확인")
+    void isCouponIdDuplicate_Success() {
+        // Arrange
+        Long couponId = 100L;
+
+        when(memberCouponRepository.existsByCouponId(couponId)).thenReturn(true);
+
+        // Act
+        boolean result = memberCouponService.isCouponIdDuplicate(couponId);
+
+        // Assert
+        assertTrue(result);
+
+        verify(memberCouponRepository, times(1)).existsByCouponId(couponId);
+    }
+
+    @Test
+    @DisplayName("isCouponIdDuplicate_Failure - 특정 쿠폰 ID가 중복되지 않았는지 확인")
+    void isCouponIdDuplicate_Failure() {
+        // Arrange
+        Long couponId = 100L;
+
+        when(memberCouponRepository.existsByCouponId(couponId)).thenReturn(false);
+
+        // Act
+        boolean result = memberCouponService.isCouponIdDuplicate(couponId);
+
+        // Assert
+        assertFalse(result);
+
+        verify(memberCouponRepository, times(1)).existsByCouponId(couponId);
+    }
+
 }
