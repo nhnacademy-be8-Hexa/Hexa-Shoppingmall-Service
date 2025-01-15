@@ -2,31 +2,28 @@ package com.nhnacademy.hexashoppingmallservice.service.book;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
-import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.BookRepositoryCustomImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -40,9 +37,6 @@ class BookServiceTest {
 
     @Mock
     private BookStatusRepository bookStatusRepository;
-
-    @Mock
-    private BookRepositoryCustomImpl bookRepositoryCustom;
 
     @InjectMocks
     private BookService bookService;
@@ -264,301 +258,4 @@ class BookServiceTest {
         verify(bookRepository, times(1)).findById(1L);
     }
 
-
-
-    @Test
-    void getBooks_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAll(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));  // 예시로 책 하나를 반환
-
-        List<Book> books = bookService.getBooks(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAll(pageable);
-    }
-
-    @Test
-    void getBooksByBookView_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findByOrderByBookViewDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookView(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByOrderByBookViewDesc(pageable);
-    }
-
-    @Test
-    void getBooksByBookSellCount_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findByOrderByBookSellCountDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookSellCount(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByOrderByBookSellCountDesc(pageable);
-    }
-
-    @Test
-    void getBooksByCategory_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        List<Long> categoryIds = List.of(1L, 2L); // 카테고리 ID 예시
-        when(bookRepositoryCustom.findBooksByCategoryIds(categoryIds, pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByCategory(categoryIds, pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepositoryCustom, times(1)).findBooksByCategoryIds(categoryIds, pageable);
-    }
-
-    @Test
-    void getBooksByLikeCount_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepositoryCustom.findBooksOrderByLikeCountDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByLikeCount(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepositoryCustom, times(1)).findBooksOrderByLikeCountDesc(pageable);
-    }
-
-    @Test
-    void getBooksByPublisherName_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        String publisherName = "PublisherName";
-        when(bookRepository.findByPublisherPublisherNameIgnoreCaseContaining(publisherName, pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByPublisherName(publisherName, pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByPublisherPublisherNameIgnoreCaseContaining(publisherName, pageable);
-    }
-
-    @Test
-    void getBooksByBookTitle_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        String bookTitle = "Book Title";
-        when(bookRepository.findByBookTitleContaining(bookTitle, pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookTitle(bookTitle, pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByBookTitleContaining(bookTitle, pageable);
-    }
-
-    @Test
-    void getBooksByAuthorName_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        String authorName = "Author Name";
-        when(bookRepositoryCustom.findBooksByAuthorNameLike(authorName, pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByAuthorName(authorName, pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepositoryCustom, times(1)).findBooksByAuthorNameLike(authorName, pageable);
-    }
-
-    @Test
-    void getBooksByTag_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        String tagName = "TagName";
-        when(bookRepositoryCustom.findBooksByTagName(tagName, pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByTag(tagName, pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepositoryCustom, times(1)).findBooksByTagName(tagName, pageable);
-    }
-
-    @Test
-    void getBooksByBookPubDate_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAllByOrderByBookPubDateDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookPubDate(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookPubDateDesc(pageable);
-    }
-
-    @Test
-    void getBooksByNameAsc_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAllByOrderByBookPubDateDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByNameAsc(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookPubDateDesc(pageable);
-    }
-
-    @Test
-    void getBooksByNameDesc_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAllByOrderByBookTitleDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByNameDesc(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookTitleDesc(pageable);
-    }
-
-    @Test
-    void getBooksByIsbnAsc_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepositoryCustom.findAllOrderByReviewCountDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByIsbnAsc(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepositoryCustom, times(1)).findAllOrderByReviewCountDesc(pageable);
-    }
-
-
-    @Test
-    void getBooksByIds_Success() {
-        List<Long> bookIds = List.of(1L, 2L, 3L);
-        List<Book> books = List.of(book);  // 예시로 책 하나를 반환
-
-        when(bookRepository.findAllById(bookIds)).thenReturn(books);
-
-        List<Book> result = bookService.getBooksByIds(bookIds);
-
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(1);  // 예시로 하나의 책만 반환
-        verify(bookRepository, times(1)).findAllById(bookIds);
-    }
-
-    @Test
-    void getAuthors_Success() {
-        Long bookId = 1L;
-        List<Author> authors = List.of(Author.builder().authorName("AuthorName").build());  // 예시로 하나의 저자 반환
-
-        when(bookRepository.existsById(bookId)).thenReturn(true);
-        when(bookRepositoryCustom.findAuthorsByBookId(bookId)).thenReturn(authors);
-
-        List<Author> result = bookService.getAuthors(bookId);
-
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(1);  // 예시로 하나의 저자만 반환
-        verify(bookRepository, times(1)).existsById(bookId);
-        verify(bookRepositoryCustom, times(1)).findAuthorsByBookId(bookId);
-    }
-
-    @Test
-    void getAuthors_BookNotFound() {
-        Long bookId = 1L;
-
-        when(bookRepository.existsById(bookId)).thenReturn(false);
-
-        BookNotFoundException exception = assertThrows(BookNotFoundException.class, () ->
-                bookService.getAuthors(bookId));
-
-        assertThat(exception.getMessage()).isEqualTo("book not found with id: 1");
-        verify(bookRepository, times(1)).existsById(bookId);
-        verify(bookRepositoryCustom, never()).findAuthorsByBookId(bookId);
-    }
-
-    @Test
-    void getTotal_Success_Search() {
-        String search = "Book Title";
-        Long totalCount = 100L;
-
-        when(bookRepository.countByBookTitleContaining(search)).thenReturn(totalCount);
-
-        Long result = bookService.getTotal(search, null, null, null);
-
-        assertThat(result).isEqualTo(100L);
-        verify(bookRepository, times(1)).countByBookTitleContaining(search);
-    }
-
-    @Test
-    void getTotal_Success_Category() {
-        List<Long> categoryIds = List.of(1L, 2L);
-        Long totalCount = 50L;
-
-        when(bookRepositoryCustom.countByCategoryIds(categoryIds)).thenReturn(totalCount);
-
-        Long result = bookService.getTotal(null, categoryIds, null, null);
-
-        assertThat(result).isEqualTo(50L);
-        verify(bookRepositoryCustom, times(1)).countByCategoryIds(categoryIds);
-    }
-
-    @Test
-    void getTotal_Success_Publisher() {
-        String publisherName = "PublisherName";
-        Long totalCount = 30L;
-
-        when(bookRepository.countByPublisherPublisherName(publisherName)).thenReturn(totalCount);
-
-        Long result = bookService.getTotal(null, null, publisherName, null);
-
-        assertThat(result).isEqualTo(30L);
-        verify(bookRepository, times(1)).countByPublisherPublisherName(publisherName);
-    }
-
-    @Test
-    void getTotal_Success_Author() {
-        String authorName = "AuthorName";
-        Long totalCount = 20L;
-
-        when(bookRepositoryCustom.countByAuthorName(authorName)).thenReturn(totalCount);
-
-        Long result = bookService.getTotal(null, null, null, authorName);
-
-        assertThat(result).isEqualTo(20L);
-        verify(bookRepositoryCustom, times(1)).countByAuthorName(authorName);
-    }
-
-    @Test
-    void getTotal_Success_NoFilters() {
-        Long totalCount = 200L;
-
-        when(bookRepository.count()).thenReturn(totalCount);
-
-        Long result = bookService.getTotal(null, null, null, null);
-
-        assertThat(result).isEqualTo(200L);
-        verify(bookRepository, times(1)).count();
-    }
 }

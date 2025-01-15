@@ -106,7 +106,7 @@ class PointDetailsRepositoryTest {
     void findAllByMemberMemberId(){
 
         PointDetails pointDetails4 = PointDetails.builder()
-                .pointDetailsId(1L)
+                .pointDetailsId(4L)
                 .member(member)
                 .pointDetailsIncrement(10000)
                 .pointDetailsComment("10000 증가")
