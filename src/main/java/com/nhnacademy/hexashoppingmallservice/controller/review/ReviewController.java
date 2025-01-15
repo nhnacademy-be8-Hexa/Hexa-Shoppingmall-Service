@@ -6,18 +6,22 @@ import com.nhnacademy.hexashoppingmallservice.service.review.ReviewService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.pqc.jcajce.provider.lms.LMSKeyFactorySpi;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.print.DocFlavor;
-import java.math.BigDecimal;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
@@ -131,7 +135,8 @@ public class ReviewController {
     }
 
     @PutMapping("/reviews/{reviewId}/block")
-    public ResponseEntity<Void> updateReviewBlock(@PathVariable Long reviewId, @RequestParam boolean block, HttpServletRequest request) {
+    public ResponseEntity<Void> updateReviewBlock(@PathVariable Long reviewId, @RequestParam boolean block,
+                                                  HttpServletRequest request) {
         String token = jwtUtils.getTokenFromRequest(request);
         String memberId = jwtUtils.getUsernameFromToken(token);
         jwtUtils.ensureUserAccess(request, memberId);
@@ -141,11 +146,10 @@ public class ReviewController {
 
     /**
      * 신고 5회 이상의 리뷰 목록 조회
-     *
-     *
      */
     @GetMapping("/reviews/highReport")
-    public ResponseEntity<List<ReviewProjection>> getReviewsFromHighReport(Pageable pageable, HttpServletRequest request) {
+    public ResponseEntity<List<ReviewProjection>> getReviewsFromHighReport(Pageable pageable,
+                                                                           HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
         return ResponseEntity.ok(reviewService.getHighlyReportedReviews(pageable));
     }
@@ -161,5 +165,6 @@ public class ReviewController {
             @PathVariable Long bookId) {
         return ResponseEntity.ok(reviewService.getAverageReviewRatingByBookId(bookId));
     }
+
 
 }

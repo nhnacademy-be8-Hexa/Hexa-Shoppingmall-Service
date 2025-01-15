@@ -1,15 +1,14 @@
-package com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin;
+package com.nhnacademy.hexashoppingmallservice.feignclient.dto;
 
-
+import java.util.List;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-@NoArgsConstructor
 @Getter
-public class Book {
+@Setter
+public class AladinBookDTO {
     private String title;
-    private String author;
+    private List<String> authors;
     private String priceSales;
     private String priceStandard;
     private String publisher;
