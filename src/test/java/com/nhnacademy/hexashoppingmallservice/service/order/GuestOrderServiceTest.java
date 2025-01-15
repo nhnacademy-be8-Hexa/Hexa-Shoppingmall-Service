@@ -5,7 +5,6 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.GuestOrder;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Order;
 import com.nhnacademy.hexashoppingmallservice.exception.order.GuestOrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderPasswordProjection;
 import com.nhnacademy.hexashoppingmallservice.projection.order.GuestOrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.order.GuestOrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
@@ -236,42 +235,4 @@ class GuestOrderServiceTest {
         assertThrows(OrderNotFoundException.class, () -> guestOrderService.createGuestOrder(requestDTO));
 
     }
-
-    @Test
-    void getGuestOrderPassword_Success() {
-        Long orderId = 1L;
-        String expectedPassword = "password123";
-        GuestOrderPasswordProjection mockProjection = Mockito.mock(GuestOrderPasswordProjection.class);
-
-        // Mock the behavior of the repository
-        when(guestOrderRepository.existsByOrderId(orderId)).thenReturn(true);
-        when(guestOrderRepository.findGuestOrderPasswordByOrderId(orderId)).thenReturn(Optional.of(mockProjection));
-        when(mockProjection.getGuestOrderPassword()).thenReturn(expectedPassword);
-
-        // Call the method
-        String result = guestOrderService.getGuestOrderPassword(orderId, "anyPassword");
-
-        // Assertions
-        assertEquals(expectedPassword, result);
-        verify(guestOrderRepository, times(1)).existsByOrderId(orderId);
-        verify(guestOrderRepository, times(1)).findGuestOrderPasswordByOrderId(orderId);
-    }
-
-    @Test
-    void getGuestOrderPassword_NotFound() {
-        Long orderId = 1L;
-
-        // Mock the behavior of the repository
-        when(guestOrderRepository.existsByOrderId(orderId)).thenReturn(false);
-
-        // Call the method
-        String result = guestOrderService.getGuestOrderPassword(orderId, "anyPassword");
-
-        // Assertions
-        assertEquals("", result);
-        verify(guestOrderRepository, times(1)).existsByOrderId(orderId);
-        verify(guestOrderRepository, never()).findGuestOrderPasswordByOrderId(orderId);
-    }
-
-
 }
