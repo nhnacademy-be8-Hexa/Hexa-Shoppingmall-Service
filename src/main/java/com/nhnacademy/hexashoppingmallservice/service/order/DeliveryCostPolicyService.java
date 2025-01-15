@@ -25,6 +25,10 @@ public class DeliveryCostPolicyService {
         return deliveryCostPolicyRepository.findAll(pageable).getContent();
     }
 
+    public Long countAll(){
+        return deliveryCostPolicyRepository.count();
+    }
+
     public DeliveryCostPolicy getRecent() {
         DeliveryCostPolicy res = deliveryCostPolicyRepository.findFirstByOrderByDeliveryCostPolicyIdDesc();
         if(res == null) {

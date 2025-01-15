@@ -38,6 +38,12 @@ public class DeliveryCostPolicyController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/api/delivery-cost-policy/count")
+    public ResponseEntity<Long> getCount(){
+        Long count = deliveryCostPolicyService.countAll();
+        return ResponseEntity.ok(count);
+    }
+
 
     @PostMapping("/api/delivery-cost-policy")
     public ResponseEntity<?> create(@RequestBody DeliveryCostPolicyRequest deliveryCostPolicyRequest,
