@@ -21,7 +21,7 @@ Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb
 GET http://localhost:8081/api/naverApi?query=한강
 
 ### 알라딘
-GET http://localhost:8081/api/aladinApi?query=한강
+GET http://localhost:8081/api/aladinApi?query=오소리
 
 
 

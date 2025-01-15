@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nhnacademy.hexashoppingmallservice.feignclient.AladinApi;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.Book;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.ListBook;
+import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookDTO;
 import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
@@ -17,9 +18,12 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepositor
 import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -67,12 +71,15 @@ public class AladinApiService {
         this.bookCategoryRepository = bookCategoryRepository;
     }
 
-    public List<Book> searchBooks(String query) {
+    public List<AladinBookDTO> searchBooks(String query) {
         try {
             ResponseEntity<String> response = aladinApi.searchBooks(ttbKey, query, output, version, queryType);
             ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
 
+
             List<Book> bookList = books.getItem();
+            List<AladinBookDTO> aladinBooks = new ArrayList<>();
+
             if (Objects.isNull(bookList)) {
                 return Collections.emptyList();
             }
@@ -82,17 +89,30 @@ public class AladinApiService {
                 String decodedTitle = Jsoup.parse(title).text();
                 String decodedDescription = Jsoup.parse(description).text();
 
-                String cleanTitle = decodedTitle.split("-")[0].trim();
+                String cleanedTitle = decodedTitle.split("-")[0].trim();
 
                 String line = book.getAuthor();
                 String cleanedLine = line.replaceAll("\\(.*?\\)", "").trim();
+                List<String> authors = Arrays.stream(cleanedLine.split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
 
-                book.setTitle(cleanTitle);
-                book.setDescription(decodedDescription);
-                book.setCover(book.getCover().replace("coversum", "cover200"));
-                book.setAuthor(cleanedLine);
+                AladinBookDTO aladinBook = new AladinBookDTO();
+                aladinBook.setTitle(cleanedTitle);
+                aladinBook.setAuthors(authors);
+                aladinBook.setPriceSales(book.getPriceSales());
+                aladinBook.setPriceStandard(book.getPriceStandard());
+                aladinBook.setPublisher(book.getPublisher());
+                aladinBook.setPubDate(book.getPubDate());
+                aladinBook.setIsbn13(book.getIsbn13());
+                aladinBook.setDescription(decodedDescription);
+                aladinBook.setSalesPoint(book.getSalesPoint());
+                aladinBook.setCover(book.getCover().replace("coversum", "cover200"));
+
+                aladinBooks.add(aladinBook);
+
             }
-            return bookList;
+            return aladinBooks;
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

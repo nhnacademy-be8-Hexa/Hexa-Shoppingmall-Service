@@ -1,6 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.feignclient.controller;
 
-import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.Book;
+import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookDTO;
 import com.nhnacademy.hexashoppingmallservice.feignclient.service.AladinApiService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class AladinApiController {
     private AladinApiService aladinApiService;
 
     @GetMapping("/api/aladinApi")
-    private List<Book> searchBooks(@RequestParam(required = false) String query) {
+    private List<AladinBookDTO> searchBooks(@RequestParam(required = false) String query) {
         return aladinApiService.searchBooks(query);
     }
 
