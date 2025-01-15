@@ -5,6 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.*;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.category.CategoryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+
 import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
