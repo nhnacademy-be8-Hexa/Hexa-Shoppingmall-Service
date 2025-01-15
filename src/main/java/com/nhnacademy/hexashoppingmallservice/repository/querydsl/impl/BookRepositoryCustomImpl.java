@@ -1,8 +1,8 @@
-package com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl;
+package com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl;
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.*;
 import com.nhnacademy.hexashoppingmallservice.entity.review.QReview;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.BookRepositoryCustom;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.BookRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;

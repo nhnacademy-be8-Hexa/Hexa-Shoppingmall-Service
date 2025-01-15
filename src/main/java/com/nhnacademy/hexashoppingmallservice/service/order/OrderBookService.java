@@ -2,10 +2,8 @@ package com.nhnacademy.hexashoppingmallservice.service.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.OrderBookDTO;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderBookNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.order.OrderBookProjection;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.OrderBookRepositoryCustomImpl;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.OrderBookRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +13,10 @@ import java.util.List;
 public class OrderBookService {
 
     private final OrderBookRepository orderBookRepository;
-    private final OrderBookRepositoryCustomImpl orderBookRepositoryCustom;
 
     @Autowired
     public OrderBookService(OrderBookRepository orderBookRepository, OrderBookRepositoryCustomImpl orderBookRepositoryCustom) {
         this.orderBookRepository = orderBookRepository;
-        this.orderBookRepositoryCustom = orderBookRepositoryCustom;
     }
 
     /**
@@ -34,7 +30,7 @@ public class OrderBookService {
             throw new OrderBookNotFoundException("주문 ID " + orderId + "에 해당하는 주문이 존재하지 않습니다.");
         }
 
-        List<OrderBookDTO> orderBooks =  orderBookRepositoryCustom.findOrderBooksByOrderId(orderId);
+        List<OrderBookDTO> orderBooks =  orderBookRepository.findOrderBooksByOrderId(orderId);
 
 
         return orderBooks;

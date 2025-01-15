@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.repository.book.querydsl;
+package com.nhnacademy.hexashoppingmallservice.repository.querydsl;
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 

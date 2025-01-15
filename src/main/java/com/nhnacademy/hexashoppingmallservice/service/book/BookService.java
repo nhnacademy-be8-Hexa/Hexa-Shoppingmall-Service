@@ -15,8 +15,6 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusReposito
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import java.util.List;
 
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.BookRepositoryCustom;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.BookRepositoryCustomImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,6 @@ public class BookService {
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
     private final BookStatusRepository bookStatusRepository;
-    private final BookRepositoryCustomImpl bookRepositoryCustom;
 
     @Transactional
     public Book createBook(BookRequestDTO bookRequestDTO) {
@@ -91,13 +88,13 @@ public class BookService {
     // 도서 목록 - 카테고리 별
     public List<Book> getBooksByCategory(List<Long> categoryIds, Pageable pageable) {
         // 카테고리 아이디들이 비어있으면 빈 리스트 반환하게 하는 로직 추가하면 좋을듯
-        return bookRepositoryCustom.findBooksByCategoryIds(categoryIds, pageable).getContent();
+        return bookRepository.findBooksByCategoryIds(categoryIds, pageable).getContent();
     }
 
     @Transactional(readOnly = true)
     //좋아요 (내림차순)
     public List<Book> getBooksByLikeCount(Pageable pageable) {
-        return bookRepositoryCustom.findBooksOrderByLikeCountDesc(pageable).getContent();
+        return bookRepository.findBooksOrderByLikeCountDesc(pageable).getContent();
     }
 
     @Transactional(readOnly = true)
@@ -115,13 +112,13 @@ public class BookService {
     @Transactional(readOnly = true)
     // 도서 목록 저자 이름
     public List<Book> getBooksByAuthorName(String authorName, Pageable pageable) {
-        return bookRepositoryCustom.findBooksByAuthorNameLike(authorName, pageable).getContent();
+        return bookRepository.findBooksByAuthorNameLike(authorName, pageable).getContent();
     }
 
     @Transactional(readOnly = true)
     // 도서 목록 - 태그
     public List<Book> getBooksByTag(String tagName, Pageable pageable) {
-        return bookRepositoryCustom.findBooksByTagName(tagName, pageable).getContent();
+        return bookRepository.findBooksByTagName(tagName, pageable).getContent();
     }
 
     @Transactional(readOnly = true)
@@ -144,7 +141,7 @@ public class BookService {
     @Transactional(readOnly = true)
     // 도서 목록 - 리뷰순으로 내림찯순
     public List<Book> getBooksByIsbnAsc(Pageable pageable) {
-        return bookRepositoryCustom.findAllOrderByReviewCountDesc(pageable).getContent();
+        return bookRepository.findAllOrderByReviewCountDesc(pageable).getContent();
     }
 
     // 도서 수정
@@ -254,7 +251,7 @@ public class BookService {
             throw new BookNotFoundException("book not found with id: " + bookId);
         }
 
-        return bookRepositoryCustom.findAuthorsByBookId(bookId);
+        return bookRepository.findAuthorsByBookId(bookId);
     }
 
     // 도서 총계 조회 (페이징용)
@@ -263,11 +260,11 @@ public class BookService {
         if (search != null && !search.isEmpty()) {
             return bookRepository.countByBookTitleContaining(search);
         } else if (categoryIds != null && !categoryIds.isEmpty()) {
-            return bookRepositoryCustom.countByCategoryIds(categoryIds);
+            return bookRepository.countByCategoryIds(categoryIds);
         } else if (publisherName != null && !publisherName.isEmpty()) {
             return bookRepository.countByPublisherPublisherName(publisherName);
         } else if (authorName != null && !authorName.isEmpty()) {
-            return bookRepositoryCustom.countByAuthorName(authorName);
+            return bookRepository.countByAuthorName(authorName);
         } else {
             return bookRepository.count();
         }

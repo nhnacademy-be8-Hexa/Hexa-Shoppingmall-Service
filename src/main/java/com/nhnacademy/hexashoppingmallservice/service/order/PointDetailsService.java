@@ -5,7 +5,6 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.PointDetailsProjection;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.PointDetailsRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.PointDetailsRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.List;
 public class PointDetailsService {
     private final PointDetailsRepository pointDetailsRepository;
     private final MemberRepository memberRepository;
-    private final PointDetailsRepositoryCustomImpl pointDetailsRepositoryCustom;
 
     @Transactional
     public PointDetails createPointDetails(CreatePointDetailDTO createPointDetailDTO, String memberId) {
@@ -44,7 +42,7 @@ public class PointDetailsService {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException(memberId);
         }
-        return pointDetailsRepositoryCustom.sumPointDetailsIncrementByMemberId(memberId);
+        return pointDetailsRepository.sumPointDetailsIncrementByMemberId(memberId);
     }
 
     @Transactional(readOnly = true)
