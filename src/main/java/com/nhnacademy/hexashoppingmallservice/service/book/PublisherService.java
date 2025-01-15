@@ -18,6 +18,10 @@ public class PublisherService {
 
     @Transactional
     public Publisher createPublisher(Publisher publisher){
+
+        if (Objects.nonNull(publisherRepository.findByPublisherName(publisher.getPublisherName()))) {
+            return publisherRepository.findByPublisherName(publisher.getPublisherName());
+        }
         return publisherRepository.save(publisher);
     }
 

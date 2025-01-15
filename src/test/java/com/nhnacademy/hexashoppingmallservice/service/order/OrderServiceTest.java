@@ -13,10 +13,10 @@ import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundExcepti
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.exception.order.ParameterNotEnouthException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.OrderBookRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
@@ -65,6 +65,9 @@ class OrderServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private OrderBookRepositoryCustomImpl orderBookRepositoryCustom;
 
     @InjectMocks
     private OrderService orderService;
@@ -531,7 +534,7 @@ class OrderServiceTest {
 
             when(orderRepository.existsById(orderId)).thenReturn(true);
             when(bookRepository.existsById(bookId)).thenReturn(true);
-            when(orderBookRepository.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId)).thenReturn(expectedAmount);
+            when(orderBookRepositoryCustom.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId)).thenReturn(expectedAmount);
 
             // Act
             Long result = orderService.getAmount(orderId, bookId);
@@ -540,7 +543,7 @@ class OrderServiceTest {
             assertEquals(expectedAmount, result);
             verify(orderRepository, times(1)).existsById(orderId);
             verify(bookRepository, times(1)).existsById(bookId);
-            verify(orderBookRepository, times(1)).sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
+            verify(orderBookRepositoryCustom, times(1)).sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
         }
 
         @Test
@@ -560,7 +563,7 @@ class OrderServiceTest {
             assertEquals("Order ID 1 not found", exception.getMessage());
             verify(orderRepository, times(1)).existsById(orderId);
             verify(bookRepository, never()).existsById(bookId);
-            verify(orderBookRepository, never()).sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
+            verify(orderBookRepositoryCustom, never()).sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
         }
 
         @Test
@@ -581,7 +584,7 @@ class OrderServiceTest {
             assertEquals("Book ID 999 not found", exception.getMessage());
             verify(orderRepository, times(1)).existsById(orderId);
             verify(bookRepository, times(1)).existsById(bookId);
-            verify(orderBookRepository, never()).sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
+            verify(orderBookRepositoryCustom, never()).sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
         }
     }
 

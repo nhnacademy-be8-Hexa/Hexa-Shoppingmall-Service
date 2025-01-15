@@ -14,6 +14,7 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -99,7 +100,7 @@ public class BookService {
     @Transactional(readOnly = true)
     // 도서 목록 - 출판사
     public List<Book> getBooksByPublisherName(String publisherName, Pageable pageable) {
-        return bookRepository.findBooksByPublisherName(publisherName, pageable).getContent();
+        return bookRepository.findByPublisherPublisherNameIgnoreCaseContaining(publisherName, pageable).getContent();
     }
 
     @Transactional(readOnly = true)
@@ -261,7 +262,7 @@ public class BookService {
         } else if (categoryIds != null && !categoryIds.isEmpty()) {
             return bookRepository.countByCategoryIds(categoryIds);
         } else if (publisherName != null && !publisherName.isEmpty()) {
-            return bookRepository.countByPublisherName(publisherName);
+            return bookRepository.countByPublisherPublisherName(publisherName);
         } else if (authorName != null && !authorName.isEmpty()) {
             return bookRepository.countByAuthorName(authorName);
         } else {

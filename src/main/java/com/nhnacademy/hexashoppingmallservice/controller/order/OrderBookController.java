@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.controller.order;
 
+import com.nhnacademy.hexashoppingmallservice.dto.book.OrderBookDTO;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderBookProjection;
 import com.nhnacademy.hexashoppingmallservice.service.order.OrderBookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,9 @@ public class OrderBookController {
      * @return 주문 상세 정보 리스트
      */
 
-    @GetMapping("api/orders/{orderId}/orderBooks")
-    public ResponseEntity<List<OrderBookProjection>> getOrderBooks(@PathVariable Long orderId) {
-        List<OrderBookProjection> orderBooks = orderBookService.getOrderBooksByOrderId(orderId);
+    @GetMapping("/api/orders/{orderId}/orderBooks")
+    public ResponseEntity<List<OrderBookDTO>> getOrderBooks(@PathVariable Long orderId) {
+        List<OrderBookDTO> orderBooks = orderBookService.getOrderBooksByOrderId(orderId);
         return ResponseEntity.ok(orderBooks);
     }
 }

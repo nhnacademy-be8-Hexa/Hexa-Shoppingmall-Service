@@ -2,13 +2,14 @@ package com.nhnacademy.hexashoppingmallservice.repository.review;
 
 import com.nhnacademy.hexashoppingmallservice.entity.review.Review;
 import com.nhnacademy.hexashoppingmallservice.projection.review.ReviewProjection;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.ReviewRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
     Page<ReviewProjection> findByMemberMemberIdAndReviewIsBlockedFalse(String memberId, Pageable pageable);
     Long countByMemberMemberIdAndReviewIsBlockedFalse(String memberId);
     Page<ReviewProjection> findByBookBookIdAndReviewIsBlockedFalse(Long bookId, Pageable pageable);
@@ -38,4 +39,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     long countReviewsWithMinReports(@Param("reportCount") long reportCount);
 
     boolean existsByMemberMemberIdAndBookBookId(String memberId, Long bookId);
+
 }
