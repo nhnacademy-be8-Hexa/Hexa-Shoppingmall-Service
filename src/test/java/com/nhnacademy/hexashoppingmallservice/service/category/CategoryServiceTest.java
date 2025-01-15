@@ -108,22 +108,22 @@ class CategoryServiceTest {
         verify(categoryRepository, times(1)).findByParentCategory(parentCategory);
     }
 
-    // createCategory 메서드 테스트
-//    @Test
-//    void testCreateCategory() {
-//
-//        Category newCategory = Category.of("New Category", null);
-//
-//        when(categoryRepository.save(newCategory)).thenReturn(newCategory);
-//
-//        Category result = categoryService.createCategory(newCategory);
-//
-//        assertNotNull(result);
-//        assertEquals(newCategory.getCategoryId(), result.getCategoryId());
-//        assertEquals("New Category", result.getCategoryName());
-//
-//        verify(categoryRepository, times(1)).save(newCategory);
-//    }
+//     createCategory 메서드 테스트
+    @Test
+    void testCreateCategory2() {
+
+        Category newCategory = Category.of("New Category", null);
+
+        when(categoryRepository.save(newCategory)).thenReturn(newCategory);
+
+        Category result = categoryService.createCategory(newCategory);
+
+        assertNotNull(result);
+        assertEquals(newCategory.getCategoryId(), result.getCategoryId());
+        assertEquals("New Category", result.getCategoryName());
+
+        verify(categoryRepository, times(1)).save(newCategory);
+    }
 
     // insertCategory 메서드 성공 시 테스트
     @Test
@@ -247,4 +247,274 @@ class CategoryServiceTest {
         verify(bookRepository, times(1)).existsById(bookId);
         verify(bookCategoryRepository, never()).save(any());
     }
+
+    // createCategory 메서드 테스트
+    @Test
+    void testCreateCategory() {
+        Category newCategory = Category.of("New Category", null);
+
+        when(categoryRepository.save(newCategory)).thenReturn(newCategory);
+
+        Category result = categoryService.createCategory(newCategory);
+
+        assertNotNull(result);
+        assertEquals(newCategory.getCategoryId(), result.getCategoryId());
+        assertEquals("New Category", result.getCategoryName());
+
+        verify(categoryRepository, times(1)).save(newCategory);
+    }
+
+    // insertBooks 메서드 성공 시 테스트
+    @Test
+    void testInsertBooks_Success() {
+        Long categoryId = 1L;
+        List<Long> bookIds = Arrays.asList(10L, 20L);
+        Category category = parentCategory;
+        Book book1 = Book.of("Book 1", "Description 1", LocalDate.now(), 1234567890123L, 10000, 12000, Publisher.of("Publisher1"), BookStatus.of("Available"));
+        Book book2 = Book.of("Book 2", "Description 2", LocalDate.now(), 1234567890124L, 15000, 18000, Publisher.of("Publisher2"), BookStatus.of("Available"));
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+        when(bookRepository.existsById(10L)).thenReturn(true);
+        when(bookRepository.existsById(20L)).thenReturn(true);
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(bookRepository.findById(10L)).thenReturn(Optional.of(book1));
+        when(bookRepository.findById(20L)).thenReturn(Optional.of(book2));
+
+        categoryService.insertBooks(categoryId, bookIds);
+
+        ArgumentCaptor<BookCategory> captor = ArgumentCaptor.forClass(BookCategory.class);
+        verify(bookCategoryRepository, times(2)).save(captor.capture());
+
+        List<BookCategory> savedBookCategories = captor.getAllValues();
+        assertEquals(category, savedBookCategories.get(0).getCategory());
+        assertEquals(book1, savedBookCategories.get(0).getBook());
+        assertEquals(category, savedBookCategories.get(1).getCategory());
+        assertEquals(book2, savedBookCategories.get(1).getBook());
+    }
+
+    // insertBooks 메서드 카테고리 없음 테스트
+    @Test
+    void testInsertBooks_CategoryNotFound() {
+        Long categoryId = 1L;
+        List<Long> bookIds = Arrays.asList(10L, 20L);
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
+                categoryService.insertBooks(categoryId, bookIds)
+        );
+
+        assertEquals("Category Not Found. ID: 1", exception.getMessage());
+
+        verify(categoryRepository, times(1)).existsById(categoryId);
+        verify(bookRepository, never()).existsById(anyLong());
+        verify(bookCategoryRepository, never()).save(any());
+    }
+
+    // insertBooks 메서드 책 없음 테스트
+    @Test
+    void testInsertBooks_BookNotFound() {
+        Long categoryId = 1L;
+        List<Long> bookIds = List.of(20L);
+        Category category = Category.of("Category", null);
+
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+        when(bookRepository.existsById(20L)).thenReturn(false); // 2번째 책이 존재하지 않음
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        BookNotFoundException exception = assertThrows(BookNotFoundException.class, () ->
+                categoryService.insertBooks(categoryId, bookIds)
+        );
+
+        assertEquals("Book Not Found. ID: 20", exception.getMessage());
+
+        verify(categoryRepository, times(1)).existsById(categoryId);
+        verify(bookRepository, times(1)).existsById(anyLong());
+        verify(bookCategoryRepository, never()).save(any());
+    }
+
+    // getAllPagedCategories 메서드 테스트
+//    @Test
+//    void testGetAllPagedCategories() {
+//        Pageable pageable = Pageable.unpaged();
+//        Category category1 = Category.of("Category 1", null);
+//        Category category2 = Category.of("Category 2", null);
+//        List<Category> categories = Arrays.asList(category1, category2);
+//
+//        when(categoryRepository.findAll(pageable)).thenReturn(new PageImpl<>(categories));
+//
+//        List<Category> result = categoryService.getAllPagedCategories(pageable);
+//
+//        assertNotNull(result);
+//        assertEquals(2, result.size());
+//        assertEquals("Category 1", result.get(0).getCategoryName());
+//        assertEquals("Category 2", result.get(1).getCategoryName());
+//
+//        verify(categoryRepository, times(1)).findAll(pageable);
+//    }
+
+    // getAllCategories 메서드 테스트
+    @Test
+    void testGetAllCategories() {
+        Category category1 = Category.of("Category 1", null);
+        Category category2 = Category.of("Category 2", null);
+        List<Category> categories = Arrays.asList(category1, category2);
+
+        when(categoryRepository.findAll()).thenReturn(categories);
+
+        List<Category> result = categoryService.getAllCategories();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Category 1", result.get(0).getCategoryName());
+        assertEquals("Category 2", result.get(1).getCategoryName());
+
+        verify(categoryRepository, times(1)).findAll();
+    }
+
+    // getTotal 메서드 테스트
+    @Test
+    void testGetTotal() {
+        when(categoryRepository.count()).thenReturn(5L);
+
+        Long result = categoryService.getTotal();
+
+        assertNotNull(result);
+        assertEquals(5L, result);
+
+        verify(categoryRepository, times(1)).count();
+    }
+
+    // deleteCategory 메서드 성공 시 테스트
+    @Test
+    void testDeleteCategory_Success() {
+        Long categoryId = 1L;
+        Category category = parentCategory;
+
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(categoryRepository.findByParentCategory(category)).thenReturn(Arrays.asList(subCategory1, subCategory2));
+
+        categoryService.deleteCategory(categoryId);
+
+        verify(categoryRepository, times(1)).delete(category);
+        verify(categoryRepository, times(1)).findById(categoryId);
+        verify(categoryRepository, times(1)).findByParentCategory(category);
+    }
+
+    // deleteCategory 메서드 카테고리 없음 테스트
+    @Test
+    void testDeleteCategory_CategoryNotFound() {
+        Long categoryId = 1L;
+
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
+                categoryService.deleteCategory(categoryId)
+        );
+
+        assertEquals("Category Not Found. ID: 1", exception.getMessage());
+
+        verify(categoryRepository, times(1)).findById(categoryId);
+        verify(categoryRepository, never()).findByParentCategory(any());
+        verify(categoryRepository, never()).delete(any());
+    }
+
+    // getAllCategoriesByBookId 메서드 테스트
+    @Test
+    void testGetAllCategoriesByBookId() {
+        Long bookId = 10L;
+
+        // BookCategory 객체를 생성하여 카테고리와 연결
+        BookCategory bookCategory1 = BookCategory.of(parentCategory, book);
+        BookCategory bookCategory2 = BookCategory.of(subCategory1, book);
+
+        List<BookCategory> bookCategories = Arrays.asList(bookCategory1, bookCategory2);
+
+        // Mocking: bookRepository에서 bookId로 책이 존재한다고 반환
+        when(bookRepository.existsById(bookId)).thenReturn(true);
+
+        // Mocking: bookCategoryRepository에서 bookId에 해당하는 BookCategory 목록을 반환
+        when(bookCategoryRepository.findByBook_BookId(bookId)).thenReturn(bookCategories);
+
+        // 테스트 실행
+        List<Category> result = categoryService.getAllCategoriesByBookId(bookId);
+
+        // 결과 검증
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Parent Category", result.get(0).getCategoryName());
+        assertEquals("Sub Category 1", result.get(1).getCategoryName());
+
+        // Verify mocking calls
+        verify(bookRepository, times(1)).existsById(bookId);
+        verify(bookCategoryRepository, times(1)).findByBook_BookId(bookId);
+    }
+
+
+
+
+    // deleteByCategoryIdAndBookId 메서드 테스트
+    @Test
+    void testDeleteByCategoryIdAndBookId_Success() {
+        Long categoryId = 1L;
+        Long bookId = 10L;
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+        when(bookRepository.existsById(bookId)).thenReturn(true);
+
+        categoryService.deleteByCategoryIdAndBookId(categoryId, bookId);
+
+        verify(bookCategoryRepository, times(1)).deleteByCategory_CategoryIdAndBook_BookId(categoryId, bookId);
+    }
+
+    // deleteByCategoryIdAndBookId 메서드 카테고리 없음 테스트
+    @Test
+    void testDeleteByCategoryIdAndBookId_CategoryNotFound() {
+        Long categoryId = 1L;
+        Long bookId = 10L;
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
+                categoryService.deleteByCategoryIdAndBookId(categoryId, bookId)
+        );
+
+        assertEquals("Category Not Found. ID: 1", exception.getMessage());
+
+        verify(categoryRepository, times(1)).existsById(categoryId);
+        verify(bookRepository, never()).existsById(bookId);
+        verify(bookCategoryRepository, never()).deleteByCategory_CategoryIdAndBook_BookId(any(), any());
+    }
+
+    // deleteByCategoryIdAndBookIds 메서드 테스트
+    @Test
+    void testDeleteByCategoryIdAndBookIds_Success() {
+        Long categoryId = 1L;
+        List<Long> bookIds = Arrays.asList(10L, 20L);
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+
+        categoryService.deleteByCategoryIdAndBookIds(categoryId, bookIds);
+
+        verify(bookCategoryRepository, times(1)).deleteByCategory_CategoryIdAndBook_BookIdIn(categoryId, bookIds);
+    }
+
+    // deleteByCategoryIdAndBookIds 메서드 카테고리 없음 테스트
+    @Test
+    void testDeleteByCategoryIdAndBookIds_CategoryNotFound() {
+        Long categoryId = 1L;
+        List<Long> bookIds = Arrays.asList(10L, 20L);
+
+        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+
+        CategoryNotFoundException exception = assertThrows(CategoryNotFoundException.class, () ->
+                categoryService.deleteByCategoryIdAndBookIds(categoryId, bookIds)
+        );
+
+        assertEquals("Category Not Found. ID: 1", exception.getMessage());
+
+        verify(categoryRepository, times(1)).existsById(categoryId);
+        verify(bookCategoryRepository, never()).deleteByCategory_CategoryIdAndBook_BookIdIn(any(), any());
+    }
+
 }
