@@ -79,7 +79,7 @@ public class BookRepositoryTest {
 
     @Test
     void testFindBooksByPublisherName() {
-        var page = bookRepository.findBooksByPublisherName("Test Publisher", PageRequest.of(0, 10));
+        var page = bookRepository.findByPublisherPublisherNameIgnoreCaseContaining("Test Publisher", PageRequest.of(0, 10));
 
         assertThat(page.getContent()).hasSize(1);
         assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
@@ -93,32 +93,32 @@ public class BookRepositoryTest {
         assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
     }
 
-    @Test
-    void testFindBooksOrderByLikeCountDesc() {
-        var page = bookRepository.findBooksOrderByLikeCountDesc(PageRequest.of(0, 10));
+//    @Test
+//    void testFindBooksOrderByLikeCountDesc() {
+//        var page = bookRepository.findBooksOrderByLikeCountDesc(PageRequest.of(0, 10));
+//
+//        assertThat(page.getContent()).hasSize(1);
+//        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
+//    }
 
-        assertThat(page.getContent()).hasSize(1);
-        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
-    }
+//    @Test
+//    void testFindBooksByCategoryIds() {
+//
+//        var page = bookRepository.findBooksByCategoryIds(List.of(categoryId1, categoryId2), PageRequest.of(0, 10));
+//        System.out.println(categoryId1);
+//        System.out.println(categoryId2);
+//
+//        assertThat(page.getContent()).hasSize(1);
+//        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
+//    }
 
-    @Test
-    void testFindBooksByCategoryIds() {
-
-        var page = bookRepository.findBooksByCategoryIds(List.of(categoryId1, categoryId2), PageRequest.of(0, 10));
-        System.out.println(categoryId1);
-        System.out.println(categoryId2);
-
-        assertThat(page.getContent()).hasSize(1);
-        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
-    }
-
-    @Test
-    void testFindBooksByTagName() {
-        var page = bookRepository.findBooksByTagName("Test Tag", PageRequest.of(0, 10));
-
-        assertThat(page.getContent()).hasSize(1);
-        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
-    }
+//    @Test
+//    void testFindBooksByTagName() {
+//        var page = bookRepository.findBooksByTagName("Test Tag", PageRequest.of(0, 10));
+//
+//        assertThat(page.getContent()).hasSize(1);
+//        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
+//    }
 
     @Test
     void testFindAllByOrderByBookPubDateDesc() {

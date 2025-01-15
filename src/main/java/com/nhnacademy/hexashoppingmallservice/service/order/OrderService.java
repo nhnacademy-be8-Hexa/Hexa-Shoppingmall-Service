@@ -16,6 +16,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.order.ParameterNotEnouth
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.OrderBookRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberOrderSummary3MRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
@@ -44,6 +45,7 @@ public class OrderService {
     private final BookRepository bookRepository;
     private final MemberOrderSummary3MRepository memberOrderSummary3MRepository;
     private final MemberRatingUtils memberRatingUtils;
+    private final OrderBookRepositoryCustomImpl orderBookRepositoryCustom;
 
     @Transactional
     public Long createOrder(OrderRequestDTO orderRequestDTO, List<Long> bookIds, List<Integer> amounts, Long couponId) {
@@ -138,7 +140,7 @@ public class OrderService {
         if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException("Book ID %d not found".formatted(bookId));
         }
-        return orderBookRepository.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
+        return orderBookRepositoryCustom.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId);
     }
 
     @Transactional
