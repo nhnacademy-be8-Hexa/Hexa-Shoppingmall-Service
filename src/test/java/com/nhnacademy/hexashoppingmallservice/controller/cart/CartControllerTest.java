@@ -1,14 +1,12 @@
 package com.nhnacademy.hexashoppingmallservice.controller.cart;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.hexashoppingmallservice.dto.cart.CartRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.projection.cart.CartProjection;
+import com.nhnacademy.hexashoppingmallservice.dto.cart.CartDTO;
+import com.nhnacademy.hexashoppingmallservice.exception.InvalidTokenException;
 import com.nhnacademy.hexashoppingmallservice.service.cart.CartService;
 import com.nhnacademy.hexashoppingmallservice.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +16,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CartController.class)
 @ExtendWith(RestDocumentationExtension.class)
@@ -59,339 +50,109 @@ class CartControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final String AUTH_HEADER = "Authorization";
-    private final String BEARER_TOKEN = "Bearer dummy-token";
+    @Test
+    @DisplayName("GET /api/members/{memberId}/carts - 성공")
+    void getCart_Success() throws Exception {
+        String memberId = "hexa";
+        List<CartDTO> cartDtos = List.of(
+                new CartDTO(101L, 2),
+                new CartDTO(102L, 1)
+        );
 
-    @BeforeEach
-    void setUp() {
-        // 기본적으로 jwtUtils.ensureUserAccess가 호출될 때 아무 동작도 하지 않도록 설정
-        doNothing().when(jwtUtils).ensureUserAccess(any(HttpServletRequest.class), any(String.class));
+        // Mock JwtUtils to do nothing (i.e., pass)
+        doNothing().when(jwtUtils).ensureUserAccess(any(HttpServletRequest.class), eq(memberId));
+
+        // Mock CartService to return cartDtos
+        when(cartService.getCart(memberId)).thenReturn(cartDtos);
+
+        mockMvc.perform(get("/api/members/{memberId}/carts", memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(cartDtos)));
+
+        // Verify interactions
+        verify(jwtUtils, times(1)).ensureUserAccess(any(HttpServletRequest.class), eq(memberId));
+        verify(cartService, times(1)).getCart(memberId);
     }
 
-    @Nested
-    @DisplayName("GET /api/members/{memberId}/carts/{cartId}")
-    class GetCartTests {
+    @Test
+    @DisplayName("GET /api/members/{memberId}/carts - JwtUtils 예외 발생 시")
+    void getCart_JwtException() throws Exception {
+        String memberId = "hexa";
 
-        @Test
-        @DisplayName("성공적으로 특정 카트를 조회한다")
-        void getCart_Success() throws Exception {
-            // Arrange
-            String memberId = "member123";
-            Long cartId = 1L;
+        // Mock JwtUtils to throw an exception
+        doThrow(new InvalidTokenException("Unauthorized")).when(jwtUtils).ensureUserAccess(any(HttpServletRequest.class), eq(memberId));
 
-            // 실제 구현 객체를 생성하여 반환
-            CartProjection cartProjection = new CartProjection() {
-                @Override
-                public Long getCartId() {
-                    return cartId;
-                }
+        mockMvc.perform(get("/api/members/{memberId}/carts", memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("Unauthorized"));
 
-                @Override
-                public MemberProjection getMember() {
-                    return new MemberProjection() {
-                        @Override
-                        public String getMemberId() {
-                            return memberId;
-                        }
-                    };
-                }
-
-                @Override
-                public BookProjection getBook() {
-                    return new BookProjection() {
-                        @Override
-                        public Long getBookId() {
-                            return 2L;
-                        }
-
-                        @Override
-                        public String getBookTitle() {
-                            return "Book Title";
-                        }
-                    };
-                }
-
-                @Override
-                public Integer getCartAmount() {
-                    return 3;
-                }
-            };
-
-            when(cartService.getCart(cartId)).thenReturn(cartProjection);
-
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{memberId}/carts/{cartId}", memberId, cartId)
-                            .header(AUTH_HEADER, BEARER_TOKEN))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.cartId").value(cartId))
-                    .andExpect(jsonPath("$.member.memberId").value(memberId))
-                    .andExpect(jsonPath("$.book.bookId").value(2L))
-                    .andExpect(jsonPath("$.book.bookTitle").value("Book Title"))
-                    .andExpect(jsonPath("$.cartAmount").value(3))
-                    .andDo(document("get-cart",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                    parameterWithName("memberId").description("회원 ID"),
-                                    parameterWithName("cartId").description("카트 ID")
-                            ),
-                            requestHeaders(
-                                    headerWithName(AUTH_HEADER).description("인증 토큰")
-                            ),
-                            responseFields(
-                                    fieldWithPath("cartId").type(JsonFieldType.NUMBER).description("카트 ID"),
-                                    fieldWithPath("member.memberId").type(JsonFieldType.STRING).description("회원 ID"),
-                                    fieldWithPath("book.bookId").type(JsonFieldType.NUMBER).description("책 ID"),
-                                    fieldWithPath("book.bookTitle").type(JsonFieldType.STRING).description("책 제목"),
-                                    fieldWithPath("cartAmount").type(JsonFieldType.NUMBER).description("카트 수량")
-                            )
-                    ));
-        }
+        // Verify interactions
+        verify(jwtUtils, times(1)).ensureUserAccess(any(HttpServletRequest.class), eq(memberId));
+        verify(cartService, never()).getCart(anyString());
     }
 
-    @Nested
-    @DisplayName("GET /api/members/{memberId}/carts")
-    class GetCartsByMemberIdTests {
+    @Test
+    @DisplayName("PUT /api/members/{memberId}/carts - 성공")
+    void setCart_Success() throws Exception {
+        String memberId = "hexa";
+        List<CartDTO> cartDtos = List.of(
+                new CartDTO(101L, 2),
+                new CartDTO(102L, 1)
+        );
 
-        @Test
-        @DisplayName("성공적으로 특정 회원의 모든 카트를 조회한다")
-        void getCartsByMemberId_Success() throws Exception {
-            // Arrange
-            String memberId = "member123";
+        // Mock CartService to do nothing
+        doNothing().when(cartService).setCart(memberId, cartDtos);
 
-            // 첫 번째 CartProjection
-            CartProjection cartProjection1 = new CartProjection() {
-                @Override
-                public Long getCartId() {
-                    return 1L;
-                }
+        mockMvc.perform(put("/api/members/{memberId}/carts", memberId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartDtos)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("장바구니가 성공적으로 설정되었습니다."));
 
-                @Override
-                public MemberProjection getMember() {
-                    return new MemberProjection() {
-                        @Override
-                        public String getMemberId() {
-                            return memberId;
-                        }
-                    };
-                }
-
-                @Override
-                public BookProjection getBook() {
-                    return new BookProjection() {
-                        @Override
-                        public Long getBookId() {
-                            return 1L;
-                        }
-
-                        @Override
-                        public String getBookTitle() {
-                            return "Book One";
-                        }
-                    };
-                }
-
-                @Override
-                public Integer getCartAmount() {
-                    return 2;
-                }
-            };
-
-            // 두 번째 CartProjection
-            CartProjection cartProjection2 = new CartProjection() {
-                @Override
-                public Long getCartId() {
-                    return 2L;
-                }
-
-                @Override
-                public MemberProjection getMember() {
-                    return new MemberProjection() {
-                        @Override
-                        public String getMemberId() {
-                            return memberId;
-                        }
-                    };
-                }
-
-                @Override
-                public BookProjection getBook() {
-                    return new BookProjection() {
-                        @Override
-                        public Long getBookId() {
-                            return 2L;
-                        }
-
-                        @Override
-                        public String getBookTitle() {
-                            return "Book Two";
-                        }
-                    };
-                }
-
-                @Override
-                public Integer getCartAmount() {
-                    return 3;
-                }
-            };
-
-            List<CartProjection> cartProjections = Arrays.asList(cartProjection1, cartProjection2);
-
-            when(cartService.getCartByMemberId(memberId)).thenReturn(cartProjections);
-
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{memberId}/carts", memberId)
-                            .header(AUTH_HEADER, BEARER_TOKEN))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].cartId").value(1L))
-                    .andExpect(jsonPath("$[0].member.memberId").value(memberId))
-                    .andExpect(jsonPath("$[0].book.bookId").value(1L))
-                    .andExpect(jsonPath("$[0].book.bookTitle").value("Book One"))
-                    .andExpect(jsonPath("$[0].cartAmount").value(2))
-                    .andExpect(jsonPath("$[1].cartId").value(2L))
-                    .andExpect(jsonPath("$[1].member.memberId").value(memberId))
-                    .andExpect(jsonPath("$[1].book.bookId").value(2L))
-                    .andExpect(jsonPath("$[1].book.bookTitle").value("Book Two"))
-                    .andExpect(jsonPath("$[1].cartAmount").value(3))
-                    .andDo(document("get-carts-by-memberId",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                    parameterWithName("memberId").description("회원 ID")
-                            ),
-                            requestHeaders(
-                                    headerWithName(AUTH_HEADER).description("인증 토큰")
-                            ),
-                            responseFields(
-                                    fieldWithPath("[].cartId").type(JsonFieldType.NUMBER).description("카트 ID"),
-                                    fieldWithPath("[].member.memberId").type(JsonFieldType.STRING).description("회원 ID"),
-                                    fieldWithPath("[].book.bookId").type(JsonFieldType.NUMBER).description("책 ID"),
-                                    fieldWithPath("[].book.bookTitle").type(JsonFieldType.STRING).description("책 제목"),
-                                    fieldWithPath("[].cartAmount").type(JsonFieldType.NUMBER).description("카트 수량")
-                            )
-                    ));
-        }
+        // Verify interactions
+        verify(cartService, times(1)).setCart(memberId, cartDtos);
     }
 
-    @Nested
-    @DisplayName("POST /api/carts")
-    class CreateCartTests {
+    @Test
+    @DisplayName("PUT /api/members/{memberId}/carts - 유효성 검증 실패")
+    void setCart_ValidationFailure() throws Exception {
+        String memberId = "hexa";
+        List<CartDTO> cartDtos = List.of(
+                new CartDTO(null, 2), // productId null
+                new CartDTO(102L, 0)  // quantity < 1
+        );
 
-        @Test
-        @DisplayName("성공적으로 카트를 생성한다")
-        void createCart_Success() throws Exception {
-            // Arrange
-            CartRequestDTO cartRequestDTO = new CartRequestDTO("member123", 1L, 2);
+        mockMvc.perform(put("/api/members/{memberId}/carts", memberId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartDtos)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").exists());
 
-            doNothing().when(cartService).createCart(any(CartRequestDTO.class));
-
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.post("/api/carts")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(cartRequestDTO)))
-                    .andExpect(status().isNoContent())
-                    .andDo(document("create-cart",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            requestFields(
-                                    fieldWithPath("memberId").type(JsonFieldType.STRING).description("회원 ID"),
-                                    fieldWithPath("bookId").type(JsonFieldType.NUMBER).description("책 ID"),
-                                    fieldWithPath("cartAmount").type(JsonFieldType.NUMBER).description("카트 수량")
-                            )
-                    ));
-        }
+        // Verify that service was never called due to validation failure
+        verify(cartService, never()).setCart(anyString(), anyList());
     }
 
-    @Nested
-    @DisplayName("DELETE /api/members/{memberId}/carts/{cartId}")
-    class DeleteCartTests {
+    @Test
+    @DisplayName("PUT /api/members/{memberId}/carts - 서비스 예외 발생 시")
+    void setCart_ServiceException() throws Exception {
+        String memberId = "hexa";
+        List<CartDTO> cartDtos = List.of(
+                new CartDTO(101L, 2),
+                new CartDTO(102L, 1)
+        );
 
-        @Test
-        @DisplayName("성공적으로 특정 카트를 삭제한다")
-        void deleteCart_Success() throws Exception {
-            // Arrange
-            String memberId = "member123";
-            Long cartId = 1L;
+        // Mock CartService to throw an exception
+        doThrow(new RuntimeException("Redis Error")).when(cartService).setCart(memberId, cartDtos);
 
-            doNothing().when(cartService).deleteCart(cartId);
+        mockMvc.perform(put("/api/members/{memberId}/carts", memberId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartDtos)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("Redis Error"));
 
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/members/{memberId}/carts/{cartId}", memberId, cartId)
-                            .header(AUTH_HEADER, BEARER_TOKEN))
-                    .andExpect(status().isOk())
-                    .andDo(document("delete-cart",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                    parameterWithName("memberId").description("회원 ID"),
-                                    parameterWithName("cartId").description("카트 ID")
-                            ),
-                            requestHeaders(
-                                    headerWithName(AUTH_HEADER).description("인증 토큰")
-                            )
-                    ));
-        }
-    }
-
-    @Nested
-    @DisplayName("DELETE /api/members/{memberId}/carts")
-    class ClearCartByMemberTests {
-
-        @Test
-        @DisplayName("성공적으로 특정 회원의 모든 카트를 삭제한다")
-        void clearCartByMember_Success() throws Exception {
-            // Arrange
-            String memberId = "member123";
-
-            doNothing().when(cartService).clearCartByMember(memberId);
-
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/members/{memberId}/carts", memberId)
-                            .header(AUTH_HEADER, BEARER_TOKEN))
-                    .andExpect(status().isNoContent())
-                    .andDo(document("clear-cart-by-member",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                    parameterWithName("memberId").description("회원 ID")
-                            ),
-                            requestHeaders(
-                                    headerWithName(AUTH_HEADER).description("인증 토큰")
-                            )
-                    ));
-        }
-    }
-
-    @Nested
-    @DisplayName("PUT /api/carts/{cartId}/quantity")
-    class UpdateCartItemQuantityTests {
-
-        @Test
-        @DisplayName("성공적으로 카트 아이템의 수량을 업데이트한다")
-        void updateCartItemQuantity_Success() throws Exception {
-            // Arrange
-            Long cartId = 1L;
-            CartRequestDTO cartRequestDTO = new CartRequestDTO(null, null, 5);
-
-            doNothing().when(cartService).updateCartItemQuantity(cartId, cartRequestDTO);
-
-            // Act & Assert
-            mockMvc.perform(RestDocumentationRequestBuilders.put("/api/carts/{cartId}/quantity", cartId)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(cartRequestDTO)))
-                    .andExpect(status().isNoContent())
-                    .andDo(document("update-cart-quantity",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                    parameterWithName("cartId").description("카트 ID")
-                            ),
-                            requestFields(
-                                    fieldWithPath("memberId").type(JsonFieldType.NULL).description("회원 ID").optional(),
-                                    fieldWithPath("bookId").type(JsonFieldType.NULL).description("책 ID").optional(),
-                                    fieldWithPath("cartAmount").type(JsonFieldType.NUMBER).description("카트 수량")
-                            )
-                    ));
-        }
+        // Verify interactions
+        verify(cartService, times(1)).setCart(memberId, cartDtos);
     }
 }

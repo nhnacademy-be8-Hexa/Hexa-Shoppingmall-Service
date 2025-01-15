@@ -35,16 +35,13 @@ public class SecureKeyManagerService {
     @Value("${appkey}")
     private String appKey;
 
-    @Value("${keyid}")
-    private String keyId;
-
     @Value("${keyStoreFilePath}")
     private String keyStoreFilePath;
 
     @Value("${password}")
     private String password;
 
-    public String fetchSecretFromKeyManager() {
+    public String fetchSecretFromKeyManager(String keyId) {
         try {
             // 키 저장소 객체를 만들되 키 유형이 PKCS12인 인스턴스를 가져오기
             KeyStore clientStore = KeyStore.getInstance("PKCS12");
