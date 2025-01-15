@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class AuthorService {
@@ -25,7 +27,11 @@ public class AuthorService {
         }
         Book book = bookRepository.findById(bookId).get();
         Author author = Author.of(authorName);
-        authorRepository.save(author);
+        if(Objects.isNull(authorRepository.findByAuthorName(authorName))) {
+            author = authorRepository.save(author);
+        } else {
+            author = authorRepository.findByAuthorName(authorName);
+        }
 
         BookAuthor bookAuthor = BookAuthor.of(book, author);
         bookAuthorRepository.save(bookAuthor);
