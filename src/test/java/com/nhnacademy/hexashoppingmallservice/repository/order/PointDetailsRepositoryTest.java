@@ -1,10 +1,14 @@
 package com.nhnacademy.hexashoppingmallservice.repository.order;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.projection.order.PointDetailsProjection;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 class PointDetailsRepositoryTest {
@@ -65,7 +64,7 @@ class PointDetailsRepositoryTest {
 
 
     @Test
-    void sumPointDetailsIncrementByMemberId(){
+    void sumPointDetailsIncrementByMemberId() {
 
         PointDetails pointDetails1 = PointDetails.builder()
                 .pointDetailsId(1L)
@@ -76,6 +75,7 @@ class PointDetailsRepositoryTest {
                 .build();
 
         PointDetails pointDetails2 = PointDetails.builder()
+                .pointDetailsId(2L)
                 .pointDetailsId(2L)
                 .member(member)
                 .pointDetailsIncrement(-5000)
@@ -103,7 +103,7 @@ class PointDetailsRepositoryTest {
     }
 
     @Test
-    void findAllByMemberMemberId(){
+    void findAllByMemberMemberId() {
 
         PointDetails pointDetails4 = PointDetails.builder()
                 .pointDetailsId(4L)
@@ -113,11 +113,19 @@ class PointDetailsRepositoryTest {
                 .pointDetailsDatetime(LocalDateTime.now())
                 .build();
         pointDetailsRepository.save(pointDetails4);
-        Pageable pageable = PageRequest.of(0,3);
-        Page<PointDetailsProjection> pointDetailsProjection = pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable);
-        assertEquals(pointDetails4.getPointDetailsId(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsId());
-        assertEquals(pointDetails4.getPointDetailsIncrement(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsIncrement());
-        assertEquals(pointDetails4.getPointDetailsComment(),pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(),pageable).getContent().getFirst().getPointDetailsComment());
+        Pageable pageable = PageRequest.of(0, 3);
+        
+        Page<PointDetailsProjection> pointDetailsProjection =
+                pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(), pageable);
+        assertEquals(pointDetails4.getPointDetailsId(),
+                pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(), pageable).getContent().getFirst()
+                        .getPointDetailsId());
+        assertEquals(pointDetails4.getPointDetailsIncrement(),
+                pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(), pageable).getContent().getFirst()
+                        .getPointDetailsIncrement());
+        assertEquals(pointDetails4.getPointDetailsComment(),
+                pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(), pageable).getContent().getFirst()
+                        .getPointDetailsComment());
     }
 
 

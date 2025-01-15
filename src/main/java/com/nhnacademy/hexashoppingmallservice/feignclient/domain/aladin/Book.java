@@ -11,6 +11,7 @@ import lombok.Setter;
 public class Book {
     @Setter
     private String title;
+    @Setter
     private String author;
     private String priceSales;
     private String priceStandard;
@@ -21,4 +22,6 @@ public class Book {
     private String description;
     private String categoryName;
     private String salesPoint;
+    @Setter
+    private String cover;
 }
