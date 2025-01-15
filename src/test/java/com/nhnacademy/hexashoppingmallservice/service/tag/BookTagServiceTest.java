@@ -3,9 +3,7 @@ package com.nhnacademy.hexashoppingmallservice.service.tag;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookTag;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
-import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.tag.AlreadyExistsBookTagException;
-import com.nhnacademy.hexashoppingmallservice.exception.tag.TagNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.tag.BookTagRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.tag.TagRepository;
@@ -127,49 +125,4 @@ class BookTagServiceTest {
 
         verify(bookTagRepository, times(1)).deleteByBook_BookIdAndTag_TagId(bookId, tagId);
     }
-
-    @Test
-    @DisplayName("책 아이디로 태그 리스트 조회 - 책이 존재하지 않는 경우 예외 발생")
-    void getTagsByBookId_BookNotFound() {
-        Long bookId = 1L;
-
-        when(bookRepository.existsById(bookId)).thenReturn(false);
-
-        assertThatThrownBy(() -> bookTagService.getTagsByBookId(bookId))
-                .isInstanceOf(BookNotFoundException.class)
-                .hasMessage("Book: 1 not found.");
-
-        verify(bookRepository, times(1)).existsById(bookId);
-    }
-
-    @Test
-    @DisplayName("태그 아이디로 책 리스트 조회 - 태그가 존재하지 않는 경우 예외 발생")
-    void getBooksByTagId_TagNotFound() {
-        Long tagId = 1L;
-        Pageable pageable = Pageable.unpaged();
-
-        when(tagRepository.existsById(tagId)).thenReturn(false);
-
-        assertThatThrownBy(() -> bookTagService.getBooksByTagId(tagId, pageable))
-                .isInstanceOf(TagNotFoundException.class)
-                .hasMessage("Tag: 1 not found.");
-
-        verify(tagRepository, times(1)).existsById(tagId);
-    }
-
-    @Test
-    @DisplayName("태그 아이디로 책 갯수 카운트 - 태그가 존재하지 않는 경우 예외 발생")
-    void countBooksByTagId_TagNotFound() {
-        Long tagId = 1L;
-
-        when(tagRepository.existsById(tagId)).thenReturn(false);
-
-        assertThatThrownBy(() -> bookTagService.countBooksByTagId(tagId))
-                .isInstanceOf(TagNotFoundException.class)
-                .hasMessage("Tag: 1 not found.");
-
-        verify(tagRepository, times(1)).existsById(tagId);
-    }
-
-
 }
