@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -143,5 +145,10 @@ public class ReviewService {
     public long getTotalHighlyReportedReviews() {
         long minimumReportCount = 5;
         return reviewRepository.countReviewsWithMinReports(minimumReportCount);
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getAverageReviewRatingByBookId(Long bookId) {
+        return reviewRepository.findAverageReviewRatingByBookId(bookId);
     }
 }

@@ -184,4 +184,5 @@ PUT http://localhost:8081/api/reviews/999?block=true
 ### 17. 리뷰 차단 (권한 없음 - 오류)
 PUT http://localhost:8081/api/reviews/1?block=true
 
-###
+### 도서의 리뷰 점수 평균 조회
+GET localhost:8081/api/books/13/review-rating
