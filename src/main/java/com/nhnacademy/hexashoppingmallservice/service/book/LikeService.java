@@ -8,7 +8,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.book.LikeAlreadyExistsEx
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.LikeRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.LikeRepositoryCustomImpl;
+
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
-    private final LikeRepositoryCustomImpl likeRepositoryCustom;
 
     @Transactional
     public void createLike(Long bookId, String memberId) {
@@ -66,7 +65,7 @@ public class LikeService {
         if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException("MemberId %s is not exist".formatted(memberId));
         }
-        return likeRepositoryCustom.findBooksLikedByMemberId(memberId);
+        return likeRepository.findBooksLikedByMemberId(memberId);
     }
 
 

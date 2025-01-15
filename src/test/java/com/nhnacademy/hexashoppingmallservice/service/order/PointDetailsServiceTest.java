@@ -8,7 +8,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.PointDetailsProjection;
-import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.PointDetailsRepositoryCustomImpl;
+
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.PointDetailsRepository;
 import org.junit.jupiter.api.Assertions;
@@ -43,9 +43,6 @@ class PointDetailsServiceTest {
 
     @Mock
     MemberRepository memberRepository;
-
-    @Mock
-    PointDetailsRepositoryCustomImpl pointDetailsRepositoryCustom;
 
     @InjectMocks
     PointDetailsService pointDetailsService;
@@ -132,7 +129,7 @@ class PointDetailsServiceTest {
     void sumPoint_success(){
 
         when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.TRUE);
-        when(pointDetailsRepositoryCustom.sumPointDetailsIncrementByMemberId(member.getMemberId())).thenReturn(20000L);
+        when(pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId())).thenReturn(20000L);
 
 
         assertEquals(20000L, pointDetailsService.sumPoint(member.getMemberId()));

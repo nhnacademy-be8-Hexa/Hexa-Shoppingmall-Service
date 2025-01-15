@@ -17,7 +17,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.book.LikeAlreadyExistsEx
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.LikeRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.LikeRepositoryCustomImpl;
+
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -43,8 +43,6 @@ class LikeServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-    @Mock
-    private LikeRepositoryCustomImpl likeRepositoryCustom;
 
     @InjectMocks
     private LikeService likeService;
@@ -155,10 +153,10 @@ class LikeServiceTest {
     @Test
     void testGetBooksLikedByMember_shouldReturnBooks() {
         when(memberRepository.existsById("123")).thenReturn(true);
-        when(likeRepositoryCustom.findBooksLikedByMemberId("123")).thenReturn(List.of(book));
+        when(likeRepository.findBooksLikedByMemberId("123")).thenReturn(List.of(book));
 
         List<Book> likedBooks = likeService.getBooksLikedByMember("123");
-        verify(likeRepositoryCustom).findBooksLikedByMemberId("123");
+        verify(likeRepository).findBooksLikedByMemberId("123");
 
         assertEquals(1, likedBooks.size());
     }

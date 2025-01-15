@@ -1,16 +1,14 @@
 package com.nhnacademy.hexashoppingmallservice.repository.book;
 
-import com.nhnacademy.hexashoppingmallservice.entity.book.Author;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.BookRepositoryCustom;
 import feign.Param;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
     // 도서 목록 - 출판사
     Page<Book> findByPublisherPublisherNameIgnoreCaseContaining(String publisherName, Pageable pageable);
 

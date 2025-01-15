@@ -64,43 +64,43 @@ class PointDetailsRepositoryTest {
     }
 
 
-//    @Test
-//    void sumPointDetailsIncrementByMemberId(){
-//
-//        PointDetails pointDetails1 = PointDetails.builder()
-//                .pointDetailsId(1L)
-//                .member(member)
-//                .pointDetailsIncrement(10000)
-//                .pointDetailsComment("10000 증가")
-//                .pointDetailsDatetime(LocalDateTime.now())
-//                .build();
-//
-//        PointDetails pointDetails2 = PointDetails.builder()
-//                .pointDetailsId(2L)
-//                .member(member)
-//                .pointDetailsIncrement(-5000)
-//                .pointDetailsComment("5000 감소")
-//                .pointDetailsDatetime(LocalDateTime.now())
-//                .build();
-//
-//        PointDetails pointDetails3 = PointDetails.builder()
-//                .pointDetailsId(3L)
-//                .member(member)
-//                .pointDetailsIncrement(20000)
-//                .pointDetailsComment("20000 증가")
-//                .pointDetailsDatetime(LocalDateTime.now())
-//                .build();
-//
-//        pointDetailsRepository.save(pointDetails1);
-//        assertEquals(10000, pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId()));
-//
-//        pointDetailsRepository.save(pointDetails2);
-//        assertEquals(5000, pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId()));
-//
-//        pointDetailsRepository.save(pointDetails3);
-//        assertEquals(25000, pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId()));
-//
-//    }
+    @Test
+    void sumPointDetailsIncrementByMemberId(){
+
+        PointDetails pointDetails1 = PointDetails.builder()
+                .pointDetailsId(1L)
+                .member(member)
+                .pointDetailsIncrement(10000)
+                .pointDetailsComment("10000 증가")
+                .pointDetailsDatetime(LocalDateTime.now())
+                .build();
+
+        PointDetails pointDetails2 = PointDetails.builder()
+                .pointDetailsId(2L)
+                .member(member)
+                .pointDetailsIncrement(-5000)
+                .pointDetailsComment("5000 감소")
+                .pointDetailsDatetime(LocalDateTime.now())
+                .build();
+
+        PointDetails pointDetails3 = PointDetails.builder()
+                .pointDetailsId(3L)
+                .member(member)
+                .pointDetailsIncrement(20000)
+                .pointDetailsComment("20000 증가")
+                .pointDetailsDatetime(LocalDateTime.now())
+                .build();
+
+        pointDetailsRepository.save(pointDetails1);
+        assertEquals(10000, pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId()));
+
+        pointDetailsRepository.save(pointDetails2);
+        assertEquals(5000, pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId()));
+
+        pointDetailsRepository.save(pointDetails3);
+        assertEquals(25000, pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId()));
+
+    }
 
     @Test
     void findAllByMemberMemberId(){
