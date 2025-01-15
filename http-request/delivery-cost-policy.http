@@ -1,0 +1,17 @@
+### getall
+GET localhost:8081/api/delivery-cost-policy/all?size=5
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+
+### getrecent
+GET localhost:8081/api/delivery-cost-policy/recent
+
+### create
+POST localhost:8081/api/delivery-cost-policy
+Authorization: Bearer eyJ0eXAiOiJCZWFyZXIiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJqb2huX2RvZV8xMjQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczNDkzOTc1NX0.HDpJcIoVnggL3fVbCrlJJCGeS3_DXFung9KtTVgPGi4
+Content-Type: application/json
+
+{
+  "deliveryCost": 5000,
+  "freeMinimumAmount": 30000,
+  "createdBy": "admin"
+}

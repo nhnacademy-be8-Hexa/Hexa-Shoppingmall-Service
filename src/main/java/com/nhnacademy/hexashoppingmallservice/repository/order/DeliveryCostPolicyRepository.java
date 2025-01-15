@@ -4,4 +4,6 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.DeliveryCostPolicy;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeliveryCostPolicyRepository extends JpaRepository<DeliveryCostPolicy, Long> {
+    DeliveryCostPolicy findFirstByOrderByDeliveryCostPolicyIdDesc();
+    boolean existsByDeliveryCostAndFreeMinimumAmount(int deliveryCost, int freeMinimumAmount);
 }
