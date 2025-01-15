@@ -18,20 +18,16 @@ public class CartController {
 
     @GetMapping("/api/members/{memberId}/carts")
     public ResponseEntity<String> getCart(
-            @PathVariable String memberId,
-            HttpServletRequest request) {
-        jwtUtils.ensureUserAccess(request, memberId);
+            @PathVariable String memberId) {
 
-        String cartDtos = cartService.getCart(memberId);
-        return ResponseEntity.ok(cartDtos);
+        String cart = cartService.getCart(memberId);
+        return ResponseEntity.ok(cart);
     }
 
     @PutMapping("/api/members/{memberId}/carts")
     public ResponseEntity<String> setCart(
             @PathVariable String memberId,
-            @RequestBody String cart,
-            HttpServletRequest request) {
-        jwtUtils.ensureUserAccess(request, memberId);
+            @RequestBody String cart) {
 
         cartService.setCart(memberId, cart);
         return ResponseEntity.status(HttpStatus.OK).body("장바구니가 성공적으로 설정되었습니다.");
