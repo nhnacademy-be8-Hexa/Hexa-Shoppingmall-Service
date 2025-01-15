@@ -1,11 +1,11 @@
-package com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl;
+package com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl;
 
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Like;
 import com.nhnacademy.hexashoppingmallservice.entity.book.QBook;
 import com.nhnacademy.hexashoppingmallservice.entity.book.QLike;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.LikeRepositoryCustom;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.LikeRepositoryCustom;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Component;
 

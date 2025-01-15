@@ -7,7 +7,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.category.CategoryNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.CategoryRepositoryCustomImpl;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.CategoryRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import java.util.ArrayList;

@@ -2,10 +2,8 @@ package com.nhnacademy.hexashoppingmallservice.service.order;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.OrderBookDTO;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderBookNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.projection.order.OrderBookProjection;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.OrderBookRepositoryCustomImpl;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.OrderBookRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

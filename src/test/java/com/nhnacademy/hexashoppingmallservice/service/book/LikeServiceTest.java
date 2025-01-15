@@ -17,8 +17,7 @@ import com.nhnacademy.hexashoppingmallservice.exception.book.LikeAlreadyExistsEx
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.LikeRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.LikeRepositoryCustom;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.LikeRepositoryCustomImpl;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.LikeRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import java.lang.reflect.Field;
 import java.time.LocalDate;

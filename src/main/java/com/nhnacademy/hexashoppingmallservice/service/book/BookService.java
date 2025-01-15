@@ -15,8 +15,7 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusReposito
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import java.util.List;
 
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.BookRepositoryCustom;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.BookRepositoryCustomImpl;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.BookRepositoryCustomImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

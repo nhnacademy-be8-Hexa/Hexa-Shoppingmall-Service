@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.DocFlavor;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -153,6 +154,12 @@ public class ReviewController {
     @GetMapping("/reviews/highReport/total")
     public ResponseEntity<Long> getReviewsFromHighReportTotal() {
         return ResponseEntity.ok(reviewService.getTotalHighlyReportedReviews());
+    }
+
+    @GetMapping("/books/{bookId}/review-rating")
+    public ResponseEntity<BigDecimal> getReviewRating(
+            @PathVariable Long bookId) {
+        return ResponseEntity.ok(reviewService.getAverageReviewRatingByBookId(bookId));
     }
 
 }
