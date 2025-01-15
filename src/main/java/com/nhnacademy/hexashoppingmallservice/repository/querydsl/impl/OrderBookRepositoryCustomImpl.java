@@ -1,13 +1,11 @@
-package com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl;
+package com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.OrderBookDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.order.OrderBook;
 import com.nhnacademy.hexashoppingmallservice.entity.order.QOrderBook;
-import com.nhnacademy.hexashoppingmallservice.projection.order.OrderBookProjection;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.OrderBookRepositoryCustom;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.OrderBookRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Component;
 

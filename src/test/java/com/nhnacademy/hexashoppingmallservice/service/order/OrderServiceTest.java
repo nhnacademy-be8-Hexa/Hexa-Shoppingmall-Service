@@ -13,12 +13,10 @@ import com.nhnacademy.hexashoppingmallservice.exception.book.BookNotFoundExcepti
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoundException;
-import com.nhnacademy.hexashoppingmallservice.exception.order.ParameterNotEnouthException;
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.BookRepositoryCustomImpl;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl.OrderBookRepositoryCustomImpl;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.OrderBookRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;

@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.repository.book.querydsl;
+package com.nhnacademy.hexashoppingmallservice.repository.querydsl;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.OrderBookDTO;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderBookProjection;

@@ -1,9 +1,8 @@
-package com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.impl;
+package com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl;
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.entity.book.QCategory;
-import com.nhnacademy.hexashoppingmallservice.repository.book.querydsl.CategoryRepositoryCustom;
-import com.querydsl.jpa.JPQLQuery;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.CategoryRepositoryCustom;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Component;
 
