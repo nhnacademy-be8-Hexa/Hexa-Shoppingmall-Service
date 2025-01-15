@@ -5,6 +5,7 @@ import com.nhnacademy.hexashoppingmallservice.service.credentials.SecureKeyManag
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,11 +16,13 @@ public class DataSourceConfig {
     @Autowired
     private SecureKeyManagerService secureKeyManagerService;
 
+    @Value("${keyid}")
+    private String keyId;
 
     @Bean
     public DataSource dataSource() {
 
-        String databaseInfo = secureKeyManagerService.fetchSecretFromKeyManager();
+        String databaseInfo = secureKeyManagerService.fetchSecretFromKeyManager(keyId);
         DatabaseCredentials databaseCredentials = new DatabaseCredentials(databaseInfo);
 
         BasicDataSource dataSource = new BasicDataSource();

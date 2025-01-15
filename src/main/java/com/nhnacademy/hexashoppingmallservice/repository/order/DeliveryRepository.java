@@ -1,6 +1,5 @@
 package com.nhnacademy.hexashoppingmallservice.repository.order;
 
-import com.nhnacademy.hexashoppingmallservice.entity.cart.Cart;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.order.Delivery;
 import com.nhnacademy.hexashoppingmallservice.projection.order.DeliveryProjection;
