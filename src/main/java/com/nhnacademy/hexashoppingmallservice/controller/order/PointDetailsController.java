@@ -69,4 +69,10 @@ public class PointDetailsController {
         List<PointDetailsProjection> pointDetails = pointDetailsService.getPointDetails(pageable, memberId);
         return ResponseEntity.ok(pointDetails);
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> countByMemberId(@PathVariable String memberId, HttpServletRequest request) {
+        jwtUtils.ensureUserAccess(request, memberId);
+        return ResponseEntity.ok(pointDetailsService.countByMemberId(memberId));
+    }
 }
