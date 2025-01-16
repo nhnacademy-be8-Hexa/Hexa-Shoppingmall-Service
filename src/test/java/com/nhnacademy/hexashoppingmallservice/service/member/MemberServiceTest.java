@@ -3,16 +3,14 @@ package com.nhnacademy.hexashoppingmallservice.service.member;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.nhnacademy.hexashoppingmallservice.dto.book.MemberUpdateDTO;
 import com.nhnacademy.hexashoppingmallservice.dto.member.MemberRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
+import com.nhnacademy.hexashoppingmallservice.exception.MemberDeletedException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.exception.member.RatingNotFoundException;
@@ -209,6 +207,138 @@ class MemberServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(memberRepository).findByMemberIdContaining(searchQuery, pageable);
+    }
+
+    // getMembers (검색어 없을 때)
+    @Test
+    void getMembers_withoutSearch() {
+        Pageable pageable = PageRequest.of(0, 10);
+        MemberProjection projection = mock(MemberProjection.class);
+
+        when(memberRepository.findAllBy(pageable))
+                .thenReturn(new PageImpl<>(List.of(projection)));
+
+        List<MemberProjection> result = memberService.getMembers(pageable, null);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(memberRepository).findAllBy(pageable);
+    }
+
+    // getMember (회원 존재할 때)
+    @Test
+    void getMember_success() {
+        String memberId = "123";
+        Member member = mock(Member.class);
+
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        Member result = memberService.getMember(memberId);
+
+        assertNotNull(result);
+        assertEquals(member, result);
+        verify(memberRepository).findById(memberId);
+    }
+
+    // getMember (회원이 존재하지 않을 때)
+    @Test
+    void getMember_notFound() {
+        String memberId = "123";
+
+        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+
+        assertThrows(MemberNotFoundException.class, () -> memberService.getMember(memberId));
+        verify(memberRepository).findById(memberId);
+    }
+
+    // login (회원 존재하고 삭제되지 않은 상태일 때)
+    @Test
+    void login_success() {
+        String memberId = "123";
+
+        // Mock 객체 생성
+        Member member = mock(Member.class);
+        MemberStatus status = mock(MemberStatus.class);
+
+        // Active 상태로 설정
+        status.setStatusId(1L);
+
+        // Member 객체에 status 설정 (이 부분은 mock에서는 동작하지 않으므로 getMemberStatus()가 status를 반환하도록 설정)
+        when(member.getMemberStatus()).thenReturn(status);  // getMemberStatus가 status를 반환하도록 설정
+
+        // memberRepository.findById()가 member를 반환하도록 설정
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        // status.getStatusId()가 1L을 반환하도록 설정
+        when(status.getStatusId()).thenReturn(1L);
+
+        // login 메서드 실행
+        memberService.login(memberId);
+
+        // verify
+        verify(memberRepository).findById(memberId);
+        verify(member).login();
+    }
+
+    // login (회원 존재하지만 삭제된 상태일 때)
+    @Test
+    void login_memberDeleted() {
+        String memberId = "123";
+
+        // Mock 객체 생성
+        Member member = mock(Member.class);
+        MemberStatus status = mock(MemberStatus.class);
+
+        // Deleted 상태로 설정 (status.setStatusId(3L);)
+        when(status.getStatusId()).thenReturn(3L); // Deleted 상태
+
+        // Member 객체에 status 설정 (mock에서는 setMemberStatus가 동작하지 않으므로 getMemberStatus가 status를 반환하도록 설정)
+        when(member.getMemberStatus()).thenReturn(status);  // getMemberStatus가 status를 반환하도록 설정
+
+        // memberRepository.findById()가 member를 반환하도록 설정
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        // 로그인 시 Deleted 상태인 경우 MemberDeletedException을 던지는지 확인
+        assertThrows(MemberDeletedException.class, () -> memberService.login(memberId));
+
+        // 검증: login() 메서드가 호출되었는지 확인
+        verify(memberRepository).findById(memberId);
+        verify(member, never()).login();  // login()이 호출되지 않아야 함 (삭제된 회원이므로 로그인 시도 실패)
+    }
+
+
+    // saveAll (회원 목록 저장)
+    @Test
+    void saveAll_success() {
+        List<Member> members = List.of(mock(Member.class), mock(Member.class));
+
+        memberService.saveAll(members);
+
+        verify(memberRepository).saveAll(members);
+    }
+
+    // countBySearch (검색어 있을 때)
+    @Test
+    void countBySearch_withSearch() {
+        String searchQuery = "123";
+
+        when(memberRepository.countByMemberIdContaining(searchQuery)).thenReturn(5L);
+
+        long result = memberService.countBySearch(searchQuery);
+
+        assertEquals(5L, result);
+        verify(memberRepository).countByMemberIdContaining(searchQuery);
+    }
+
+    // countBySearch (검색어 없을 때)
+    @Test
+    void countBySearch_withoutSearch() {
+        when(memberRepository.count()).thenReturn(10L);
+
+        long result = memberService.countBySearch(null);
+
+        assertEquals(10L, result);
+        verify(memberRepository).count();
     }
 }
 

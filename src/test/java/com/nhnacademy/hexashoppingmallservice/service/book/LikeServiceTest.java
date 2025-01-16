@@ -2,8 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.service.book;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.book.BookStatus;
@@ -159,5 +158,103 @@ class LikeServiceTest {
         verify(likeRepository).findBooksLikedByMemberId("123");
 
         assertEquals(1, likedBooks.size());
+    }
+
+    @Test
+    void testToggleLike_whenLikeDoesNotExist_shouldCreateLike() {
+        // Given
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(true);
+        when(likeRepository.existsByBookBookIdAndMemberMemberId(1L, "123")).thenReturn(false);
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(memberRepository.findById("123")).thenReturn(Optional.of(member));
+
+        // When
+        likeService.toggleLike(1L, "123");
+
+        // Then
+        verify(likeRepository).save(any(Like.class));  // Like should be created
+    }
+
+    @Test
+    void testToggleLike_whenLikeAlreadyExists_shouldDeleteLike() {
+        // Given
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(true);
+        when(likeRepository.existsByBookBookIdAndMemberMemberId(1L, "123")).thenReturn(true);
+
+        // When
+        likeService.toggleLike(1L, "123");
+
+        // Then
+        verify(likeRepository).deleteByBookBookIdAndMemberMemberId(1L, "123");  // Like should be deleted
+    }
+
+    @Test
+    void testDeleteLike_whenLikeDoesNotExist_shouldDoNothing() {
+        // Given
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(true);
+        when(likeRepository.existsByBookBookIdAndMemberMemberId(1L, "123")).thenReturn(false);
+
+        // When
+        likeService.deleteLike(1L, "123");
+
+        // Then
+        verify(likeRepository, times(1)).deleteByBookBookIdAndMemberMemberId(any(), any());
+    }
+
+    @Test
+    void testDeleteLike_whenLikeExists_shouldDeleteLike() {
+        // Given
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(true);
+        when(likeRepository.existsByBookBookIdAndMemberMemberId(1L, "123")).thenReturn(true);
+
+        // When
+        likeService.deleteLike(1L, "123");
+
+        // Then
+        verify(likeRepository).deleteByBookBookIdAndMemberMemberId(1L, "123");  // Like should be deleted
+    }
+
+
+    @Test
+    void testHasLiked_whenBookDoesNotExist_shouldThrowException() {
+        when(bookRepository.existsById(1L)).thenReturn(false);
+        Assertions.assertThrows(BookNotExistException.class, () ->
+                likeService.hasLiked(1L, "123"));
+    }
+
+    @Test
+    void testHasLiked_whenMemberDoesNotExist_shouldThrowException() {
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(false);
+        Assertions.assertThrows(MemberNotFoundException.class, () ->
+                likeService.hasLiked(1L, "123"));
+    }
+
+    @Test
+    void testHasLiked_whenLikeExists_shouldReturnTrue() {
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(true);
+        when(likeRepository.existsByBookBookIdAndMemberMemberId(1L, "123")).thenReturn(true);
+
+        Boolean hasLiked = likeService.hasLiked(1L, "123");
+
+        assertEquals(true, hasLiked);
+        verify(likeRepository).existsByBookBookIdAndMemberMemberId(1L, "123");
+    }
+
+    @Test
+    void testHasLiked_whenLikeDoesNotExist_shouldReturnFalse() {
+        when(bookRepository.existsById(1L)).thenReturn(true);
+        when(memberRepository.existsById("123")).thenReturn(true);
+        when(likeRepository.existsByBookBookIdAndMemberMemberId(1L, "123")).thenReturn(false);
+
+        Boolean hasLiked = likeService.hasLiked(1L, "123");
+
+        assertEquals(false, hasLiked);
+        verify(likeRepository).existsByBookBookIdAndMemberMemberId(1L, "123");
     }
 }
