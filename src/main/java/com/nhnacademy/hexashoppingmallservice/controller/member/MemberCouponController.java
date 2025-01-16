@@ -60,20 +60,10 @@ public class MemberCouponController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/members/coupons/is-assigned")
-    public ResponseEntity<Boolean> isCouponAlreadyAssigned(
-            @RequestParam Long couponId,
-            @RequestParam String memberId) {
-        Member member = memberService.getMember(memberId);
-        boolean isAssigned = memberCouponService.isCouponAlreadyAssigned(couponId, member);
-        return ResponseEntity.ok(isAssigned);
-    }
-
-    @GetMapping("/members/coupons/check-duplicate")
-    public ResponseEntity<Boolean> checkCouponDuplicate(@RequestParam Long couponId) {
-        boolean isDuplicate = memberCouponService.isCouponIdDuplicate(couponId);
-
-        return ResponseEntity.ok(isDuplicate);
+    @GetMapping("/members/All/coupons")
+    public ResponseEntity<List<Long>> getAllCouponId(){
+        List<Long> couponIds = memberCouponService.getAllCouponId();
+        return ResponseEntity.ok(couponIds);
     }
 
 }
