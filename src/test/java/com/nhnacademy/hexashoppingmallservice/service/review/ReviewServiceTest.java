@@ -397,4 +397,161 @@ class ReviewServiceTest {
 
         verify(reviewRepository, times(1)).findById(reviewId);
     }
+
+    /**
+     * 특정 회원의 리뷰 총 개수 조회 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("getReviewsFromMemberTotal - 특정 회원의 리뷰 총 개수를 성공적으로 조회한다")
+    void getReviewsFromMemberTotal_Success() {
+        // Arrange
+        when(memberRepository.existsById(validMemberId)).thenReturn(true);
+        when(reviewRepository.countByMemberMemberIdAndReviewIsBlockedFalse(validMemberId))
+                .thenReturn(5L);
+
+        // Act
+        Long result = reviewService.getReviewsFromMemberTotal(validMemberId);
+
+        // Assert
+        verify(memberRepository, times(1)).existsById(validMemberId);
+        verify(reviewRepository, times(1)).countByMemberMemberIdAndReviewIsBlockedFalse(validMemberId);
+        assertEquals(5L, result);
+    }
+
+    /**
+     * 특정 회원의 리뷰 총 개수 조회 시 회원이 존재하지 않을 때 예외 발생 테스트
+     */
+    @Test
+    @DisplayName("getReviewsFromMemberTotal - 존재하지 않는 회원 ID로 총 개수 조회 시 MemberNotFoundException 발생")
+    void getReviewsFromMemberTotal_MemberNotFound() {
+        // Arrange
+        when(memberRepository.existsById(validMemberId)).thenReturn(false);
+
+        // Act & Assert
+        MemberNotFoundException exception = assertThrows(MemberNotFoundException.class, () ->
+                reviewService.getReviewsFromMemberTotal(validMemberId));
+
+        assertEquals("Member ID member123 is not Found!", exception.getMessage());
+        verify(memberRepository, times(1)).existsById(validMemberId);
+        verify(reviewRepository, never()).countByMemberMemberIdAndReviewIsBlockedFalse(validMemberId);
+    }
+
+    /**
+     * 특정 책의 리뷰 총 개수 조회 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("getReviewsFromBookTotal - 특정 책의 리뷰 총 개수를 성공적으로 조회한다")
+    void getReviewsFromBookTotal_Success() {
+        // Arrange
+        when(bookRepository.existsById(validBookId)).thenReturn(true);
+        when(reviewRepository.countByBookBookIdAndReviewIsBlockedFalse(validBookId))
+                .thenReturn(3L);
+
+        // Act
+        Long result = reviewService.getReviewsFromBookTotal(validBookId);
+
+        // Assert
+        verify(bookRepository, times(1)).existsById(validBookId);
+        verify(reviewRepository, times(1)).countByBookBookIdAndReviewIsBlockedFalse(validBookId);
+        assertEquals(3L, result);
+    }
+
+    /**
+     * 특정 책의 리뷰 총 개수 조회 시 책이 존재하지 않을 때 예외 발생 테스트
+     */
+    @Test
+    @DisplayName("getReviewsFromBookTotal - 존재하지 않는 책 ID로 총 개수 조회 시 BookNotFoundException 발생")
+    void getReviewsFromBookTotal_BookNotFound() {
+        // Arrange
+        when(bookRepository.existsById(validBookId)).thenReturn(false);
+
+        // Act & Assert
+        BookNotFoundException exception = assertThrows(BookNotFoundException.class, () ->
+                reviewService.getReviewsFromBookTotal(validBookId));
+
+        assertEquals("Book ID 1 is not Found!", exception.getMessage());
+        verify(bookRepository, times(1)).existsById(validBookId);
+        verify(reviewRepository, never()).countByBookBookIdAndReviewIsBlockedFalse(validBookId);
+    }
+
+    /**
+     * 회원과 책에 대한 리뷰 존재 여부 체크 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("checkReviews - 특정 회원이 특정 책에 대해 리뷰를 남긴 적이 있는지 체크한다")
+    void checkReviews_Success() {
+        // Arrange
+        when(memberRepository.existsById(validMemberId)).thenReturn(true);
+        when(bookRepository.existsById(validBookId)).thenReturn(true);
+        when(reviewRepository.existsByMemberMemberIdAndBookBookId(validMemberId, validBookId)).thenReturn(true);
+
+        // Act
+        boolean result = reviewService.checkReviews(validMemberId, validBookId);
+
+        // Assert
+        verify(memberRepository, times(1)).existsById(validMemberId);
+        verify(bookRepository, times(1)).existsById(validBookId);
+        verify(reviewRepository, times(1)).existsByMemberMemberIdAndBookBookId(validMemberId, validBookId);
+        assertTrue(result);
+    }
+
+    /**
+     * 회원이나 책이 존재하지 않으면 리뷰가 없는 경우
+     */
+    @Test
+    @DisplayName("checkReviews - 존재하지 않는 회원이나 책에 대해 리뷰를 체크 시 예외 발생")
+    void checkReviews_NotFound() {
+        // Arrange
+        lenient().when(memberRepository.existsById(validMemberId)).thenReturn(false);
+        lenient().when(bookRepository.existsById(validBookId)).thenReturn(true);
+
+        // Act & Assert
+        MemberNotFoundException exception = assertThrows(MemberNotFoundException.class, () ->
+                reviewService.checkReviews(validMemberId, validBookId));
+
+        assertEquals("Member ID member123 is not Found!", exception.getMessage());
+        verify(memberRepository, times(1)).existsById(validMemberId);
+        verify(bookRepository, never()).existsById(validBookId);
+        verify(reviewRepository, never()).existsByMemberMemberIdAndBookBookId(validMemberId, validBookId);
+    }
+
+    /**
+     * 신고가 5회 이상인 리뷰 목록 조회 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("getHighlyReportedReviews - 신고가 5회 이상인 리뷰 목록을 성공적으로 조회한다")
+    void getHighlyReportedReviews_Success() {
+        // Arrange
+        Pageable pageable = Pageable.ofSize(10);
+        ReviewProjection reviewProjection1 = mock(ReviewProjection.class);
+        ReviewProjection reviewProjection2 = mock(ReviewProjection.class);
+        List<ReviewProjection> mockReviews = Arrays.asList(reviewProjection1, reviewProjection2);
+
+        when(reviewRepository.findReviewsWithMinReports(5L, pageable))
+                .thenReturn(new PageImpl<>(mockReviews));
+
+        // Act
+        List<ReviewProjection> result = reviewService.getHighlyReportedReviews(pageable);
+
+        // Assert
+        verify(reviewRepository, times(1)).findReviewsWithMinReports(5L, pageable);
+        assertEquals(mockReviews, result);
+    }
+
+    /**
+     * 신고가 5회 이상인 리뷰 총 개수 조회 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("getTotalHighlyReportedReviews - 신고가 5회 이상인 리뷰 총 개수를 성공적으로 조회한다")
+    void getTotalHighlyReportedReviews_Success() {
+        // Arrange
+        when(reviewRepository.countReviewsWithMinReports(5L)).thenReturn(10L);
+
+        // Act
+        long result = reviewService.getTotalHighlyReportedReviews();
+
+        // Assert
+        verify(reviewRepository, times(1)).countReviewsWithMinReports(5L);
+        assertEquals(10L, result);
+    }
 }
