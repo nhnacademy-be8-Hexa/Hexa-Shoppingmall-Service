@@ -31,9 +31,8 @@ public class OrderController {
     }
 
     @GetMapping("/api/orders")
-    public ResponseEntity<List<OrderProjection>> getAllOrders(@RequestParam(defaultValue = "0") int page, HttpServletRequest request) {
+    public ResponseEntity<List<OrderProjection>> getAllOrders(Pageable pageable, HttpServletRequest request) {
         jwtUtils.ensureAdmin(request);
-        Pageable pageable = PageRequest.of(page, SIZE);
         return ResponseEntity.ok(orderService.getAllOrders(pageable));
     }
 
