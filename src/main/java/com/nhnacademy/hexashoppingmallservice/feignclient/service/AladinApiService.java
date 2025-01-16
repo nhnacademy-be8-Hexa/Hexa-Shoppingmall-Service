@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nhnacademy.hexashoppingmallservice.dto.book.BookRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.dto.book.BookUpdateRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.feignclient.AladinApi;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.Book;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.ListBook;
 import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookDTO;
+import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
@@ -18,6 +22,11 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepositor
 import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
+import com.nhnacademy.hexashoppingmallservice.service.book.AuthorService;
+import com.nhnacademy.hexashoppingmallservice.service.book.BookService;
+import com.nhnacademy.hexashoppingmallservice.service.book.PublisherService;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +45,6 @@ public class AladinApiService {
     private final String ttbKey = "ttb30decade2030001";
     private final String output = "JS";
     private final String version = "20131101";
-    private final String queryType = "Title";
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
     private final BookStatusRepository bookStatusRepository;
@@ -45,6 +53,9 @@ public class AladinApiService {
     private final ObjectMapper objectMapper;
     private final CategoryRepository categoryRepository;
     private final BookCategoryRepository bookCategoryRepository;
+    private final BookService bookService;
+    private final AuthorService authorService;
+    private final PublisherService publisherService;
 
     @Autowired
     public AladinApiService(AladinApi aladinApi,
@@ -55,7 +66,10 @@ public class AladinApiService {
                             BookAuthorRepository bookAuthorRepository,
                             ElasticSearchRepository elasticSearchRepository,
                             CategoryRepository categoryRepository,
-                            BookCategoryRepository bookCategoryRepository) {
+                            BookCategoryRepository bookCategoryRepository,
+                            BookService bookService,
+                            AuthorService authorService,
+                            PublisherService publisherService) {
         this.aladinApi = aladinApi;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
@@ -69,11 +83,14 @@ public class AladinApiService {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         this.categoryRepository = categoryRepository;
         this.bookCategoryRepository = bookCategoryRepository;
+        this.bookService = bookService;
+        this.authorService = authorService;
+        this.publisherService = publisherService;
     }
 
     public List<AladinBookDTO> searchBooks(String query) {
         try {
-            ResponseEntity<String> response = aladinApi.searchBooks(ttbKey, query, output, version, queryType);
+            ResponseEntity<String> response = aladinApi.searchBooks(ttbKey, query, output, version);
             ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
 
 
@@ -97,16 +114,42 @@ public class AladinApiService {
                         .map(String::trim)
                         .collect(Collectors.toList());
 
+                String date = book.getPubDate();
+                LocalDate pubDate = null;
+                if (Objects.nonNull(date) && !date.isEmpty()) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    pubDate = LocalDate.parse(book.getPubDate(), formatter);
+                }
+
+                String isbn = book.getIsbn13();
+                Long isbn13 = null;
+                if (Objects.nonNull(isbn) && !isbn.isEmpty()) {
+                    isbn13 = Long.parseLong(isbn);
+                }
+
+                String sales = book.getPriceSales();
+                int pricesSales = 0;
+                if (Objects.nonNull(sales) && !sales.isEmpty()) {
+                    pricesSales = Integer.parseInt(sales);
+                }
+
+                String standard = book.getPriceStandard();
+                int pricesStandard = 0;
+                if (Objects.nonNull(standard) && !standard.isEmpty()) {
+                    pricesStandard = Integer.parseInt(standard);
+                }
+
+
                 AladinBookDTO aladinBook = new AladinBookDTO();
                 aladinBook.setTitle(cleanedTitle);
                 aladinBook.setAuthors(authors);
-                aladinBook.setPriceSales(book.getPriceSales());
-                aladinBook.setPriceStandard(book.getPriceStandard());
+                aladinBook.setPriceSales(pricesSales);
+                aladinBook.setPriceStandard(pricesStandard);
                 aladinBook.setPublisher(book.getPublisher());
-                aladinBook.setPubDate(book.getPubDate());
-                aladinBook.setIsbn13(book.getIsbn13());
+                aladinBook.setPubDate(pubDate);
+                aladinBook.setIsbn13(isbn13);
                 aladinBook.setDescription(decodedDescription);
-                aladinBook.setSalesPoint(book.getSalesPoint());
+                aladinBook.setSalesPoint(Integer.parseInt(book.getSalesPoint()));
                 aladinBook.setCover(book.getCover().replace("coversum", "cover200"));
 
                 aladinBooks.add(aladinBook);
@@ -119,110 +162,37 @@ public class AladinApiService {
         }
     }
 
-//    @Transactional
-//    public List<Book> createBooks(String query, Long bookStatusId) {
-//        try {
-//            ResponseEntity<String> response = aladinApi.searchBooks(ttbKey, query, output, version, queryType);
-//            ListBook books = objectMapper.readValue(response.getBody(), ListBook.class);
-//            List<Book> items = books.getItem();
-//
-//
-//            for (Book item : items) {
-//                String title = item.getTitle();
-//                String description = item.getDescription();
-//                String decodedTitle = Jsoup.parse(title).text();
-//                String decodedDescription = Jsoup.parse(description).text();
-//                item.setTitle(decodedTitle);
-//                item.setDescription(decodedDescription);
-//
-//
-//                if (bookRepository.existsByBookIsbn(Long.valueOf(item.getIsbn13()))) {
-//                    throw new BookIsbnAlreadyExistException("isbn - %s already exist ".formatted(item.getIsbn13()));
-//                }
-//
-//                Publisher publisher = publisherRepository.findByPublisherName(item.getPublisher().trim());
-//
-//                if (Objects.isNull(publisher)) {
-//                    publisher = Publisher.of(item.getPublisher());
-//                    publisherRepository.save(publisher);
-//                }
-//
-//
-//                if (!bookStatusRepository.existsById(bookStatusId)) {
-//                    throw new BookStatusNotFoundException("bookStatusId - %s not found".formatted(bookStatusId));
-//                }
-//
-//                BookStatus bookStatus = bookStatusRepository.findById(bookStatusId).orElseThrow();
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//
-//
-//                com.nhnacademy.hexashoppingmallservice.entity.book.Book book =
-//                        com.nhnacademy.hexashoppingmallservice.entity.book.Book.of(
-//                                item.getTitle(),
-//                                item.getDescription(),
-//                                LocalDate.parse(item.getPubDate(), formatter),
-//                                Long.valueOf(item.getIsbn13()),
-//                                Integer.parseInt(item.getPriceSales()),
-//                                Integer.parseInt(item.getPriceStandard()),
-//                                publisher,
-//                                bookStatus
-//                        );
-//                book.setBookSellCount(Long.valueOf(item.getSalesPoint()));
-//
-//
-//                bookRepository.save(book);
-//
-//                String line = item.getAuthor();
-//                String cleanedLine = line.replaceAll("\\(.*?\\)", "").trim();
-//                String[] authorNames = cleanedLine.split(",");
-//                Author author;
-//
-//                for (String authorName : authorNames) {
-//                    String trimmedAuthorName = authorName.trim();
-//                    if (!authorName.isBlank()) {
-//                        author = authorRepository.findByAuthorName(trimmedAuthorName);
-//                        if (Objects.isNull(author)) {
-//                            author = Author.of(trimmedAuthorName);
-//                            authorRepository.save(author);
-//                        }
-//                        BookAuthor bookAuthor = BookAuthor.of(book, author);
-//                        bookAuthorRepository.save(bookAuthor);
-//                    }
-//                }
-//
-//                String categoryNames = item.getCategoryName();
-//                String[] categories = categoryNames.split(">");
-//
-//                int maxLevel = Math.min(2, categories.length);
-//
-//                Category parentCategory = null;
-//
-//                for (int i = 0; i < maxLevel; i++) {
-//                    String categoryName = categories[i].trim();
-//                    if (categoryName.isBlank()) {
-//                        continue;
-//                    }
-//                    Category category = categoryRepository.findByCategoryName(categoryName);
-//                    if (Objects.isNull(category)) {
-//                        category = Category.of(categoryName, parentCategory);
-//                        categoryRepository.save(category);
-//                    }
-//                    BookCategory bookCategory = BookCategory.of(category, book);
-//                    bookCategoryRepository.save(bookCategory);
-//
-//                    parentCategory = category;
-//
-//                }
-//
-//
-//            }
-//
-//            return items;
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public com.nhnacademy.hexashoppingmallservice.entity.book.Book createAladinBook(
+            AladinBookRequestDTO aladinBookRequestDTO) {
+        Publisher publisher = Publisher.of(aladinBookRequestDTO.getPublisher());
+        publisher = publisherService.createPublisher(publisher);
 
+        BookRequestDTO bookRequestDTO = new BookRequestDTO(
+                aladinBookRequestDTO.getTitle(),
+                aladinBookRequestDTO.getDescription(),
+                aladinBookRequestDTO.getPubDate(),
+                aladinBookRequestDTO.getIsbn13(),
+                aladinBookRequestDTO.getPriceStandard(),
+                aladinBookRequestDTO.getPriceSales(),
+                false,
+                String.valueOf(publisher.getPublisherId()),
+                String.valueOf(aladinBookRequestDTO.getBookStatusId()));
+
+        com.nhnacademy.hexashoppingmallservice.entity.book.Book book = bookService.createBook(bookRequestDTO);
+
+        BookUpdateRequestDTO bookUpdateRequestDTO = new BookUpdateRequestDTO(
+                null,
+                null,
+                0,
+                aladinBookRequestDTO.isBookWrappable(),
+                null
+        );
+
+        for (String authorName : aladinBookRequestDTO.getAuthors()) {
+            authorService.createAuthor(authorName, book.getBookId());
+        }
+
+        return bookService.updateBook(book.getBookId(), bookUpdateRequestDTO);
+    }
 
 }

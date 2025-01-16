@@ -1,5 +1,6 @@
 package com.nhnacademy.hexashoppingmallservice.feignclient.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +10,12 @@ import lombok.Setter;
 public class AladinBookDTO {
     private String title;
     private List<String> authors;
-    private String priceSales;
-    private String priceStandard;
+    private int priceSales;
+    private int priceStandard;
     private String publisher;
-    private String pubDate;
-    private String isbn13;
+    private LocalDate pubDate;
+    private Long isbn13;
     private String description;
-    private String salesPoint;
+    private int salesPoint;
     private String cover;
 }
