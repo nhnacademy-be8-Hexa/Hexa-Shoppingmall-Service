@@ -12,7 +12,6 @@ public interface AladinApi {
             @RequestParam("ttbKey") String ttbKey,
             @RequestParam("query") String query,
             @RequestParam("output") String output,
-            @RequestParam("version") String version,
-            @RequestParam("queryType") String queryType
+            @RequestParam("version") String version
     );
 }
