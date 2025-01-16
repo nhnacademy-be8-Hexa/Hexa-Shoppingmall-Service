@@ -53,4 +53,9 @@ public class PointDetailsService {
         }
         return pointDetailsRepository.findAllByMemberMemberId(memberId, pageable).getContent();
     }
+
+    @Transactional(readOnly = true)
+    public int countByMemberId(String memberId) {
+        return pointDetailsRepository.countAllByMemberMemberId(memberId);
+    }
 }
