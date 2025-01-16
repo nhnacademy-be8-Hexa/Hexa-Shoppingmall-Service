@@ -40,4 +40,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     boolean existsByMemberMemberIdAndBookBookId(String memberId, Long bookId);
 
+    ReviewProjection findByReviewId(long id);
 }

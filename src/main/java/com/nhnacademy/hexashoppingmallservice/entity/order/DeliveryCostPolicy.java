@@ -20,10 +20,10 @@ public class DeliveryCostPolicy {
     private Long deliveryCostPolicyId;
 
     @NotNull
-    private int deliveryCost = 5000;
+    private int deliveryCost;
 
     @NotNull
-    private int freeMinimumAmount = 30000;
+    private int freeMinimumAmount;
 
     @NotNull
     private String createdBy;

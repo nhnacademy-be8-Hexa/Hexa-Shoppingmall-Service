@@ -166,5 +166,12 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getAverageReviewRatingByBookId(bookId));
     }
 
+    @GetMapping("/reviews/{reviewId}")
+    public ResponseEntity<ReviewProjection> getReview(
+            @PathVariable Long reviewId
+    ){
+        return ResponseEntity.ok(reviewService.getReviewById(reviewId));
+    }
+
 
 }

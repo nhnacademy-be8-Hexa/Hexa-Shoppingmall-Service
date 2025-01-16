@@ -151,4 +151,12 @@ public class ReviewService {
     public BigDecimal getAverageReviewRatingByBookId(Long bookId) {
         return reviewRepository.findAverageReviewRatingByBookId(bookId);
     }
+
+    @Transactional(readOnly = true)
+    public ReviewProjection getReviewById(Long reviewId) {
+        if (!reviewRepository.existsById(reviewId)) {
+            throw new ReviewNotFoundException("Review ID %d is not Found!".formatted(reviewId));
+        }
+        return reviewRepository.findByReviewId(reviewId);
+    }
 }
