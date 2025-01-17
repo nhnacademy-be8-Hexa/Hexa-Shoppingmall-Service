@@ -10,7 +10,7 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.Category;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Tag;
 import java.time.LocalDate;
-import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,8 +121,8 @@ public class BookRepositoryTest {
 //    }
 
     @Test
-    void testFindAllByOrderByBookPubDateDesc() {
-        var page = bookRepository.findAllByOrderByBookPubDateDesc(PageRequest.of(0, 10));
+    void testFindAllByOrderByBookPubDateDescBookIdAsc() {
+        var page = bookRepository.findAllByOrderByBookPubDateDescBookIdAsc(PageRequest.of(0, 10));
 
         assertThat(page.getContent()).hasSize(1);
         assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
