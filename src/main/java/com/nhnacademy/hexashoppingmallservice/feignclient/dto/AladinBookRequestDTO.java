@@ -2,6 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.feignclient.dto;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -19,7 +20,8 @@ public class AladinBookRequestDTO {
     @NotBlank
     @Size(max = 100)
     String title;
-    
+
+    @NotEmpty
     List<String> authors;
 
     @NotNull
@@ -30,7 +32,8 @@ public class AladinBookRequestDTO {
     @Positive
     int priceStandard;
 
-    @NotNull
+    @NotBlank
+    @Size(max = 20)
     String publisher;
 
     @NotNull
