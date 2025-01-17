@@ -37,7 +37,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRepositor
 
     // 도서 목록 - 베스트셀러 (내림차순)
     Page<Book> findByOrderByBookSellCountDesc(Pageable pageable);
-
+    
     // 리뷰 순 기준으로 도서를 내림차순 정렬
 //    @Query("SELECT b FROM Book b LEFT JOIN Review r ON b = r.book GROUP BY b ORDER BY COUNT(r) DESC")
 //    Page<Book> findAllOrderByReviewCountDesc(Pageable pageable);
