@@ -112,28 +112,35 @@ public class AladinApiService {
                 }
 
                 String sales = book.getPriceSales();
-                int pricesSales = 0;
+                int priceSales = 0;
                 if (Objects.nonNull(sales) && !sales.isEmpty()) {
-                    pricesSales = Integer.parseInt(sales);
+                    priceSales = Integer.parseInt(sales);
                 }
 
                 String standard = book.getPriceStandard();
-                int pricesStandard = 0;
+                int priceStandard = 0;
                 if (Objects.nonNull(standard) && !standard.isEmpty()) {
-                    pricesStandard = Integer.parseInt(standard);
+                    priceStandard = Integer.parseInt(standard);
+                }
+
+                String point = book.getSalesPoint();
+                Long salesPoint = null;
+                if (Objects.nonNull(point) && !point.isEmpty()) {
+                    salesPoint = Long.parseLong(point);
                 }
 
                 AladinBookDTO aladinBook = new AladinBookDTO();
                 aladinBook.setTitle(cleanedTitle);
                 aladinBook.setAuthors(authors);
-                aladinBook.setPriceSales(pricesSales);
-                aladinBook.setPriceStandard(pricesStandard);
+                aladinBook.setPriceSales(priceSales);
+                aladinBook.setPriceStandard(priceStandard);
                 aladinBook.setPublisher(book.getPublisher());
                 aladinBook.setPubDate(pubDate);
                 aladinBook.setIsbn13(isbn13);
                 aladinBook.setDescription(decodedDescription);
-                aladinBook.setSalesPoint(Integer.parseInt(book.getSalesPoint()));
+                aladinBook.setSalesPoint(salesPoint);
                 aladinBook.setCover(book.getCover().replace("coversum", "cover200"));
+
 
                 aladinBooks.add(aladinBook);
 
@@ -184,8 +191,8 @@ public class AladinApiService {
                 bookStatus
         );
 
+        book.setBookAmount(aladinBookRequestDTO.getBookAmount());
         book.setBookWrappable(aladinBookRequestDTO.isBookWrappable());
-
         book = bookRepository.save(book);
 
         for (String authorName : aladinBookRequestDTO.getAuthors()) {

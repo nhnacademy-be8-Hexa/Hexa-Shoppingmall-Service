@@ -16,6 +16,6 @@ public class AladinBookDTO {
     private LocalDate pubDate;
     private Long isbn13;
     private String description;
-    private int salesPoint;
+    private Long salesPoint;
     private String cover;
 }
