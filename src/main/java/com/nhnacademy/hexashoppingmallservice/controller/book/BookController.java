@@ -92,6 +92,9 @@ public class BookController {
         if (sortByBookTitleAsc != null && sortByBookTitleAsc) {
             return bookService.getBooksByNameAsc(pageable);
         }
+        if (sortByReviews != null && sortByReviews) {
+            return bookService.getBooksByIsbnAsc(pageable);
+        }
         return bookService.getBooks(pageable);
 
     }
