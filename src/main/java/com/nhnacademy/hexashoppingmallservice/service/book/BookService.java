@@ -14,7 +14,6 @@ import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -204,7 +203,7 @@ public class BookService {
         if (updateAmount < 0) {
             throw new BookNotFoundException("not enough bookAmount");
         }
-        
+
         book.setBookAmount(updateAmount);
         bookRepository.save(book);
     }
