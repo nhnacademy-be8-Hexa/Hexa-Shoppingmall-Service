@@ -20,7 +20,7 @@ public class AladinApiController {
     private AladinApiService aladinApiService;
 
     @GetMapping("/api/aladinApi")
-    private List<AladinBookDTO> searchBooks(@RequestParam(required = false) String query) {
+    private List<AladinBookDTO> searchAladinBooks(@RequestParam(required = false) String query) {
         return aladinApiService.searchBooks(query);
     }
 
@@ -28,5 +28,5 @@ public class AladinApiController {
     private ResponseEntity<Book> createAladinBook(@RequestBody AladinBookRequestDTO aladinBookRequestDTO) {
         return ResponseEntity.status(201).body(aladinApiService.createAladinBook(aladinBookRequestDTO));
     }
-    
+
 }

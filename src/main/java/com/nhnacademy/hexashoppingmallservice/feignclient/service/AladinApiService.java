@@ -14,14 +14,6 @@ import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.Book;
 import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.ListBook;
 import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookDTO;
 import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookRequestDTO;
-import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.BookAuthorRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.BookStatusRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.book.PublisherRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.category.BookCategoryRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.category.CategoryRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.elasticsearch.ElasticSearchRepository;
 import com.nhnacademy.hexashoppingmallservice.service.book.AuthorService;
 import com.nhnacademy.hexashoppingmallservice.service.book.BookService;
 import com.nhnacademy.hexashoppingmallservice.service.book.PublisherService;
@@ -37,6 +29,7 @@ import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AladinApiService {
@@ -45,44 +38,22 @@ public class AladinApiService {
     private final String ttbKey = "ttb30decade2030001";
     private final String output = "JS";
     private final String version = "20131101";
-    private final BookRepository bookRepository;
-    private final PublisherRepository publisherRepository;
-    private final BookStatusRepository bookStatusRepository;
-    private final AuthorRepository authorRepository;
-    private final BookAuthorRepository bookAuthorRepository;
     private final ObjectMapper objectMapper;
-    private final CategoryRepository categoryRepository;
-    private final BookCategoryRepository bookCategoryRepository;
     private final BookService bookService;
     private final AuthorService authorService;
     private final PublisherService publisherService;
 
     @Autowired
     public AladinApiService(AladinApi aladinApi,
-                            BookRepository bookRepository,
-                            PublisherRepository publisherRepository,
-                            BookStatusRepository bookStatusRepository,
-                            AuthorRepository authorRepository,
-                            BookAuthorRepository bookAuthorRepository,
-                            ElasticSearchRepository elasticSearchRepository,
-                            CategoryRepository categoryRepository,
-                            BookCategoryRepository bookCategoryRepository,
                             BookService bookService,
                             AuthorService authorService,
                             PublisherService publisherService) {
         this.aladinApi = aladinApi;
-        this.bookRepository = bookRepository;
-        this.publisherRepository = publisherRepository;
-        this.bookStatusRepository = bookStatusRepository;
-        this.authorRepository = authorRepository;
-        this.bookAuthorRepository = bookAuthorRepository;
         this.objectMapper = new ObjectMapper()
                 .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        this.categoryRepository = categoryRepository;
-        this.bookCategoryRepository = bookCategoryRepository;
         this.bookService = bookService;
         this.authorService = authorService;
         this.publisherService = publisherService;
@@ -139,7 +110,6 @@ public class AladinApiService {
                     pricesStandard = Integer.parseInt(standard);
                 }
 
-
                 AladinBookDTO aladinBook = new AladinBookDTO();
                 aladinBook.setTitle(cleanedTitle);
                 aladinBook.setAuthors(authors);
@@ -162,6 +132,7 @@ public class AladinApiService {
         }
     }
 
+    @Transactional
     public com.nhnacademy.hexashoppingmallservice.entity.book.Book createAladinBook(
             AladinBookRequestDTO aladinBookRequestDTO) {
         Publisher publisher = Publisher.of(aladinBookRequestDTO.getPublisher());
@@ -187,7 +158,7 @@ public class AladinApiService {
                 aladinBookRequestDTO.isBookWrappable(),
                 null
         );
-
+        
         for (String authorName : aladinBookRequestDTO.getAuthors()) {
             authorService.createAuthor(authorName, book.getBookId());
         }
