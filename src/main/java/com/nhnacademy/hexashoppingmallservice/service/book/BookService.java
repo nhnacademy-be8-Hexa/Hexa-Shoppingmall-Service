@@ -80,7 +80,7 @@ public class BookService {
     @Transactional(readOnly = true)
     // 도서 목록 - 베스트셀러 (내림차순)
     public List<Book> getBooksByBookSellCount(Pageable pageable) {
-        return bookRepository.findByOrderByBookSellCountDesc(pageable).getContent();
+        return bookRepository.findByOrderByBookSellCountDescBookIdAsc(pageable).getContent();
     }
 
     @Transactional(readOnly = true)
@@ -123,13 +123,13 @@ public class BookService {
     @Transactional(readOnly = true)
     // 도서 목록 - 최신순(출간일 기준)
     public List<Book> getBooksByBookPubDate(Pageable pageable) {
-        return bookRepository.findAllByOrderByBookPubDateDesc(pageable).getContent();
+        return bookRepository.findAllByOrderByBookPubDateDescBookIdAsc(pageable).getContent();
     }
 
     @Transactional(readOnly = true)
     // 도서 목록 - 도서명 오름차순
     public List<Book> getBooksByNameAsc(Pageable pageable) {
-        return bookRepository.findAllByOrderByBookPubDateDesc(pageable).getContent();
+        return bookRepository.findAllByOrderByBookTitleAsc(pageable).getContent();
     }
 
     // 도서 목록 - 도서명 내림차순
