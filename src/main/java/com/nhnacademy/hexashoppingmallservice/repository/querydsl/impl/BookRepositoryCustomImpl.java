@@ -61,7 +61,8 @@ public class BookRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         JPQLQuery<Book> query = from(book)
                 .leftJoin(review).on(book.eq(review.book))
                 .groupBy(book)
-                .orderBy(review.count().desc());
+                .orderBy(review.count().desc())
+                .orderBy(book.bookId.asc());
 
         // 페이징 적용 (QuerydslRepositorySupport의 getQuerydsl() 사용)
         JPQLQuery<Book> paginatedQuery = getQuerydsl().applyPagination(pageable, query);
