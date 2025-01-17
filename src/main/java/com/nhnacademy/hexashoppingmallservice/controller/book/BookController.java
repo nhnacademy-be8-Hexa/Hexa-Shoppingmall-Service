@@ -41,8 +41,6 @@ public class BookController {
             @RequestParam(required = false) String publisherName,
             //작가명으로 검색
             @RequestParam(required = false) String authorName,
-            //태그명 검색은 tagAPI에서 구현됨
-//            @RequestParam(required = false) String tagName,
             //조회수에 의한 정렬
             @RequestParam(required = false) Boolean sortByView,
             //판매수에 의한 정렬
@@ -70,9 +68,6 @@ public class BookController {
         if (authorName != null && !authorName.isEmpty()) {
             return bookService.getBooksByAuthorName(authorName, pageable);
         }
-//        if(tagName != null && !tagName.isEmpty()){
-//            return bookService.getBooksByTag(tagName, pageable);
-//        }
         //가장 많이 열람한 횟수로 정렬
         if (sortByView != null && sortByView) {
             return bookService.getBooksByBookView(pageable);
@@ -91,6 +86,9 @@ public class BookController {
         }
         if (sortByBookTitleAsc != null && sortByBookTitleAsc) {
             return bookService.getBooksByNameAsc(pageable);
+        }
+        if (sortByReviews != null && sortByReviews) {
+            return bookService.getBooksByIsbnAsc(pageable);
         }
         return bookService.getBooks(pageable);
 

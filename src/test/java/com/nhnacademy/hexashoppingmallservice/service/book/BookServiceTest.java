@@ -278,13 +278,13 @@ class BookServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Book> bookPage = mock(Page.class);
 
-        when(bookRepository.findByOrderByBookSellCountDesc(pageable)).thenReturn(bookPage);
+        when(bookRepository.findByOrderByBookSellCountDescBookIdAsc(pageable)).thenReturn(bookPage);
         when(bookPage.getContent()).thenReturn(List.of(book));
 
         List<Book> books = bookService.getBooksByBookSellCount(pageable);
 
         assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByOrderByBookSellCountDesc(pageable);
+        verify(bookRepository, times(1)).findByOrderByBookSellCountDescBookIdAsc(pageable);
     }
 
 
@@ -323,13 +323,13 @@ class BookServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Book> bookPage = mock(Page.class);
 
-        when(bookRepository.findAllByOrderByBookPubDateDesc(pageable)).thenReturn(bookPage);
+        when(bookRepository.findAllByOrderByBookPubDateDescBookIdAsc(pageable)).thenReturn(bookPage);
         when(bookPage.getContent()).thenReturn(List.of(book));
 
         List<Book> books = bookService.getBooksByBookPubDate(pageable);
 
         assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookPubDateDesc(pageable);
+        verify(bookRepository, times(1)).findAllByOrderByBookPubDateDescBookIdAsc(pageable);
     }
 
 
@@ -338,13 +338,13 @@ class BookServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Book> bookPage = mock(Page.class);
 
-        when(bookRepository.findAllByOrderByBookPubDateDesc(pageable)).thenReturn(bookPage);
+        when(bookRepository.findAllByOrderByBookTitleAsc(any(Pageable.class))).thenReturn(bookPage);
         when(bookPage.getContent()).thenReturn(List.of(book));
 
         List<Book> books = bookService.getBooksByNameAsc(pageable);
 
         assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookPubDateDesc(pageable);
+        verify(bookRepository, times(1)).findAllByOrderByBookTitleAsc(pageable);
     }
 
     @Test
