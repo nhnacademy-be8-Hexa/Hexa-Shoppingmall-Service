@@ -71,7 +71,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRepositor
 //    Page<Book> findBooksByTagName(@Param("tagName") String tagName, Pageable pageable);
 
     // 도서 목록 - 최신순(출간일 기준)
-    Page<Book> findAllByOrderByBookPubDateDesc(Pageable pageable);
+    Page<Book> findAllByOrderByBookPubDateDescBookIdAsc(Pageable pageable);
 
     // ISBN 중복확인
     boolean existsByBookIsbn(@Param("bookIsbn") Long bookIsbn);
