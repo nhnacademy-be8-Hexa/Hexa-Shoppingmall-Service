@@ -178,4 +178,4 @@ GET http://localhost:8081/api/books/ids?bookIds=11,12,13
 Accept: application/json
 
 ### pageable test
-GET localhost:8081/api/books?size=3&sort=bookSellCount,asc&sort=bookId,desc
+GET localhost:8081/api/books?size=3&page=0&sortByLikeCount=true&sort=bookId,asc

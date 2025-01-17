@@ -41,18 +41,8 @@ public class BookController {
             @RequestParam(required = false) String publisherName,
             //작가명으로 검색
             @RequestParam(required = false) String authorName,
-            //조회수에 의한 정렬
-            @RequestParam(required = false) Boolean sortByView,
-            //판매수에 의한 정렬
-            @RequestParam(required = false) Boolean sortBySellCount,
             //좋아요수에 의한 정렬
             @RequestParam(required = false) Boolean sortByLikeCount,
-            //출간일 최신순으로 정렬
-            @RequestParam(required = false) Boolean latest,
-            // 도서명 내림차순
-            @RequestParam(required = false) Boolean sortByBookTitleDesc,
-            // 도서명 오름차순
-            @RequestParam(required = false) Boolean sortByBookTitleAsc,
             // 리뷰순
             @RequestParam(required = false) Boolean sortByReviews
     ) {
@@ -68,24 +58,8 @@ public class BookController {
         if (authorName != null && !authorName.isEmpty()) {
             return bookService.getBooksByAuthorName(authorName, pageable);
         }
-        //가장 많이 열람한 횟수로 정렬
-        if (sortByView != null && sortByView) {
-            return bookService.getBooksByBookView(pageable);
-        }
-        if (sortBySellCount != null && sortBySellCount) {
-            return bookService.getBooksByBookSellCount(pageable);
-        }
         if (sortByLikeCount != null && sortByLikeCount) {
             return bookService.getBooksByLikeCount(pageable);
-        }
-        if (latest != null && latest) {
-            return bookService.getBooksByBookPubDate(pageable);
-        }
-        if (sortByBookTitleDesc != null && sortByBookTitleDesc) {
-            return bookService.getBooksByNameDesc(pageable);
-        }
-        if (sortByBookTitleAsc != null && sortByBookTitleAsc) {
-            return bookService.getBooksByNameAsc(pageable);
         }
         if (sortByReviews != null && sortByReviews) {
             return bookService.getBooksByIsbnAsc(pageable);

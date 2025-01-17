@@ -259,34 +259,6 @@ class BookServiceTest {
     }
 
 
-    @Test
-    void getBooksByBookView_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findByOrderByBookViewDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookView(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByOrderByBookViewDesc(pageable);
-    }
-
-    @Test
-    void getBooksByBookSellCount_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findByOrderByBookSellCountDescBookIdAsc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookSellCount(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findByOrderByBookSellCountDescBookIdAsc(pageable);
-    }
-
 
     @Test
     void getBooksByPublisherName_Success() {
@@ -316,49 +288,6 @@ class BookServiceTest {
 
         assertThat(books).hasSize(1);
         verify(bookRepository, times(1)).findByBookTitleContaining(bookTitle, pageable);
-    }
-
-    @Test
-    void getBooksByBookPubDate_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAllByOrderByBookPubDateDescBookIdAsc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByBookPubDate(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookPubDateDescBookIdAsc(pageable);
-    }
-
-
-    @Test
-    void getBooksByNameAsc_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAllByOrderByBookTitleAsc(any(Pageable.class))).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByNameAsc(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookTitleAsc(pageable);
-    }
-
-    @Test
-    void getBooksByNameDesc_Success() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Book> bookPage = mock(Page.class);
-
-        when(bookRepository.findAllByOrderByBookTitleDesc(pageable)).thenReturn(bookPage);
-        when(bookPage.getContent()).thenReturn(List.of(book));
-
-        List<Book> books = bookService.getBooksByNameDesc(pageable);
-
-        assertThat(books).hasSize(1);
-        verify(bookRepository, times(1)).findAllByOrderByBookTitleDesc(pageable);
     }
 
 
