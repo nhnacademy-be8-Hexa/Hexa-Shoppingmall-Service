@@ -149,7 +149,7 @@ public class BookSyncToElasticsearch {
         List<com.nhnacademy.hexashoppingmallservice.document.Book> books =
                 StreamSupport.stream(booksIterable.spliterator(), false)
                         .toList();
-
+        
         for (com.nhnacademy.hexashoppingmallservice.document.Book book : books) {
             List<com.nhnacademy.hexashoppingmallservice.document.Tag> currentTags = book.getBookTags();
 
