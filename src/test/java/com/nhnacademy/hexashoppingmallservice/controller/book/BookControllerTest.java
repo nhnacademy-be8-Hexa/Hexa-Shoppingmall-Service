@@ -11,9 +11,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
@@ -412,5 +410,82 @@ class BookControllerTest {
                         )
                 ));
     }
+
+
+    @Test
+    void getBooksByIds() throws Exception {
+        // 도서 ID 리스트
+        List<Long> bookIds = List.of(1L, 2L, 3L);
+
+        // 반환될 도서 목록 설정
+        List<Book> books = Collections.singletonList(book);
+
+        // 서비스가 해당 ID 목록에 맞는 도서를 반환하도록 설정
+        given(bookService.getBooksByIds(anyList())).willReturn(books);
+
+        // API 호출 및 검증
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books/ids")
+                        .param("bookIds", "1", "2", "3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(books.size()))
+                .andExpect(jsonPath("$[0].bookTitle").value("Test Book"))
+                .andDo(document("get-books-by-ids",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("bookIds").description("도서 ID 리스트")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].bookId").description("도서 ID"),
+                                fieldWithPath("[].bookTitle").description("도서 제목"),
+                                fieldWithPath("[].bookDescription").description("도서 설명"),
+                                fieldWithPath("[].bookPubDate").description("도서 출간일"),
+                                fieldWithPath("[].bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("[].bookView").description("도서 페이지 조회수"),
+                                fieldWithPath("[].bookAmount").description("도서 재고"),
+                                fieldWithPath("[].bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("[].bookSellCount").description("도서 판매량"),
+                                fieldWithPath("[].bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("[].bookPrice").description("도서 판매가"),
+                                fieldWithPath("[].publisher.publisherId").description("출판사 ID"),
+                                fieldWithPath("[].publisher.publisherName").description("출판사 이름"),
+                                fieldWithPath("[].bookStatus.bookStatusId").description("도서 상태 ID"),
+                                fieldWithPath("[].bookStatus.bookStatus").description("도서 상태")
+                        )
+                ));
+    }
+
+    @Test
+    void getTotalBooks() throws Exception {
+        // 파라미터 설정
+        String search = "Test Book";
+        List<Long> categoryIds = List.of(1L, 2L);
+        String publisherName = "Test Publisher";
+        String authorName = "Test Author";
+
+        // 반환될 도서 총 개수 설정
+        Long totalBooks = 100L;
+
+        // 서비스가 해당 파라미터에 맞는 도서 총 개수를 반환하도록 설정
+        given(bookService.getTotal(anyString(), anyList(), anyString(), anyString())).willReturn(totalBooks);
+
+        // API 호출 및 검증
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books/total")
+                        .param("search", search)
+                        .param("categoryIds", "1", "2")
+                        .param("publisherName", publisherName)
+                        .param("authorName", authorName))
+                .andExpect(status().isOk())
+                .andDo(document("get-total-books",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("search").description("도서 제목으로 검색").optional(),
+                                parameterWithName("categoryIds").description("카테고리(아이디)로 검색").optional(),
+                                parameterWithName("publisherName").description("출판사명으로 검색").optional(),
+                                parameterWithName("authorName").description("작가명으로 검색").optional()
+                        ),
+                        responseBody()
+                ));
+    }
+
 
 }

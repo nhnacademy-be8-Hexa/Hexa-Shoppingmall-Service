@@ -554,4 +554,64 @@ class ReviewServiceTest {
         verify(reviewRepository, times(1)).countReviewsWithMinReports(5L);
         assertEquals(10L, result);
     }
+
+
+    /**
+     * 특정 책에 대한 평균 리뷰 평점 조회 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("getAverageReviewRatingByBookId - 특정 책에 대한 평균 리뷰 평점을 성공적으로 조회한다")
+    void getAverageReviewRatingByBookId_Success() {
+        // Arrange
+        Long bookId = 1L;
+        BigDecimal expectedAverageRating = new BigDecimal("4.5");
+        when(reviewRepository.findAverageReviewRatingByBookId(bookId)).thenReturn(expectedAverageRating);
+
+        // Act
+        BigDecimal result = reviewService.getAverageReviewRatingByBookId(bookId);
+
+        // Assert
+        verify(reviewRepository, times(1)).findAverageReviewRatingByBookId(bookId);
+        assertEquals(expectedAverageRating, result);
+    }
+
+    /**
+     * 특정 리뷰 ID로 리뷰 조회 시 리뷰가 존재하지 않으면 예외 발생 테스트
+     */
+    @Test
+    @DisplayName("getReviewById - 존재하지 않는 리뷰 ID로 조회 시 ReviewNotFoundException 발생")
+    void getReviewById_ReviewNotFound() {
+        // Arrange
+        Long reviewId = 1L;
+        when(reviewRepository.existsById(reviewId)).thenReturn(false);
+
+        // Act & Assert
+        ReviewNotFoundException exception = assertThrows(ReviewNotFoundException.class, () ->
+                reviewService.getReviewById(reviewId));
+
+        assertEquals("Review ID 1 is not Found!", exception.getMessage());
+        verify(reviewRepository, times(1)).existsById(reviewId);
+        verify(reviewRepository, never()).findByReviewId(reviewId);
+    }
+
+    /**
+     * 특정 리뷰 ID로 리뷰 조회 성공 시나리오 테스트
+     */
+    @Test
+    @DisplayName("getReviewById - 특정 리뷰 ID로 리뷰를 성공적으로 조회한다")
+    void getReviewById_Success() {
+        // Arrange
+        Long reviewId = 1L;
+        ReviewProjection expectedReviewProjection = mock(ReviewProjection.class);
+        when(reviewRepository.existsById(reviewId)).thenReturn(true);
+        when(reviewRepository.findByReviewId(reviewId)).thenReturn(expectedReviewProjection);
+
+        // Act
+        ReviewProjection result = reviewService.getReviewById(reviewId);
+
+        // Assert
+        verify(reviewRepository, times(1)).existsById(reviewId);
+        verify(reviewRepository, times(1)).findByReviewId(reviewId);
+        assertEquals(expectedReviewProjection, result);
+    }
 }

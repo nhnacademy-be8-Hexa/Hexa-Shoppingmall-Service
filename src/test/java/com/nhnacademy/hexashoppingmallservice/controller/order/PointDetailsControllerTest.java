@@ -247,5 +247,27 @@ class PointDetailsControllerTest {
                 ));
     }
 
+    @Test
+    void countByMemberId() throws Exception {
+        // memberId에 대한 포인트 내역 개수 반환
+        Integer pointDetailsCount = 5;
+
+        // 포인트 상세 내역 개수 반환 Mock 설정
+        given(pointDetailsService.countByMemberId("1")).willReturn(pointDetailsCount);
+
+        mockMvc.perform(get("/api/members/{memberId}/pointDetails/count", "1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // 200 OK 응답 검증
+                .andExpect(jsonPath("$").value(pointDetailsCount))  // 반환된 포인트 내역 개수 검증
+                .andDo(document("count-point-details",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("멤버 ID") // 경로 매개변수 문서화
+                        ),
+                        responseBody()
+                ));
+    }
+
+
 }
 

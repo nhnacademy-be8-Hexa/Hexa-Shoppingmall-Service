@@ -69,3 +69,36 @@ include::{snippets}/update-member/response-fields.adoc[]
 === 예제 응답
 
 include::{snippets}/update-member/response-body.adoc[]
+
+
+== 회원 좋아요 도서 조회
+
+=== 요청
+
+include::{snippets}/get-liked-books/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-liked-books/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-liked-books/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-liked-books/response-body.adoc[]
+
+== 회원 로그인
+
+=== 요청
+
+include::{snippets}/login-member/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/login-member/path-parameters.adoc[]
+
+=== 예제 응답
+
+200 OK

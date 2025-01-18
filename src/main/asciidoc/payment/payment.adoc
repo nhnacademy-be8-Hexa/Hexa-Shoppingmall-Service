@@ -1,0 +1,39 @@
+= TossPayment API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== TossPayment 추가
+
+=== 요청
+
+include::{snippets}/add-payment/http-request.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/add-payment/request-fields.adoc[]
+
+=== 예제 응답
+
+HTTP 200 OK
+
+
+== 특정 주문에 대한 TossPayment 조회
+
+=== 요청
+
+include::{snippets}/get-payment/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-payment/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-payment/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-payment/response-body.adoc[]
+

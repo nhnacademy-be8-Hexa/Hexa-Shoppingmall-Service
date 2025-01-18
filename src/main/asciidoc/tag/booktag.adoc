@@ -73,3 +73,16 @@ include::{snippets}/delete-book-tag/path-parameters.adoc[]
 include::{snippets}/delete-book-tag/response-body.adoc[]
 
 
+== 특정 북태그를 가진 도서 수 조회
+
+=== 요청
+
+include::{snippets}/get-book-count-by-tag/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/get-book-count-by-tag/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-book-count-by-tag/response-body.adoc[]

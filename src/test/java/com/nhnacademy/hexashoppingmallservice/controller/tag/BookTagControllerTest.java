@@ -31,6 +31,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -179,4 +180,30 @@ class BookTagControllerTest {
 
         verify(bookTagService).delete(eq(1L), eq(1L));
     }
+
+    @Test
+    void getBookCountByTag() throws Exception {
+        int mockCount = 5;
+
+        // countBooksByTagId 메서드가 mockCount 값을 반환하도록 설정
+        Mockito.when(bookTagService.countBooksByTagId(1L)).thenReturn(mockCount);
+
+        // GET 요청을 보내고 응답 본문이 "5"와 일치하는지 확인
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/tags/{tagId}/books/count", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // 상태 코드 200 확인
+                .andExpect(content().string("5"))  // 응답 본문이 "5"인지 확인
+                .andDo(document("get-book-count-by-tag",  // 문서화
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("tagId").description("해당하는 태그 ID를 가진 책의 수량")
+                        ),
+                        responseBody()
+
+                ));
+
+        // bookTagService.countBooksByTagId(1L)가 호출되었는지 확인
+        verify(bookTagService).countBooksByTagId(eq(1L));
+    }
+
 }

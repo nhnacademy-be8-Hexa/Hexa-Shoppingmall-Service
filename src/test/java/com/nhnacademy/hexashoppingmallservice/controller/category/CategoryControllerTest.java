@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -25,8 +26,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -218,4 +218,263 @@ class CategoryControllerTest {
                         )
                 ));
     }
+
+
+
+
+
+
+
+
+
+    @Test
+    void getAllPagedCategories() throws Exception {
+        // Mock 데이터 생성
+        Category category1 = Category.of("Electronics", null);
+
+        Field category1IdField = category1.getClass().getDeclaredField("categoryId");
+        category1IdField.setAccessible(true);
+        category1IdField.set(category1, 1L);
+
+        Category category2 = Category.of("Books", null);
+
+
+        Field category2IdField = category2.getClass().getDeclaredField("categoryId");
+        category2IdField.setAccessible(true);
+        category2IdField.set(category2, 2L);
+
+
+        Mockito.when(categoryService.getAllPagedCategories(any(Pageable.class)))
+                .thenReturn(List.of(category1, category2));
+
+
+
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/categories/paged")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-all-paged-categories",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호 (0부터 시작)"),
+                                parameterWithName("size").description("페이지 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].categoryId").description("카테고리 ID"),
+                                fieldWithPath("[].categoryName").description("카테고리 이름"),
+                                fieldWithPath("[].parentCategory").description("상위 카테고리 정보").optional()
+                        )
+                ));
+    }
+
+
+    @Test
+    void getAllCategories() throws Exception {
+        // Mock 데이터 생성
+        Category category1 = Category.of("Electronics", null);
+        Category category2 = Category.of("Books", null);
+        Mockito.when(categoryService.getAllCategories())
+                .thenReturn(List.of(category1, category2));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/categories/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-all-categories",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[].categoryId").description("카테고리 ID"),
+                                fieldWithPath("[].categoryName").description("카테고리 이름"),
+                                fieldWithPath("[].parentCategory").description("상위 카테고리 정보").optional()
+                        )
+                ));
+    }
+
+    @Test
+    void getTotal() throws Exception {
+        Mockito.when(categoryService.getTotal()).thenReturn(100L);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/categories/total")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-total-categories",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    void deleteCategory() throws Exception {
+        // Mock
+        Mockito.doNothing().when(categoryService).deleteCategory(anyLong());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/categories/{categoryId}", 1L)
+                        .header("Authorization", validToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-category",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("categoryId").description("삭제할 카테고리 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        )
+                ));
+    }
+
+    @Test
+    void insertBook() throws Exception {
+        Mockito.doNothing().when(categoryService).insertBook(anyLong(), anyLong());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/categories/{categoryId}/books/{bookId}", 1L, 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(document("insert-book-to-category",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("categoryId").description("카테고리 ID"),
+                                parameterWithName("bookId").description("도서 ID")
+                        )
+                ));
+    }
+
+
+    @Test
+    void insertBooks() throws Exception {
+        List<Long> books = List.of(1L, 2L, 3L);
+        Mockito.doNothing().when(categoryService).insertBooks(anyLong(), anyList());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/categories/{categoryId}/books", 1L)
+                        .header("Authorization", validToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(books)))
+                .andExpect(status().isNoContent())
+                .andDo(document("insert-books-to-category",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("categoryId").description("카테고리 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    void getAllBooksByCategoryId() throws Exception {
+
+        Publisher publisher = Publisher.of("PublisherName");
+        BookStatus bookStatus = BookStatus.of("Available");
+        book = Book.of(
+                "Book Title",
+                "Book Description",
+                LocalDate.now(),
+                1234567890123L,
+                20000,
+                18000,
+                publisher,
+                bookStatus
+        );
+
+        Mockito.when(categoryService.getAllBooksByCategoryId(anyLong()))
+                .thenReturn(List.of(book));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/categories/{categoryId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-all-books-by-category-id",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("categoryId").description("카테고리 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].bookId").description("도서 ID"),
+                                fieldWithPath("[].bookTitle").description("도서 제목"),
+                                fieldWithPath("[].bookDescription").description("도서 설명"),
+                                fieldWithPath("[].bookPubDate").description("도서 출간일"),
+                                fieldWithPath("[].bookIsbn").description("도서 ISBN"),
+                                fieldWithPath("[].bookView").description("도서 페이지 조회수"),
+                                fieldWithPath("[].bookAmount").description("도서 재고"),
+                                fieldWithPath("[].bookWrappable").description("도서 포장 가능 여부"),
+                                fieldWithPath("[].bookSellCount").description("도서 판매량"),
+                                fieldWithPath("[].bookOriginPrice").description("도서 정가"),
+                                fieldWithPath("[].bookPrice").description("도서 판매가"),
+                                fieldWithPath("[].publisher.publisherId").description("출판사 ID"),
+                                fieldWithPath("[].publisher.publisherName").description("출판사 이름"),
+                                fieldWithPath("[].bookStatus.bookStatusId").description("도서 상태 ID"),
+                                fieldWithPath("[].bookStatus.bookStatus").description("도서 상태")
+                        )
+                ));
+    }
+
+    @Test
+    void deleteByCategoryIdAndBookId() throws Exception {
+        Mockito.doNothing().when(categoryService).deleteByCategoryIdAndBookId(anyLong(), anyLong());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/categories/{categoryId}/books/{bookId}", 1L, 1L)
+                        .header("Authorization", validToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-book-from-category",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("categoryId").description("카테고리 ID"),
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        )
+                ));
+    }
+
+    @Test
+    void deleteByCategoryIdAndBookIds() throws Exception {
+        List<Long> bookIds = List.of(1L, 2L, 3L);
+        Mockito.doNothing().when(categoryService).deleteByCategoryIdAndBookIds(anyLong(), anyList());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/categories/{categoryId}/books", 1L)
+                        .header("Authorization", validToken)
+                        .param("bookIds", "1", "2", "3")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(document("delete-books-from-category",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("categoryId").description("카테고리 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        )
+
+                ));
+    }
+
+    @Test
+    void getAllCategoriesByBookId() throws Exception {
+        Category category = Category.of("Electronics", null); // 카테고리 예시
+        Mockito.when(categoryService.getAllCategoriesByBookId(anyLong()))
+                .thenReturn(List.of(category));
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/categories/books/{bookId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("get-all-categories-by-book-id",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("도서 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].categoryId").description("카테고리 ID"),
+                                fieldWithPath("[].categoryName").description("카테고리 이름"),
+                                fieldWithPath("[].parentCategory").description("부모 카테고리")
+                        )
+                ));
+    }
+
+
+
+
 }

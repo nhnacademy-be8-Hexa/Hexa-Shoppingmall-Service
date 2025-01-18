@@ -375,4 +375,220 @@ class ReviewControllerTest {
                         )
                 ));
     }
+
+    /// ////////////////////////////////////////
+
+    @Test
+    @DisplayName("GET /api/members/{memberId}/books/{bookId}/reviews - 특정 회원의 특정 도서에 대한 리뷰 작성 여부 확인")
+    void checkReviews_Success() throws Exception {
+        // Arrange
+        Long bookId = 1L;
+        boolean hasReview = true;
+
+        // Mock Review Service
+        Mockito.when(reviewService.checkReviews(memberId, bookId)).thenReturn(hasReview);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/members/{memberId}/books/{bookId}/reviews", memberId, bookId)
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(hasReview))
+                .andDo(document("check-reviews",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("리뷰를 확인할 회원의 ID"),
+                                parameterWithName("bookId").description("리뷰를 확인할 도서의 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("GET /api/members/{memberId}/reviews/total - 특정 회원의 리뷰 총계 조회")
+    void getTotalReviews_Success() throws Exception {
+        // Arrange
+        Long totalReviews = 5L;
+
+        // Mock Review Service
+        Mockito.when(reviewService.getReviewsFromMemberTotal(memberId)).thenReturn(totalReviews);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/members/{memberId}/reviews/total", memberId)
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(totalReviews))
+                .andDo(document("get-total-reviews",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("memberId").description("리뷰 총계를 조회할 회원의 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("GET /api/books/{bookId}/reviews/total - 특정 도서의 리뷰 총계 조회")
+    void getTotalReviewsFromBook_Success() throws Exception {
+        // Arrange
+        Long bookId = 1L;
+        Long totalReviews = 10L;
+
+        // Mock Review Service
+        Mockito.when(reviewService.getReviewsFromBookTotal(bookId)).thenReturn(totalReviews);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/books/{bookId}/reviews/total", bookId)
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(totalReviews))
+                .andDo(document("get-total-reviews-from-book",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("리뷰 총계를 조회할 도서의 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseBody()
+                ));
+    }
+
+
+    @Test
+    @DisplayName("GET /api/reviews/highReport - 신고 5회 이상된 리뷰 목록 조회")
+    void getReviewsFromHighReport_Success() throws Exception {
+        // Arrange
+        Pageable pageable = Pageable.ofSize(10);
+        ReviewProjection.MemberProjection memberProjection = createMemberProjection(memberId);
+
+        ReviewProjection review1 = createReviewProjection(1L, "Review 1", new BigDecimal("5"), memberProjection);
+        ReviewProjection review2 = createReviewProjection(2L, "Review 2", new BigDecimal("4"), memberProjection);
+
+        List<ReviewProjection> reviews = Arrays.asList(review1, review2);
+
+        // Mock Review Service
+        Mockito.when(reviewService.getHighlyReportedReviews(pageable)).thenReturn(reviews);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/reviews/highReport")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andDo(document("get-reviews-from-high-report",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("page").description("페이지 번호 (0부터 시작)"),
+                                parameterWithName("size").description("페이지 크기")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].reviewId").type(JsonFieldType.NUMBER).description("리뷰의 ID"),
+                                fieldWithPath("[].reviewContent").type(JsonFieldType.STRING).description("리뷰 내용"),
+                                fieldWithPath("[].reviewRating").type(JsonFieldType.NUMBER).description("리뷰 평점"),
+                                fieldWithPath("[].member").type(JsonFieldType.OBJECT).description("리뷰를 작성한 회원 정보"),
+                                fieldWithPath("[].reviewIsBlocked").type(JsonFieldType.BOOLEAN).description("리뷰의 차단 여부"),
+                                fieldWithPath("[].member.memberId").type(JsonFieldType.STRING).description("회원의 ID")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("GET /api/reviews/highReport/total - 신고 5회 이상된 리뷰의 총 개수 조회")
+    void getReviewsFromHighReportTotal_Success() throws Exception {
+        // Arrange
+        Long totalReviews = 20L;
+
+        // Mock Review Service
+        Mockito.when(reviewService.getTotalHighlyReportedReviews()).thenReturn(totalReviews);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/reviews/highReport/total")
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(totalReviews))
+                .andDo(document("get-reviews-from-high-report-total",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("GET /api/books/{bookId}/review-rating - 특정 도서의 평균 리뷰 평점 조회")
+    void getReviewRating_Success() throws Exception {
+        // Arrange
+        Long bookId = 1L;
+        BigDecimal averageRating = new BigDecimal("4.5");
+
+        // Mock Review Service
+        Mockito.when(reviewService.getAverageReviewRatingByBookId(bookId)).thenReturn(averageRating);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/books/{bookId}/review-rating", bookId)
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(averageRating))
+                .andDo(document("get-review-rating",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("bookId").description("리뷰 평점을 조회할 도서의 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("GET /api/reviews/{reviewId} - 특정 리뷰의 상세 정보 조회")
+    void getReview_Success() throws Exception {
+        // Arrange
+        Long reviewId = 1L;
+        ReviewProjection.MemberProjection memberProjection = createMemberProjection(memberId);
+        ReviewProjection review = createReviewProjection(reviewId, "Great book!", new BigDecimal("5"), memberProjection);
+
+        // Mock Review Service
+        Mockito.when(reviewService.getReviewById(reviewId)).thenReturn(review);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/reviews/{reviewId}", reviewId)
+                        .header("Authorization", validToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.reviewId").value(reviewId))
+                .andExpect(jsonPath("$.reviewContent").value("Great book!"))
+                .andExpect(jsonPath("$.reviewRating").value(5))
+                .andExpect(jsonPath("$.member.memberId").value(memberId))
+                .andDo(document("get-review",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("reviewId").description("조회할 리뷰의 ID")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseFields(
+                                fieldWithPath("reviewId").type(JsonFieldType.NUMBER).description("리뷰의 ID"),
+                                fieldWithPath("reviewContent").type(JsonFieldType.STRING).description("리뷰 내용"),
+                                fieldWithPath("reviewRating").type(JsonFieldType.NUMBER).description("리뷰 평점"),
+                                fieldWithPath("reviewIsBlocked").type(JsonFieldType.BOOLEAN).description("리뷰 block 여부"),
+                                fieldWithPath("member").type(JsonFieldType.OBJECT).description("리뷰 작성자의 정보"),
+                                fieldWithPath("member.memberId").type(JsonFieldType.STRING).description("회원 ID")
+                        )
+                ));
+    }
+
+
 }
