@@ -116,10 +116,7 @@ class BookControllerTest {
         given(bookService.getBooksByPublisherName(anyString(), any(Pageable.class))).willReturn(books);
         given(bookService.getBooksByCategory(anyList(), any(Pageable.class))).willReturn(books);
         given(bookService.getBooksByAuthorName(anyString(), any(Pageable.class))).willReturn(books);
-        given(bookService.getBooksByBookView(any(Pageable.class))).willReturn(books);
-        given(bookService.getBooksByBookSellCount(any(Pageable.class))).willReturn(books);
         given(bookService.getBooksByLikeCount(any(Pageable.class))).willReturn(books);
-        given(bookService.getBooksByBookPubDate(any(Pageable.class))).willReturn(books);
         given(bookService.getBooks(any(Pageable.class))).willReturn(books);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/books")
