@@ -113,4 +113,52 @@ class TagServiceTest {
 
         verify(tagRepository, times(1)).findById(tagId);
     }
+
+    @Test
+    @DisplayName("태그 ID로 조회 테스트")
+    void findTagByIdTest() {
+        Long tagId = 1L;
+        Tag tag = Tag.of("Test Tag");
+
+        // tagRepository에서 태그가 있을 때의 동작 설정
+        when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+
+        // When
+        Tag result = tagService.findTagById(tagId);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getTagName()).isEqualTo("Test Tag");
+        verify(tagRepository, times(1)).findById(tagId);
+    }
+
+    @Test
+    @DisplayName("태그 ID로 조회 실패 테스트 - TagNotFoundException")
+    void findTagByIdThrowsExceptionTest() {
+        Long tagId = 1L;
+
+        // tagRepository에서 태그가 없을 때의 동작 설정
+        when(tagRepository.findById(tagId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThatThrownBy(() -> tagService.findTagById(tagId))
+                .isInstanceOf(TagNotFoundException.class)
+                .hasMessageContaining("Tag: 1 not found.");
+
+        verify(tagRepository, times(1)).findById(tagId);
+    }
+
+    @Test
+    @DisplayName("전체 태그 개수 조회 테스트")
+    void getTotalTagsTest() {
+        // tagRepository에서 count() 메서드를 호출할 때 반환되는 값 설정
+        when(tagRepository.count()).thenReturn(5L);
+
+        // When
+        long totalTags = tagService.getTotal();
+
+        // Then
+        assertThat(totalTags).isEqualTo(5L);
+        verify(tagRepository, times(1)).count();
+    }
 }

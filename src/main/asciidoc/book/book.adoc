@@ -177,3 +177,49 @@ include::{snippets}/increment-book-sell-count/query-parameters.adoc[]
 === 응답 상태
 
 HTTP 상태 코드 204 No Content
+
+
+== 도서 ID 리스트로 도서 조회 (getBooksByIds)
+
+=== 요청
+
+include::{snippets}/get-books-by-ids/http-request.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/get-books-by-ids/query-parameters.adoc[]
+
+
+=== 응답 필드
+
+include::{snippets}/get-books-by-ids/response-fields.adoc[]
+
+
+=== 예제 응답
+
+include::{snippets}/get-books-by-ids/response-body.adoc[]
+
+
+== 도서 총 개수 조회 (getTotalBooks)
+
+=== 요청
+
+include::{snippets}/get-total-books/http-request.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/get-total-books/query-parameters.adoc[]
+
+=== 응답 필드
+
+응답 필드는 도서 총 개수를 나타내는 숫자만 포함됩니다.
+
+[cols="1,1",options="header"]
+|===
+| 필드 | 설명
+| totalBooks | 검색 조건에 맞는 도서의 총 개수
+|===
+
+=== 예제 응답
+
+include::{snippets}/get-total-books/response-body.adoc[]

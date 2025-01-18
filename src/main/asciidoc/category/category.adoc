@@ -75,3 +75,190 @@ include::{snippets}/add-book-to-category/path-parameters.adoc[]
 === 응답
 
 include::{snippets}/add-book-to-category/http-response.adoc[]
+
+
+
+
+
+
+== 카테고리 조회 (페이징)
+
+=== 요청
+
+include::{snippets}/get-all-paged-categories/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-paged-categories/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-paged-categories/response-body.adoc[]
+
+=== 쿼리 파라메터
+
+page: 페이지 번호 (0부터 시작)
+size: 페이지 크기
+== 카테고리 조회 (전체)
+
+=== 요청
+
+include::{snippets}/get-all-categories/http-request.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-categories/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-categories/response-body.adoc[]
+
+
+
+
+
+
+== 카테고리 총합 조회
+
+=== 요청
+
+include::{snippets}/get-total-categories/http-request.adoc[]
+
+
+=== 예제 응답
+
+include::{snippets}/get-total-categories/response-body.adoc[]
+
+
+
+
+== 카테고리 삭제
+
+=== 요청
+
+include::{snippets}/delete-category/http-request.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/delete-category/request-headers.adoc[]
+
+=== 응답
+
+204 NO content
+
+
+
+== 카테고리에 도서 등록
+
+=== 요청
+
+include::{snippets}/insert-book-to-category/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/insert-book-to-category/path-parameters.adoc[]
+
+=== 예제 응답
+
+201 Created
+
+
+
+== 카테고리에 여러 도서 등록
+
+=== 요청
+
+include::{snippets}/insert-books-to-category/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/insert-books-to-category/path-parameters.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/insert-books-to-category/request-headers.adoc[]
+
+=== 예제 응답
+
+201 created
+
+== 카테고리별 도서 조회
+
+=== 요청
+
+include::{snippets}/get-all-books-by-category-id/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/get-all-books-by-category-id/path-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-all-books-by-category-id/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-books-by-category-id/response-body.adoc[]
+
+
+
+
+
+== 카테고리에서 도서 삭제
+
+=== 요청
+
+include::{snippets}/delete-book-from-category/http-request.adoc[]
+
+=== 요청 파라메터
+
+categoryId: 카테고리 ID
+bookId: 도서 ID
+=== 요청 헤더
+
+include::{snippets}/delete-book-from-category/request-headers.adoc[]
+
+=== 예제 응답
+
+204 No Content
+
+
+
+
+
+== 카테고리에서 여러 도서 삭제
+
+=== 요청
+
+include::{snippets}/delete-books-from-category/http-request.adoc[]
+
+=== 요청 파라메터
+
+categoryId: 카테고리 ID
+bookIds: 삭제할 도서 ID 리스트
+=== 요청 헤더
+
+include::{snippets}/delete-books-from-category/request-headers.adoc[]
+
+=== 예제 응답
+
+204 No Content
+
+
+
+== 도서별 카테고리 조회
+
+=== 요청
+
+include::{snippets}/get-all-categories-by-book-id/http-request.adoc[]
+
+=== 요청 파라메터
+
+bookId: 도서 ID
+=== 응답 필드
+
+include::{snippets}/get-all-categories-by-book-id/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-categories-by-book-id/response-body.adoc[]

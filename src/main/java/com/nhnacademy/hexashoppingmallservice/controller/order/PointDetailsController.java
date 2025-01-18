@@ -75,4 +75,6 @@ public class PointDetailsController {
         jwtUtils.ensureUserAccess(request, memberId);
         return ResponseEntity.ok(pointDetailsService.countByMemberId(memberId));
     }
+
+
 }
