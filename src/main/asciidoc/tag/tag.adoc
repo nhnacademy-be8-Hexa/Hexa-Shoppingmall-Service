@@ -69,3 +69,32 @@ include::{snippets}/delete-tag/path-parameters.adoc[]
 include::{snippets}/delete-tag/response-body.adoc[]
 
 
+== 전체 태그 수 조회
+
+=== 요청
+
+include::{snippets}/get-total-tags/http-request.adoc[]
+
+
+=== 예제 응답
+
+include::{snippets}/get-total-tags/http-response.adoc[]
+
+
+== 태그 id로 태그 가져오기
+
+=== 요청
+
+include::{snippets}/get-tag-by-id/http-request.adoc[]
+
+=== 요청 파라메터
+
+include::{snippets}/get-tag-by-id/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-tag-by-id/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-tag-by-id/response-fields.adoc[]
