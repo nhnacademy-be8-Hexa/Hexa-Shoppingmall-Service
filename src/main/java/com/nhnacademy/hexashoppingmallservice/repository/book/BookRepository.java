@@ -25,19 +25,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRepositor
 //            """)
 //    Page<Book> findBooksByAuthorNameLike(@Param("authorName") String authorName, Pageable pageable);
 
-    // bookName 필드를 기준으로 내림차순 정렬된 모든 책 목록 반환
-    Page<Book> findAllByOrderByBookTitleDesc(Pageable pageable);
-
-    // bookName 필드를 기준으로 오름차순 정렬된 모든 책 목록 반환
-    Page<Book> findAllByOrderByBookTitleAsc(Pageable pageable);
-
-
-    // 도서 목록 - 조회수 (내림차순)
-    Page<Book> findByOrderByBookViewDesc(Pageable pageable);
-
-    // 도서 목록 - 베스트셀러 (내림차순)
-    Page<Book> findByOrderByBookSellCountDescBookIdAsc(Pageable pageable);
-
     // 리뷰 순 기준으로 도서를 내림차순 정렬
 //    @Query("SELECT b FROM Book b LEFT JOIN Review r ON b = r.book GROUP BY b ORDER BY COUNT(r) DESC")
 //    Page<Book> findAllOrderByReviewCountDesc(Pageable pageable);
@@ -70,12 +57,8 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRepositor
 //            """)
 //    Page<Book> findBooksByTagName(@Param("tagName") String tagName, Pageable pageable);
 
-    // 도서 목록 - 최신순(출간일 기준)
-    Page<Book> findAllByOrderByBookPubDateDescBookIdAsc(Pageable pageable);
-
     // ISBN 중복확인
     boolean existsByBookIsbn(@Param("bookIsbn") Long bookIsbn);
-
 
     // 특정 BookId에 대한 Author 리스트 조회
 //    @Query("""
