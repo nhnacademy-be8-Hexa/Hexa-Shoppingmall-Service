@@ -204,4 +204,34 @@ class MemberCouponControllerTest {
                 ));
         verify(memberCouponService).deleteMemberCoupon(couponId, memberId);
     }
+
+    @Test
+    @DisplayName("getAllCouponId: 성공 - 모든 쿠폰 ID를 반환함")
+    void getAllCouponId_Success() throws Exception {
+        // Arrange
+        List<Long> mockCouponIds = List.of(100L, 101L, 102L);
+        given(memberCouponService.getAllCouponId()).willReturn(mockCouponIds);
+
+        // Act & Assert
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/All/coupons")
+                        .header("Authorization", "Bearer dummy-token") // Authorization 헤더 추가
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(mockCouponIds.size()))
+                .andExpect(jsonPath("$[0]").value(100))
+                .andExpect(jsonPath("$[1]").value(101))
+                .andExpect(jsonPath("$[2]").value(102))
+                .andDo(document("get-all-coupon-ids",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("인증 토큰 (Bearer 형식)")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].").description("쿠폰 ID 목록")
+                        )
+                ));
+        verify(memberCouponService).getAllCouponId();
+    }
+
 }

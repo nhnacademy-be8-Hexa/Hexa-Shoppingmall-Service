@@ -57,3 +57,18 @@ include::{snippets}/delete-member-coupon/path-parameters.adoc[]
 === 예제 응답
 
 include::{snippets}/delete-member-coupon/http-response.adoc[]
+
+
+== 모든 쿠폰 ID 조회
+
+=== 요청
+
+include::{snippets}/get-all-coupon-ids/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-all-coupon-ids/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-all-coupon-ids/http-response.adoc[]

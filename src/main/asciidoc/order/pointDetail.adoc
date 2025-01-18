@@ -65,3 +65,19 @@ include::{snippets}/sum-point/http-response.adoc[]
 === 예제 응답
 
 include::{snippets}/sum-point/response-body.adoc[]
+
+
+== 멤버 id에 대한 포인트 내역 개수 조회
+
+=== 요청
+
+include::{snippets}/count-point-details/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/count-point-details/path-parameters.adoc[]
+
+
+=== 예제 응답
+
+include::{snippets}/count-point-details/response-body.adoc[]
