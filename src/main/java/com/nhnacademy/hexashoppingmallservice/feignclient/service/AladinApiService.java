@@ -13,8 +13,8 @@ import com.nhnacademy.hexashoppingmallservice.entity.book.Publisher;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookIsbnAlreadyExistException;
 import com.nhnacademy.hexashoppingmallservice.exception.book.BookStatusNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.feignclient.AladinApi;
-import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.Book;
-import com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin.ListBook;
+import com.nhnacademy.hexashoppingmallservice.feignclient.domain.Book;
+import com.nhnacademy.hexashoppingmallservice.feignclient.domain.ListBook;
 import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookDTO;
 import com.nhnacademy.hexashoppingmallservice.feignclient.dto.AladinBookRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.repository.book.AuthorRepository;
@@ -139,7 +139,7 @@ public class AladinApiService {
                 aladinBook.setIsbn13(isbn13);
                 aladinBook.setDescription(decodedDescription);
                 aladinBook.setSalesPoint(salesPoint);
-                aladinBook.setCover(book.getCover().replace("coversum", "cover200"));
+                aladinBook.setCover(book.getCover().replace("coversum", "cover500"));
 
 
                 aladinBooks.add(aladinBook);
