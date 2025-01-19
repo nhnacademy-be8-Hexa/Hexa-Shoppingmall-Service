@@ -100,3 +100,59 @@ include::{snippets}/get-order-amount/path-parameters.adoc[]
 
 include::{snippets}/get-order-amount/http-response.adoc[]
 
+== 특정 도서가 특정 회원의 주문에 존재하는지 확인
+
+=== 요청
+
+include::{snippets}/get-check-order-book/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-check-order-book/path-parameters.adoc[]
+
+
+=== 예제 응답
+
+include::{snippets}/get-check-order-book/response-body.adoc[]
+
+== 주문 ID와 회원 ID가 일치하는지 확인
+
+=== 요청
+
+include::{snippets}/exists-order-id-and-member-id/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/exists-order-id-and-member-id/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/exists-order-id-and-member-id/response-body.adoc[]
+
+== 특정 회원의 전체 주문 수량 조회
+
+=== 요청
+
+include::{snippets}/count-all-by-member-id/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/count-all-by-member-id/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/count-all-by-member-id/response-body.adoc[]
+
+== 주문 상태별 주문 수량 조회
+
+=== 요청
+
+include::{snippets}/count-orders-by-status/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/count-orders-by-status/path-parameters.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/count-orders-by-status/response-body.adoc[]

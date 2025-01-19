@@ -134,3 +134,93 @@ include::{snippets}/update-review-block/request-headers.adoc[]
 
 include::{snippets}/update-review-block/http-response.adoc[]
 
+
+== 특정 회원의 특정 도서에 대한 리뷰 작성 여부 확인
+
+=== 요청
+
+include::{snippets}/check-reviews/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/check-reviews/path-parameters.adoc[]
+
+=== 헤더
+
+include::{snippets}/check-reviews/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/check-reviews/http-response.adoc[]
+
+
+
+== 특정 도서의 리뷰 총계 조회
+
+=== 요청
+
+include::{snippets}/get-total-reviews-from-book/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-total-reviews-from-book/path-parameters.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-total-reviews-from-book/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-total-reviews-from-book/http-response.adoc[]
+
+
+== 신고 5회 이상된 리뷰 목록 조회
+
+=== 요청
+
+include::{snippets}/get-reviews-from-high-report/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-reviews-from-high-report/query-parameters.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-reviews-from-high-report/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-reviews-from-high-report/response-body.adoc[]
+
+
+== 신고 5회 이상된 리뷰의 총 개수 조회
+
+=== 요청
+
+include::{snippets}/get-reviews-from-high-report-total/http-request.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-reviews-from-high-report-total/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-reviews-from-high-report-total/http-response.adoc[]
+
+== 특정 리뷰의 상세 정보 조회
+
+=== 요청
+
+include::{snippets}/get-review/http-request.adoc[]
+
+=== 경로 파라미터
+
+include::{snippets}/get-review/path-parameters.adoc[]
+
+=== 헤더
+
+include::{snippets}/get-review/request-headers.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/get-review/http-response.adoc[]

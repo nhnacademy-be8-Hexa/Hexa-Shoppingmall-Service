@@ -431,4 +431,136 @@ class OrderControllerTest {
                     ));
         }
     }
+
+    ///
+
+
+    @Nested
+    @DisplayName("getCheckOrderBook 메서드 테스트")
+    class GetCheckOrderBookTests {
+
+        @Test
+        @DisplayName("특정 도서가 특정 회원의 주문에 존재하는지 확인한다")
+        void getCheckOrderBook_Success() throws Exception {
+            // Arrange
+            String memberId = "member123";
+            Long bookId = 2L;
+            boolean orderExists = true; // 가정: 특정 도서가 주문에 존재한다고 응답
+
+            when(orderService.checkOrderBook(eq(memberId), eq(bookId))).thenReturn(orderExists);
+
+            // Act & Assert
+            mockMvc.perform(get("/api/members/{memberId}/orders/books/{bookId}", memberId, bookId)
+                            .header("Authorization", "Bearer valid-token"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(Boolean.toString(orderExists)))
+                    .andDo(document("get-check-order-book",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            pathParameters(
+                                    parameterWithName("memberId").description("회원 ID"),
+                                    parameterWithName("bookId").description("도서 ID")
+                            ),
+                            responseBody()
+                    ));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("existsOrderIdAndMember_MemberId 메서드 테스트")
+    class ExistsOrderIdAndMember_MemberIdTests {
+
+        @Test
+        @DisplayName("주문 ID와 회원 ID가 일치하는지 확인한다")
+        void existsOrderIdAndMember_MemberId_Success() throws Exception {
+            // Arrange
+            Long orderId = 1L;
+            String memberId = "member123";
+            boolean exists = true; // 가정: orderId와 memberId가 일치한다고 응답
+
+            when(orderService.existsOrderIdAndMember_MemberId(eq(orderId), eq(memberId))).thenReturn(exists);
+
+            // Act & Assert
+            mockMvc.perform(get("/api/orders/{orderId}/{memberId}", orderId, memberId)
+                            .header("Authorization", "Bearer valid-token"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(Boolean.toString(exists)))
+                    .andDo(document("exists-order-id-and-member-id",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            pathParameters(
+                                    parameterWithName("orderId").description("주문 ID"),
+                                    parameterWithName("memberId").description("회원 ID")
+                            ),
+                            responseBody()
+                    ));
+        }
+    }
+
+    @Nested
+    @DisplayName("countAllByMember_MemberId 메서드 테스트")
+    class CountAllByMember_MemberIdTests {
+
+        @Test
+        @DisplayName("특정 회원의 전체 주문 수량을 조회한다")
+        void countAllByMember_MemberId_Success() throws Exception {
+            // Arrange
+            String memberId = "member123";
+            Long orderCount = 5L; // 가정: 특정 회원의 주문 수는 5
+
+            when(orderService.countAllByMember_MemberId(eq(memberId))).thenReturn(orderCount);
+
+            // Act & Assert
+            mockMvc.perform(get("/api/orders/count/{memberId}", memberId)
+                            .header("Authorization", "Bearer valid-token"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(orderCount.toString()))
+                    .andDo(document("count-all-by-member-id",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            pathParameters(
+                                    parameterWithName("memberId").description("회원 ID")
+                            ),
+                            responseBody()
+                    ));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("countOrdersByStatus 메서드 테스트")
+    class CountOrdersByStatusTests {
+
+        @Test
+        @DisplayName("주문 상태별 주문 수량을 조회한다")
+        void countOrdersByStatus_Success() throws Exception {
+            // Arrange
+            Long statusId = 1L;
+            Long orderCount = 10L; // 가정: 특정 상태의 주문 수는 10
+
+            when(orderService.countOrdersByStatusId(eq(statusId))).thenReturn(orderCount);
+
+            // Act & Assert
+            mockMvc.perform(get("/api/orders/status/{statusId}/count", statusId)
+                            .header("Authorization", "Bearer valid-token"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().string(orderCount.toString()))
+                    .andDo(document("count-orders-by-status",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            pathParameters(
+                                    parameterWithName("statusId").description("주문 상태 ID")
+                            ),
+                            responseBody()
+                    ));
+        }
+    }
+
+
+
 }

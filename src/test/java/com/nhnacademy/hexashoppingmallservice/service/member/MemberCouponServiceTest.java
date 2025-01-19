@@ -269,4 +269,53 @@ class MemberCouponServiceTest {
 //    }
 
 
+    @Test
+    @DisplayName("getAllCouponId_Success - 모든 쿠폰 ID 목록을 성공적으로 반환")
+    void getAllCouponId_Success() {
+        // Arrange
+        Long couponId1 = 100L;
+        Long couponId2 = 101L;
+        Long couponId3 = 102L;
+
+        // Mock 쿠폰 ID 리스트 반환
+        List<Long> mockCouponIds = Arrays.asList(couponId1, couponId2, couponId3);
+
+        // when
+        when(memberCouponRepository.findAllCouponIds()).thenReturn(mockCouponIds);
+
+        // Act
+        List<Long> result = memberCouponService.getAllCouponId();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        assertTrue(result.contains(couponId1));
+        assertTrue(result.contains(couponId2));
+        assertTrue(result.contains(couponId3));
+
+        // verify
+        verify(memberCouponRepository, times(1)).findAllCouponIds();
+    }
+
+    @Test
+    @DisplayName("getAllCouponId_EmptyList - 쿠폰 ID가 없을 경우 빈 목록을 반환")
+    void getAllCouponId_EmptyList() {
+        // Arrange
+        List<Long> mockCouponIds = Arrays.asList(); // 빈 목록
+
+        // when
+        when(memberCouponRepository.findAllCouponIds()).thenReturn(mockCouponIds);
+
+        // Act
+        List<Long> result = memberCouponService.getAllCouponId();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+
+        // verify
+        verify(memberCouponRepository, times(1)).findAllCouponIds();
+    }
+
+
 }

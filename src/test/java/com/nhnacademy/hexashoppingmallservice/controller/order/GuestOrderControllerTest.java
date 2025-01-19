@@ -2,6 +2,7 @@ package com.nhnacademy.hexashoppingmallservice.controller.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.hexashoppingmallservice.dto.order.GuestOrderRequestDTO;
+import com.nhnacademy.hexashoppingmallservice.dto.order.GuestOrderValidateRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
@@ -36,8 +37,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -487,6 +487,33 @@ class GuestOrderControllerTest {
                                 PayloadDocumentation.fieldWithPath("guestOrderNumber").description("게스트 주문 번호"),
                                 PayloadDocumentation.fieldWithPath("guestOrderEmail").description("게스트 이메일")
                         )
+                ));
+    }
+
+    @Test
+    @DisplayName("Test validateGuestOrder - Success")
+    void testValidateGuestOrder_Success() throws Exception {
+        // Given
+        Long orderId = 1L;
+        String guestOrderPassword = "securePassword";
+
+        // Mocking the service to return the password based on orderId and password
+        Mockito.when(guestOrderService.getGuestOrderPassword(orderId, guestOrderPassword))
+                .thenReturn(guestOrderPassword);
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/guestOrders/validate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new GuestOrderValidateRequestDTO(orderId, guestOrderPassword))))
+                .andExpect(status().isOk())
+                .andExpect(content().string(guestOrderPassword))  // Expecting the same password to be returned
+                .andDo(document("validate-guest-order-success",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestFields(
+                                PayloadDocumentation.fieldWithPath("orderId").description("주문 ID"),
+                                PayloadDocumentation.fieldWithPath("guestOrderPassword").description("게스트 주문 비밀번호")
+                        ),
+                        responseBody()
                 ));
     }
 }

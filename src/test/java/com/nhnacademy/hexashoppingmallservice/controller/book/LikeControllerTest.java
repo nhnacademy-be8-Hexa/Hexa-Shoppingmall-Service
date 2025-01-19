@@ -1,6 +1,7 @@
 package com.nhnacademy.hexashoppingmallservice.controller.book;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -92,4 +93,59 @@ class LikeControllerTest {
                         responseBody()
                 ));
     }
+
+    @Test
+    void toggleLike() throws Exception {
+        Long bookId = 1L;
+        String memberId = "123";
+
+
+        // mock 호출
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/likes/toggle")
+                        .queryParam("bookId", String.valueOf(bookId))
+                        .queryParam("memberId", memberId)
+                        .header("Authorization", "Bearer dummy-token")
+                )
+                .andExpect(status().isOk())
+                .andDo(document("toggle-like",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName("Authorization").description("관리자 인증 토큰 (Bearer 형식)")
+                        ),
+                        queryParameters(
+                                parameterWithName("bookId").description("좋아요를 토글할 책의 ID"),
+                                parameterWithName("memberId").description("좋아요를 토글할 회원의 ID")
+                        )
+                ));
+
+        // likeService.toggleLike(bookId, memberId) 호출 검증
+        verify(likeService).toggleLike(bookId, memberId);
+    }
+
+    @Test
+    void hasLiked() throws Exception {
+        Long bookId = 1L;
+        String memberId = "123";
+        Boolean hasLiked = true;
+
+        // 모킹: likeService.hasLiked(bookId, memberId)
+        given(likeService.hasLiked(bookId, memberId)).willReturn(hasLiked);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/likes/status")
+                        .queryParam("bookId", String.valueOf(bookId))
+                        .queryParam("memberId", memberId)
+                        .accept("application/json")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string(String.valueOf(hasLiked)))
+                .andDo(document("has-liked",
+                        preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("bookId").description("도서 ID"),
+                                parameterWithName("memberId").description("회원 ID")
+                        ),
+                        responseBody()
+                ));
+    }
+
 }

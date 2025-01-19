@@ -109,3 +109,16 @@ include::{snippets}/update-guest-order-validation-error/http-request.adoc[]
 === 응답
 
 HTTP 상태 코드 400 Bad Request
+
+
+
+
+== orderId와 guestOrderPassword로 존재 여부 확인
+
+=== 요청
+
+include::{snippets}/validate-guest-order-success/http-request.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/validate-guest-order-success/http-response.adoc[]

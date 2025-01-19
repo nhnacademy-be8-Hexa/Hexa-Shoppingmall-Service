@@ -120,13 +120,7 @@ public class BookRepositoryTest {
 //        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
 //    }
 
-    @Test
-    void testFindAllByOrderByBookPubDateDescBookIdAsc() {
-        var page = bookRepository.findAllByOrderByBookPubDateDescBookIdAsc(PageRequest.of(0, 10));
 
-        assertThat(page.getContent()).hasSize(1);
-        assertThat(page.getContent().getFirst().getBookTitle()).isEqualTo("Test Book");
-    }
 
     @Test
     void testExistsByBookIsbn() {

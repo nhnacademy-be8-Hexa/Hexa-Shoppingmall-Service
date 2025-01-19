@@ -1,0 +1,26 @@
+= OrderBook API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+
+== 주문에 있는 책들 조회
+
+=== 요청
+
+include::{snippets}/get-order-books-success/http-request.adoc[]
+
+=== 요청 파라미터
+
+include::{snippets}/get-order-books-success/path-parameters.adoc[]
+
+
+=== 응답
+
+include::{snippets}/get-order-books-success/response-body.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/get-order-books-success/response-fields.adoc[]
+
