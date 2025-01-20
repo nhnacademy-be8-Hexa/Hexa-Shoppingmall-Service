@@ -1,4 +1,4 @@
-package com.nhnacademy.hexashoppingmallservice.feignclient.domain.aladin;
+package com.nhnacademy.hexashoppingmallservice.feignclient.domain;
 
 import java.util.List;
 import lombok.Getter;
