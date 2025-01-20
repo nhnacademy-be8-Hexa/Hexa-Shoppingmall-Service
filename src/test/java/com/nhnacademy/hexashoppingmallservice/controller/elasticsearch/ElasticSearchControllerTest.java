@@ -48,6 +48,7 @@ public class ElasticSearchControllerTest {
 
     private SearchBookDTO searchBookDTO;
 
+
     @BeforeEach
     void setUp() {
         Publisher publisher = Publisher.of(1L, "Test Publisher");
@@ -58,7 +59,6 @@ public class ElasticSearchControllerTest {
 
     @Test
     void searchBooks() throws Exception {
-        // mock 데이터 반환
         given(elasticSearchService.searchBooks(anyString(), any(Pageable.class)))
                 .willReturn(List.of(searchBookDTO));
 

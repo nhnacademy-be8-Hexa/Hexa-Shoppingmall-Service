@@ -1,0 +1,50 @@
+= Aladin API Documentation
+:toc:
+:toclevels: 2
+:sectanchors:
+:sectnums:
+
+== Aladin 도서 검색
+
+=== 요청
+
+include::{snippets}/search-aladin-books/http-request.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/search-aladin-books/request-headers.adoc[]
+
+=== 쿼리 파라미터
+
+include::{snippets}/search-aladin-books/query-parameters.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/search-aladin-books/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/search-aladin-books/response-body.adoc[]
+
+== Aladin 도서 등록
+
+=== 요청
+
+include::{snippets}/create-aladin-book/http-request.adoc[]
+
+=== 요청 헤더
+
+include::{snippets}/create-aladin-book/request-headers.adoc[]
+
+=== 요청 필드
+
+include::{snippets}/create-aladin-book/request-fields.adoc[]
+
+=== 응답 필드
+
+include::{snippets}/create-aladin-book/response-fields.adoc[]
+
+=== 예제 응답
+
+include::{snippets}/create-aladin-book/response-body.adoc[]
+
