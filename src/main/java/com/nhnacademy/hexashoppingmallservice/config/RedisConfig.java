@@ -23,6 +23,11 @@ public class RedisConfig {
 
     private final SecureKeyManagerService secureKeyManagerService;
 
+    private final String host = "10.116.64.14";
+    private final int port = 6379;
+    private final String password = "*N2vya7H@muDTwdNMR!";
+    private final int database = 255;
+
     @Value("${redis.cart.keyId}")
     private String keyId;
 
@@ -34,15 +39,15 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory(){
 
-        RedisCredentials databaseCredentials =new RedisCredentials(secureKeyManagerService.fetchSecretFromKeyManager(keyId));
+//        RedisCredentials databaseCredentials =new RedisCredentials(secureKeyManagerService.fetchSecretFromKeyManager(keyId));
 
-        Map<String, String> credentialsMap = databaseCredentials.getCredentialsMap();
-        log.info("Fetched Redis credentials: {}", credentialsMap);
+//        Map<String, String> credentialsMap = databaseCredentials.getCredentialsMap();
+//        log.info("Fetched Redis credentials: {}", credentialsMap);
 
-        String host = credentialsMap.get("host");
-        int port = Integer.parseInt(credentialsMap.get("port"));
-        String password = credentialsMap.get("password");
-        int database = Integer.parseInt(credentialsMap.get("database"));
+//        String host = credentialsMap.get("host");
+//        int port = Integer.parseInt(credentialsMap.get("port"));
+//        String password = credentialsMap.get("password");
+//        int database = Integer.parseInt(credentialsMap.get("database"));
 
 
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
