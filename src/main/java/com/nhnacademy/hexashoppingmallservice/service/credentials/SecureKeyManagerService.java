@@ -2,29 +2,35 @@ package com.nhnacademy.hexashoppingmallservice.service.credentials;
 
 import com.nhnacademy.hexashoppingmallservice.dto.credentials.KeyResponseDto;
 import com.nhnacademy.hexashoppingmallservice.exception.credentials.KeyManagerException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.List;
+import javax.net.ssl.SSLContext;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.ssl.SSLContexts;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.net.ssl.SSLContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class SecureKeyManagerService {
@@ -61,7 +67,8 @@ public class SecureKeyManagerService {
             // 3. 인증 기관은 자체 서명된 인증서로 로드 할 수 있게 만듬
             SSLContext sslContext = SSLContexts.custom()
                     .setProtocol("TLS")
-                    .loadKeyMaterial(clientStore, password.toCharArray()) // 키를 로드하기 위해 p12 파일과 비밀번호로 비밀키 꺼내서 sslcontext에 넣음
+                    .loadKeyMaterial(clientStore,
+                            password.toCharArray()) // 키를 로드하기 위해 p12 파일과 비밀번호로 비밀키 꺼내서 sslcontext에 넣음
                     .loadTrustMaterial(new TrustSelfSignedStrategy()) // 자체 서명된 인증서를 신뢰하도록 TrustManager 설정
                     .build();
 
