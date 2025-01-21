@@ -89,6 +89,7 @@ public class ElasticSearchService {
                                     .should(shouldQuery -> shouldQuery
                                             .multiMatch(mm -> mm
                                                     .query(search)
+                                                    .operator(Operator.And)
                                                     .fields(Lists.newArrayList(
                                                             "bookTitle^10",
                                                             "authors.authorName^3",
