@@ -4,6 +4,7 @@ package com.nhnacademy.hexashoppingmallservice.config;
 import com.nhnacademy.hexashoppingmallservice.credentials.RedisCredentials;
 
 import com.nhnacademy.hexashoppingmallservice.service.credentials.SecureKeyManagerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.Map;
 
 @Configuration
+@Slf4j
 public class RedisConfig {
 
     private final SecureKeyManagerService secureKeyManagerService;
@@ -35,6 +37,7 @@ public class RedisConfig {
         RedisCredentials databaseCredentials =new RedisCredentials(secureKeyManagerService.fetchSecretFromKeyManager(keyId));
 
         Map<String, String> credentialsMap = databaseCredentials.getCredentialsMap();
+        log.info("Fetched Redis credentials: {}", credentialsMap);
 
         String host = credentialsMap.get("host");
         int port = Integer.parseInt(credentialsMap.get("port"));
