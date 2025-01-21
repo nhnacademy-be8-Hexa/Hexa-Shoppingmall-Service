@@ -1,6 +1,6 @@
 
 ### 통합 검색
-GET localhost:8081/api/search?search=한강
+GET localhost:8081/api/search?search=해리 포터와 불사조 기사단 1
 Accept: application/json
 
 ### 제목으로 검색
