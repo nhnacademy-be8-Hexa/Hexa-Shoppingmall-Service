@@ -19,6 +19,10 @@ public class DataSourceConfig {
     @Value("${keyid}")
     private String keyId;
 
+    private final String url = "jdbc:mysql://10.116.64.14:13306/project_be8_hexa_bookstore";
+    private final String userName = "project_be8_hexa";
+    private final String password = "RiChSN@07TEabug1";
+
     @Bean
     public DataSource dataSource() {
 
@@ -27,9 +31,13 @@ public class DataSourceConfig {
 
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl(databaseCredentials.getUrl());
-        dataSource.setUsername(databaseCredentials.getUsername());
-        dataSource.setPassword(databaseCredentials.getPassword());
+//        dataSource.setUrl(databaseCredentials.getUrl());
+//        dataSource.setUsername(databaseCredentials.getUsername());
+//        dataSource.setPassword(databaseCredentials.getPassword());
+
+        dataSource.setUrl(url);
+        dataSource.setUsername(userName);
+        dataSource.setPassword(password);
 
         // 톰캣 기본 설정과 일치시키는 Connection Pool 설정
         dataSource.setInitialSize(100);        // 초기 커넥션 개수
