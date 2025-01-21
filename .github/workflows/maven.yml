@@ -36,7 +36,7 @@ jobs:
         with:
             host: ${{ secrets.SSH_IP }}
             username: ${{ secrets.SSH_ID }}
-            key: ${{ secrets.SSH_KEY }}
+            password: ${{ secrets.SSH_PASSWORD }}  # 보안키 대신 비밀번호를 사용합니다.
             port: ${{ secrets.SSH_PORT }}
             source: "target/*.jar"
             target: "~/api/target/"
@@ -48,7 +48,7 @@ jobs:
         with:
             host: ${{ secrets.SSH_IP }}
             username: ${{ secrets.SSH_ID }}
-            key: ${{ secrets.SSH_KEY }}
+            password: ${{ secrets.SSH_PASSWORD }}  # 보안키 대신 비밀번호를 사용합니다.
             port: ${{ secrets.SSH_PORT }}
             script: "./serviceStartup.sh"
 
