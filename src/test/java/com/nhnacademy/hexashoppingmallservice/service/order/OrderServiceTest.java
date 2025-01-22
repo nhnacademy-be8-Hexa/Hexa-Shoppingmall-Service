@@ -1,5 +1,19 @@
 package com.nhnacademy.hexashoppingmallservice.service.order;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.nhnacademy.hexashoppingmallservice.dto.order.OrderRequestDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.book.Book;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
@@ -16,12 +30,16 @@ import com.nhnacademy.hexashoppingmallservice.exception.order.OrderStatusNotFoun
 import com.nhnacademy.hexashoppingmallservice.exception.order.WrappingPaperNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.OrderProjection;
 import com.nhnacademy.hexashoppingmallservice.repository.book.BookRepository;
-import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.OrderBookRepositoryCustomImpl;
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderBookRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.OrderStatusRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.WrappingPaperRepository;
+import com.nhnacademy.hexashoppingmallservice.repository.querydsl.impl.OrderBookRepositoryCustomImpl;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,18 +49,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -534,7 +543,8 @@ class OrderServiceTest {
 
             when(orderRepository.existsById(orderId)).thenReturn(true);
             when(bookRepository.existsById(bookId)).thenReturn(true);
-            when(orderBookRepositoryCustom.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId)).thenReturn(expectedAmount);
+            when(orderBookRepositoryCustom.sumOrderBookAmountByOrderIdAndBookId(orderId, bookId)).thenReturn(
+                    expectedAmount);
 
             // Act
             Long result = orderService.getAmount(orderId, bookId);
@@ -874,6 +884,116 @@ class OrderServiceTest {
             // 만약 orderRepository.save(order)를 호출하도록 서비스 메서드가 구현되어 있다면, 검증 추가
             // 예시:
             // verify(orderRepository, times(1)).save(order);
+        }
+    }
+
+
+    @Nested
+    @DisplayName("기타 주문 관련 메소드 테스트")
+    class OrderRelatedTests {
+
+        @Test
+        @DisplayName("주문 ID와 회원 ID가 존재하는지 확인한다")
+        void existsOrderIdAndMember_MemberId_Success() {
+            // Arrange
+            Long orderId = 1L;
+            String memberMemberId = "member123";
+
+            when(orderRepository.existsByOrderIdAndMember_MemberId(orderId, memberMemberId)).thenReturn(true);
+
+            // Act
+            Boolean result = orderService.existsOrderIdAndMember_MemberId(orderId, memberMemberId);
+
+            // Assert
+            assertTrue(result);
+            verify(orderRepository, times(1)).existsByOrderIdAndMember_MemberId(orderId, memberMemberId);
+        }
+
+        @Test
+        @DisplayName("주문 ID와 회원 ID가 존재하지 않으면 false를 반환한다")
+        void existsOrderIdAndMember_MemberId_Fail() {
+            // Arrange
+            Long orderId = 1L;
+            String memberMemberId = "member123";
+
+            when(orderRepository.existsByOrderIdAndMember_MemberId(orderId, memberMemberId)).thenReturn(false);
+
+            // Act
+            Boolean result = orderService.existsOrderIdAndMember_MemberId(orderId, memberMemberId);
+
+            // Assert
+            assertFalse(result);
+            verify(orderRepository, times(1)).existsByOrderIdAndMember_MemberId(orderId, memberMemberId);
+        }
+
+        @Test
+        @DisplayName("회원 ID로 모든 주문 수를 센다")
+        void countAllByMember_MemberId() {
+            // Arrange
+            String memberId = "member123";
+            Long expectedCount = 5L;
+
+            when(orderRepository.countAllByMember_MemberId(memberId)).thenReturn(expectedCount);
+
+            // Act
+            Long result = orderService.countAllByMember_MemberId(memberId);
+
+            // Assert
+            assertEquals(expectedCount, result);
+            verify(orderRepository, times(1)).countAllByMember_MemberId(memberId);
+        }
+
+        @Test
+        @DisplayName("전체 주문 수를 센다")
+        void countAllOrders() {
+            // Arrange
+            Long expectedCount = 100L;
+
+            when(orderRepository.count()).thenReturn(expectedCount);
+
+            // Act
+            Long result = orderService.countAllOrders();
+
+            // Assert
+            assertEquals(expectedCount, result);
+            verify(orderRepository, times(1)).count();
+        }
+
+        @Test
+        @DisplayName("주문 상태 ID로 주문 목록을 조회한다")
+        void getOrdersByStatusId() {
+            // Arrange
+            Long orderStatusId = 1L;
+            Pageable pageable = PageRequest.of(0, 10);
+            List<OrderProjection> expectedOrders =
+                    Arrays.asList(mock(OrderProjection.class), mock(OrderProjection.class));
+
+            when(orderRepository.findByOrderStatus_OrderStatusId(orderStatusId, pageable)).thenReturn(
+                    new PageImpl<>(expectedOrders));
+
+            // Act
+            List<OrderProjection> result = orderService.getOrdersByStatusId(orderStatusId, pageable);
+
+            // Assert
+            assertEquals(expectedOrders, result);
+            verify(orderRepository, times(1)).findByOrderStatus_OrderStatusId(orderStatusId, pageable);
+        }
+
+        @Test
+        @DisplayName("주문 상태 ID로 주문 개수를 센다")
+        void countOrdersByStatusId() {
+            // Arrange
+            Long orderStatusId = 1L;
+            Long expectedCount = 20L;
+
+            when(orderRepository.countByOrderStatus_OrderStatusId(orderStatusId)).thenReturn(expectedCount);
+
+            // Act
+            Long result = orderService.countOrdersByStatusId(orderStatusId);
+
+            // Assert
+            assertEquals(expectedCount, result);
+            verify(orderRepository, times(1)).countByOrderStatus_OrderStatusId(orderStatusId);
         }
     }
 }

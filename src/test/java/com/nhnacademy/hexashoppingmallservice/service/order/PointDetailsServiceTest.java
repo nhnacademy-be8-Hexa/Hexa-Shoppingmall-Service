@@ -1,6 +1,13 @@
 package com.nhnacademy.hexashoppingmallservice.service.order;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.nhnacademy.hexashoppingmallservice.dto.order.CreatePointDetailDTO;
 import com.nhnacademy.hexashoppingmallservice.entity.member.Member;
 import com.nhnacademy.hexashoppingmallservice.entity.member.MemberStatus;
@@ -8,9 +15,13 @@ import com.nhnacademy.hexashoppingmallservice.entity.member.Rating;
 import com.nhnacademy.hexashoppingmallservice.entity.order.PointDetails;
 import com.nhnacademy.hexashoppingmallservice.exception.member.MemberNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.projection.order.PointDetailsProjection;
-
 import com.nhnacademy.hexashoppingmallservice.repository.member.MemberRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.PointDetailsRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,16 +34,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -82,8 +83,7 @@ class PointDetailsServiceTest {
     }
 
     @Test
-    void createPointDetails_success(){
-
+    void createPointDetails_success() {
 
 
         PointDetails pointDetailsOutput = PointDetails.builder()
@@ -98,22 +98,21 @@ class PointDetailsServiceTest {
         when(memberRepository.findById(member.getMemberId())).thenReturn(Optional.ofNullable(member));
         when(pointDetailsRepository.save(ArgumentMatchers.<PointDetails>any())).thenReturn(pointDetailsOutput);
 
-        CreatePointDetailDTO createPointDetailDTO = new CreatePointDetailDTO(10000,"10000 증가");
-        PointDetails pointDetails = pointDetailsService.createPointDetails(createPointDetailDTO,member.getMemberId());
+        CreatePointDetailDTO createPointDetailDTO = new CreatePointDetailDTO(10000, "10000 증가");
+        PointDetails pointDetails = pointDetailsService.createPointDetails(createPointDetailDTO, member.getMemberId());
 
 
-
-        assertEquals(pointDetailsOutput.getPointDetailsId(),pointDetails.getPointDetailsId());
-        assertEquals(pointDetailsOutput.getMember(),pointDetails.getMember());
-        assertEquals(createPointDetailDTO.getPointDetailsComment(),pointDetails.getPointDetailsComment());
-        assertEquals(createPointDetailDTO.getPointDetailsIncrement(),pointDetails.getPointDetailsIncrement());
-        assertEquals(pointDetailsOutput.getPointDetailsDatetime(),pointDetails.getPointDetailsDatetime());
+        assertEquals(pointDetailsOutput.getPointDetailsId(), pointDetails.getPointDetailsId());
+        assertEquals(pointDetailsOutput.getMember(), pointDetails.getMember());
+        assertEquals(createPointDetailDTO.getPointDetailsComment(), pointDetails.getPointDetailsComment());
+        assertEquals(createPointDetailDTO.getPointDetailsIncrement(), pointDetails.getPointDetailsIncrement());
+        assertEquals(pointDetailsOutput.getPointDetailsDatetime(), pointDetails.getPointDetailsDatetime());
     }
 
 
     @Test
-    void createPointDetails_fail_existsById(){
-        CreatePointDetailDTO createPointDetailDTO = new CreatePointDetailDTO(10000,"10000 증가");
+    void createPointDetails_fail_existsById() {
+        CreatePointDetailDTO createPointDetailDTO = new CreatePointDetailDTO(10000, "10000 증가");
         PointDetails pointDetailsInput = PointDetails.builder()
                 .pointDetailsId(2L)
                 .member(null)
@@ -122,11 +121,12 @@ class PointDetailsServiceTest {
                 .pointDetailsDatetime(null)
                 .build();
         when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.FALSE);
-        Assertions.assertThrows(MemberNotFoundException.class,()->pointDetailsService.createPointDetails(createPointDetailDTO,member.getMemberId()));
+        Assertions.assertThrows(MemberNotFoundException.class,
+                () -> pointDetailsService.createPointDetails(createPointDetailDTO, member.getMemberId()));
     }
 
     @Test
-    void sumPoint_success(){
+    void sumPoint_success() {
 
         when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.TRUE);
         when(pointDetailsRepository.sumPointDetailsIncrementByMemberId(member.getMemberId())).thenReturn(20000L);
@@ -137,7 +137,7 @@ class PointDetailsServiceTest {
     }
 
     @Test
-    void sumPoint_fail_existsById(){
+    void sumPoint_fail_existsById() {
         PointDetails pointDetailsInput = PointDetails.builder()
                 .pointDetailsId(2L)
                 .member(null)
@@ -146,11 +146,12 @@ class PointDetailsServiceTest {
                 .pointDetailsDatetime(null)
                 .build();
         when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.FALSE);
-        Assertions.assertThrows(MemberNotFoundException.class,()->pointDetailsService.sumPoint(member.getMemberId()));
+        Assertions.assertThrows(MemberNotFoundException.class,
+                () -> pointDetailsService.sumPoint(member.getMemberId()));
     }
 
     @Test
-    void getPointDetails_success(){
+    void getPointDetails_success() {
 
         Pageable pageable = PageRequest.of(0, 10);
         List<PointDetailsProjection> mockProjections = Arrays.asList(
@@ -159,7 +160,8 @@ class PointDetailsServiceTest {
         );
 
         when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.TRUE);
-        when(pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(), pageable)).thenReturn(new PageImpl<>(mockProjections));
+        when(pointDetailsRepository.findAllByMemberMemberId(member.getMemberId(), pageable)).thenReturn(
+                new PageImpl<>(mockProjections));
 
         List<PointDetailsProjection> result = pointDetailsService.getPointDetails(pageable, member.getMemberId());
         assertNotNull(result);
@@ -168,15 +170,42 @@ class PointDetailsServiceTest {
         verify(pointDetailsRepository, times(1)).findAllByMemberMemberId(member.getMemberId(), pageable);
 
 
+    }
 
+    @Test
+    void getPointDetails_fail_existsById() {
+        when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.FALSE);
+        Assertions.assertThrows(MemberNotFoundException.class,
+                () -> pointDetailsService.getPointDetails(PageRequest.of(0, 3), member.getMemberId()));
 
     }
 
     @Test
-    void getPointDetails_fail_existsById(){
-        when(memberRepository.existsById(member.getMemberId())).thenReturn(Boolean.FALSE);
-        Assertions.assertThrows(MemberNotFoundException.class,()->pointDetailsService.getPointDetails(PageRequest.of(0,3),member.getMemberId()));
+    void countByMemberId_success() {
+        // Given
+        String memberId = member.getMemberId();
+        int expectedCount = 5; // 가정: 해당 회원의 PointDetails 개수는 5개
 
+        when(pointDetailsRepository.countAllByMemberMemberId(memberId)).thenReturn(expectedCount);
+
+        // When
+        int result = pointDetailsService.countByMemberId(memberId);
+
+        // Then
+        assertEquals(expectedCount, result);
+        verify(pointDetailsRepository, times(1)).countAllByMemberMemberId(memberId);
+    }
+
+    @Test
+    void countByMemberId_fail_memberNotFound() {
+        // Given
+        String memberId = member.getMemberId();
+
+        when(pointDetailsRepository.countAllByMemberMemberId(memberId)).thenThrow(
+                new MemberNotFoundException("Member not found"));
+
+        // When & Then
+        Assertions.assertThrows(MemberNotFoundException.class, () -> pointDetailsService.countByMemberId(memberId));
     }
 
 }
