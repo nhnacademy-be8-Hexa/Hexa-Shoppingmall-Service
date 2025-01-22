@@ -34,22 +34,30 @@ jobs:
       - name: Upload JAR file
         uses: appleboy/scp-action@master
         with:
-            host: ${{ secrets.SSH_IP }}
-            username: ${{ secrets.SSH_ID }}
-            key: ${{ secrets.SSH_KEY }}
-            port: ${{ secrets.SSH_PORT }}
-            source: "target/*.jar"
-            target: "~/api/target/"
-            rm: false
+#            host: ${{ secrets.SSH_IP }}
+#            username: ${{ secrets.SSH_ID }}
+#            password: ${{ secrets.SSH_PASSWORD }}  # 보안키 대신 비밀번호를 사용합니다.
+#            port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_IP_OLD }}
+          username: ${{ secrets.SSH_ID_OLD }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT_OLD }}
+          source: "target/*.jar"
+          target: "~/api/target/"
+          rm: false
 
 
       - name: Execute shell script
         uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.SSH_IP }}
-            username: ${{ secrets.SSH_ID }}
-            key: ${{ secrets.SSH_KEY }}
-            port: ${{ secrets.SSH_PORT }}
-            script: "./serviceStartup.sh"
+#          host: ${{ secrets.SSH_IP }}
+#          username: ${{ secrets.SSH_ID }}
+#          password: ${{ secrets.SSH_PASSWORD }}  # 보안키 대신 비밀번호를 사용합니다.
+#          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_IP_OLD }}
+          username: ${{ secrets.SSH_ID_OLD }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT_OLD }}
+          script: "./serviceStartup.sh"
 
   
