@@ -56,7 +56,7 @@ public class Book {
     @Builder
     private Book(Long bookId, String bookTitle, String bookDescription, String bookPubDate, Long bookIsbn,
                  int bookOriginPrice, int bookPrice,
-                 Publisher publihser,
+                 Publisher publisher,
                  BookStatus bookstatus) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
@@ -65,7 +65,7 @@ public class Book {
         this.bookIsbn = bookIsbn;
         this.bookOriginPrice = bookOriginPrice;
         this.bookPrice = bookPrice;
-        this.publisher = publihser;
+        this.publisher = publisher;
         this.bookStatus = bookstatus;
 
         this.bookWrappable = false;
