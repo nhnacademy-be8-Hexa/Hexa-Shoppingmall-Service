@@ -5,13 +5,11 @@ import com.nhnacademy.hexashoppingmallservice.entity.order.ReturnsReason;
 import com.nhnacademy.hexashoppingmallservice.exception.order.ReturnsReasonNotFoundException;
 import com.nhnacademy.hexashoppingmallservice.repository.order.ReturnsReasonRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -21,7 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class ReturnsReasonServiceTest {
 
     @Mock

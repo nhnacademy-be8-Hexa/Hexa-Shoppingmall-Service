@@ -14,10 +14,11 @@ import com.nhnacademy.hexashoppingmallservice.repository.order.OrderRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.ReturnsReasonRepository;
 import com.nhnacademy.hexashoppingmallservice.repository.order.ReturnsRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -29,22 +30,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class ReturnsServiceTest {
 
-    @Autowired
+    @InjectMocks
     private ReturnsService returnsService;
 
-    @MockBean
+    @Mock
     private ReturnsRepository returnsRepository;
 
-    @MockBean
+    @Mock
     private OrderRepository orderRepository;
 
-    @MockBean
+    @Mock
     private ReturnsReasonRepository returnsReasonRepository;
 
-    @MockBean
+    @Mock
     private MemberRepository memberRepository;
 
     @Test
