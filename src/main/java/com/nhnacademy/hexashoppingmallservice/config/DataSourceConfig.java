@@ -32,15 +32,14 @@ public class DataSourceConfig {
         //todo
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl(databaseCredentials.getUrl());
-        dataSource.setUsername(databaseCredentials.getUsername());
-        dataSource.setPassword(databaseCredentials.getPassword());
+//        dataSource.setUrl(databaseCredentials.getUrl());
+//        dataSource.setUsername(databaseCredentials.getUsername());
+//        dataSource.setPassword(databaseCredentials.getPassword());
 
-//        dataSource.setUrl(url);
-//        dataSource.setUsername(userName);
-//        dataSource.setPassword(password);
+        dataSource.setUrl(url);
+        dataSource.setUsername(userName);
+        dataSource.setPassword(password);
 
-        // 톰캣 기본 설정과 일치시키는 Connection Pool 설정
         dataSource.setInitialSize(100);        // 초기 커넥션 개수
         dataSource.setMaxTotal(100);         // 최대 커넥션 개수
         dataSource.setMinIdle(100);            // 최소 유휴 커넥션 개수

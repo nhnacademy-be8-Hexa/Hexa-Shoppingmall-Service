@@ -40,15 +40,15 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory(){
 
         //todo
-        RedisCredentials databaseCredentials =new RedisCredentials(secureKeyManagerService.fetchSecretFromKeyManager(keyId));
+//        RedisCredentials databaseCredentials =new RedisCredentials(secureKeyManagerService.fetchSecretFromKeyManager(keyId));
 
-        Map<String, String> credentialsMap = databaseCredentials.getCredentialsMap();
-        log.info("Fetched Redis credentials: {}", credentialsMap);
+//        Map<String, String> credentialsMap = databaseCredentials.getCredentialsMap();
+//        log.info("Fetched Redis credentials: {}", credentialsMap);
 
-        String host = credentialsMap.get("host");
-        int port = Integer.parseInt(credentialsMap.get("port"));
-        String password = credentialsMap.get("password");
-        int database = Integer.parseInt(credentialsMap.get("database"));
+//        String host = credentialsMap.get("host");
+//        int port = Integer.parseInt(credentialsMap.get("port"));
+//        String password = credentialsMap.get("password");
+//        int database = Integer.parseInt(credentialsMap.get("database"));
 
 
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
